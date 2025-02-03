@@ -6,6 +6,7 @@
 *.pdf
 *.aux
 *.md
+*.Rproj
 !README.md
 *._files
 ._libs
