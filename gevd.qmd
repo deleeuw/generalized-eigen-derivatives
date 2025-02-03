@@ -40,9 +40,7 @@ link-citations: true
 mainfont: Times New Roman
 abstract: The derivatives of eigenvalues and eigenvectors (and singular values and vectors)
   are used in many places in multivariate data analysis. This paper reviews a number of
-  formulas for these derivatives and discusses several applications.
-  The results extend, generalize, correct, and improve the results 
-  of @deleeuw_R_07c.
+  formulas for these derivatives and discusses several applications. R code implementing the   basic formulas and applications is included. The results extend, generalize, correct, and   improve the results of @deleeuw_R_07c.
 ---
 
 ```{r loadcode, echo = FALSE}
@@ -56,7 +54,8 @@ source("gevPartial.R")
 **Note:** This is a working manuscript which will be expanded/updated
 frequently. All suggestions for improvement are welcome. All qmd, tex,
 html, pdf, R, and C files are in the public domain. Attribution will be
-appreciated, but is not required. 
+appreciated, but is not required. Files can be found at
+https://github.com/deleeuw/generalized-eigen-derivatives
 
 \sectionbreak
 
