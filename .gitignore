@@ -2,3 +2,11 @@
 .Rhistory
 .RData
 .Ruserdata
+*.tex
+*.pdf
+*.aux
+*.md
+!README.md
+*._files
+._libs
+/.quarto/
