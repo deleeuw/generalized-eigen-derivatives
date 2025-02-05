@@ -479,20 +479,14 @@ the lists with the $A_r$ and $B_r$. It gives the same results as partialGeigen()
 
 The function hessianGeigenEval() computes the second partials of the eigenvalues for linear perturbations. It has the same arguments as partialGeigen(). The function returns a list with the second partials of the eigenvalues. 
 
-For our small example
-
 ```{r dohessian, echo = FALSE}
 hessa <- hessianGeigenEval(theta, a, b, 1)
 hessn <- hessianCheckEval(theta, a, b, 1)
 ```
-The second partials of the dominant eigenvalue with respect to the elements of $A$ and $B$ are. 
 
-```{r showhessian, echo = FALSE}
-matrixPrint(hessa, digits = 3)
-```
-
-There is also hessianCheckEval() that computes numerical second partials. 
-The maximum absolute difference between the numerical and analytical second partials 
+hessianCheckEval() that computes numerical second partials. Even in our small example the Hessian is already of order 12, so we do not show the actual
+matrix. We do show that
+the maximum absolute difference between the numerical and analytical second partials 
 of the eigenvalue is 
 `r formatC(max(abs(hessa - hessn)), digits = 15, format = "f")`.
 
@@ -538,8 +532,8 @@ x'Gx+y'Hy=1.
 It is easy to see that $x$ and $y$ satisfy \eqref{eq-gsevd1} and \eqref{eq-gsevd2} if and only if they satisfy \eqref{eq-svd1} and \eqref{eq-svd2}. 
 
 
-In GSV system the normalization constraint \eqref{eq-svd3} is often replaced by the constraint $x'Gx=y'Hy=1$. We now show that this does not change
-the solutions of the GSV system, except for multiplying the singular vectors with a scale factor $\frac12\sqrt{2}$.
+In GSV systems the normalization constraint \eqref{eq-svd3} is often replaced by the constraint $x'Gx=y'Hy=1$. We now show that this does not change
+the solutions, except for multiplying the singular vectors with a scale factor $\frac12\sqrt{2}$.
 
 The GSV system has $r=\text{rank}(F)$ solutions with $\lambda_s>0$. For each of these
 solutions $(\lambda_s,x_s,y_s)$ there is a mirror solution $(-\lambda_s,x_s,-y_s)$, and 
@@ -551,7 +545,7 @@ In summary, the solutions of the GEV and GSV systems for the ordered eigenvalues
 \begin{equation}
 \begin{bmatrix}
 \Lambda&0&0&-\Lambda
-\end{bmatrix},
+\end{bmatrix},\label{eq-svdsol2}
 \end{equation}
 and for the corresponding eigenvectors
 \begin{equation}
@@ -559,13 +553,14 @@ and for the corresponding eigenvectors
 X&X_\perp&0&\hfill X\\
 Y&0&Y_\perp&-Y
 \end{bmatrix},
-\end{equation}
+\end{equation}\label{eq-svdsol2}
 \end{subequations}
-with $X_\perp$ a G-orthonomal basis for the null-space of $F'$ and $Y_\perp$ an H-orthonormal basis for the
-null-space of $F$.
+with $X_\perp$ a G-orthonomal basis for the null-space of $F'$ and $Y_\perp$ an H-orthonormal basis for the null-space of $F$. The four distinct parts of the
+solutions in \eqref{eq-svdsol1} amd \eqref{eq-svdsol2} are of orders $r, n-r, m-r$, and
+$r$. We are only really interested in the first $r$ solutions, for which the 
+singular values can be chosen to be positive.
 
-We now have enough information to apply our previous perturbation results to GSV systems.
-We will only consider perturbations of the form
+We now have enough information to apply our previous perturbation results to GSV systems, only considering perturbations of the form
 $$
 \Delta_A=\begin{bmatrix}
 0&\Delta_F\\
@@ -577,24 +572,32 @@ $$
 \Delta_B=\begin{bmatrix}
 \Delta_G&0\\
 0&\Delta_H
-\end{bmatrix}
+\end{bmatrix},
 $$
 so that the perturbed system is still a GSV system.
 
 From \eqref{eq-def1}we have
 $$
-\delta\lambda_s=2x_s'\Delta_Fy_s-\lambda_s(x_s'\Delta_Gx_s+y_s'\Delta_Hy_s),
+d\lambda_s=2x_s'\Delta_Fy_s-\lambda_s(x_s'\Delta_Gx_s+y_s'\Delta_Hy_s),
 $$
-
+Now suppose $s\leq r$, so that $\lambda_s$ is one of the first $r$ positive singular values.
+From \eqref{eq-def2}we have
+$$
+dx_s=-\sum_{\substack{t=1\\t\not= s}}^n\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s
+$$
 Partial Derivatives
 
 # Applications {#sec-applications}
 
 ## Principal Component Analysis {#sec-pca}
 
+If we think of PCA as a function of the elements of covariance matrix then using our results is real simple. The elementwise perturbation results and partial derivative results from @sec-parelementwise apply directly, using $B=I$ and $\Delta_B=0$. If we interpret PCA as a function of the correlation matrix matters become slightly more complicated. $A$ is still the covariance matrix, but $B$ is now the diagonal of the covariance matrix. The $\frac12n(n+1)$ covariances are still the parameters, but the diagonal elements contribute to both $A$ and $B$. Thus there are $\frac12n(n+1)$ design matrices $A_r$ and $B_r$, where
+the $B_r$ corresponding with off-diagonal elements are zero.
+
+It is perhaps more interesting to interpret PCA as a function of the data matrix.
 Suppose we have $m$ numerical variables, with variable $j$ having $k_j$ possible values.
 This defines $q:=\smash{\prod_{j=1}^m k_j}$ possible profiles, which are vectors of 
-length $m$ with all combinations of the values. The data are the relative frequencies of the profiles. Write $G$ for the $q\times m$ matrix of profiles.
+length $m$ with all combinations of the variable values. The data are the relative frequencies of these profiles, collected in a vector $p$ of length $q$. Write $G$ for the $q\times m$ matrix of profiles.
 
 The GEV problem for the principal component analysis (PCA) of a covariance matrix has
 $$
@@ -616,7 +619,16 @@ From ... $\mathcal{D}_rB=0$. From ...
 $$
 \mathcal{D}_rB=\text{diag}(g_rg_r')-2\mu_r
 $$
-These can be used in ... and ...
+These can be used in @eq-parper2 and @eq-parper2.
+
+$$
+\mathcal{D}_r\lambda_s=
+x_s'\{g_rg_r'-(\mu e_r'+e_r\mu')-\lambda_s\{\text{diag}(g_rg_r')-2\mu_r\}x_s
+$$
+
+Alternative data matrix $Z$ and PCA is an SVD of $JZ$, which 
+
+Jackknife, Infinitesimal Jackknife
 
 ## Canonical Analysis {#sec-canonical}
 
