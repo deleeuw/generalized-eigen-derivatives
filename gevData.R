@@ -36,3 +36,23 @@ aa <- makeMatrix(theta, a)
 bb <- makeMatrix(theta, b)
 eab <- myGeigen(aa, bb)
 
+ar <- list(
+  ar1 = matrix(c(0, 1, 0, 1, 0, 0, 0, 0, 0), 3, 3),
+  ar2 = matrix(c(0, 0, 1, 0, 0, 0, 1, 0, 0), 3, 3),
+  ar3 = matrix(c(0, 0, 0, 0, 0, 1, 0, 1, 0), 3, 3),
+  ar4 = matrix(c(1, 0, 0, 0, 0, 0, 0, 0, 0), 3, 3),
+  ar5 = matrix(c(0, 0, 0, 0, 1, 0, 0, 0, 0), 3, 3),
+  ar6 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 1), 3, 3)) 
+
+br <- list(
+  br1 = matrix(0, 3, 3),
+  br2 = matrix(0, 3, 3),
+  br3 = matrix(0, 3, 3),
+  br4 = matrix(c(1, 0, 0, 0, 0, 0, 0, 0, 0), 3, 3),
+  br5 = matrix(c(0, 0, 0, 0, 1, 0, 0, 0, 0), 3, 3),
+  br6 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 1), 3, 3))
+
+tr <- c(1, 2, 3, 4, 5, 6)
+aar <- makeMatrix(tr, ar)
+bbr <- makeMatrix(tr, br)
+eabr <- myGeigen(aar, bbr)
