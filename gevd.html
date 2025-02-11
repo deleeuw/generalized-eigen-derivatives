@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.13">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jan de Leeuw">
+<meta name="dcterms.date" content="2025-02-11">
+
+<title>Differentiating Generalized Eigen and Singular Value Decompositions</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="gevd_files/libs/clipboard/clipboard.min.js"></script>
+<script src="gevd_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="gevd_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="gevd_files/libs/quarto-html/popper.min.js"></script>
+<script src="gevd_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="gevd_files/libs/quarto-html/anchor.min.js"></script>
+<link href="gevd_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="gevd_files/libs/quarto-html/quarto-syntax-highlighting-66ab7fd5e73b7f0a764e0d49b3e29ab1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="gevd_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="gevd_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="gevd_files/libs/bootstrap/bootstrap-c92339fd3ef13fc9186ac6ecfd06636e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+</head><body>.greybox {
+  padding: 1em;
+  background: white;
+  color: black;
+  border: 2px solid orange;
+  border-radius: 10px;
+}
+.center {
+  text-align: center;
+}
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+
+
+
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-intro" id="toc-sec-intro" class="nav-link active" data-scroll-target="#sec-intro"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#sec-perturb" id="toc-sec-perturb" class="nav-link" data-scroll-target="#sec-perturb"><span class="header-section-number">2</span> Perturbation</a>
+  <ul class="collapse">
+  <li><a href="#sec-basic" id="toc-sec-basic" class="nav-link" data-scroll-target="#sec-basic"><span class="header-section-number">2.1</span> Basic Perturbations</a></li>
+  <li><a href="#sec-parametric" id="toc-sec-parametric" class="nav-link" data-scroll-target="#sec-parametric"><span class="header-section-number">2.2</span> Parametric Perturbations</a>
+  <ul class="collapse">
+  <li><a href="#sec-perlinear" id="toc-sec-perlinear" class="nav-link" data-scroll-target="#sec-perlinear"><span class="header-section-number">2.2.1</span> Linear Perturbations</a></li>
+  <li><a href="#sec-perelementwise" id="toc-sec-perelementwise" class="nav-link" data-scroll-target="#sec-perelementwise"><span class="header-section-number">2.2.2</span> Elementwise Perturbations</a></li>
+  </ul></li>
+  <li><a href="#sec-pertcode" id="toc-sec-pertcode" class="nav-link" data-scroll-target="#sec-pertcode"><span class="header-section-number">2.3</span> Perturbation Code</a></li>
+  </ul></li>
+  <li><a href="#sec-partial" id="toc-sec-partial" class="nav-link" data-scroll-target="#sec-partial"><span class="header-section-number">3</span> Partial Derivatives</a>
+  <ul class="collapse">
+  <li><a href="#sec-parbasic" id="toc-sec-parbasic" class="nav-link" data-scroll-target="#sec-parbasic"><span class="header-section-number">3.1</span> Basic Partial Derivatives</a></li>
+  <li><a href="#sec-parelementwise" id="toc-sec-parelementwise" class="nav-link" data-scroll-target="#sec-parelementwise"><span class="header-section-number">3.2</span> Elementwise Perturbations</a></li>
+  <li><a href="#sec-second" id="toc-sec-second" class="nav-link" data-scroll-target="#sec-second"><span class="header-section-number">3.3</span> Second Order Partials</a></li>
+  <li><a href="#sec-partialcode" id="toc-sec-partialcode" class="nav-link" data-scroll-target="#sec-partialcode"><span class="header-section-number">3.4</span> Partial Derivative Code</a></li>
+  </ul></li>
+  <li><a href="#sec-GSV" id="toc-sec-GSV" class="nav-link" data-scroll-target="#sec-GSV"><span class="header-section-number">4</span> Generalized SVD</a></li>
+  <li><a href="#sec-applications" id="toc-sec-applications" class="nav-link" data-scroll-target="#sec-applications"><span class="header-section-number">5</span> Applications</a>
+  <ul class="collapse">
+  <li><a href="#sec-pca" id="toc-sec-pca" class="nav-link" data-scroll-target="#sec-pca"><span class="header-section-number">5.1</span> Principal Component Analysis</a></li>
+  <li><a href="#sec-canonical" id="toc-sec-canonical" class="nav-link" data-scroll-target="#sec-canonical"><span class="header-section-number">5.2</span> Canonical Analysis</a></li>
+  <li><a href="#sec-mca" id="toc-sec-mca" class="nav-link" data-scroll-target="#sec-mca"><span class="header-section-number">5.3</span> Multiple Correspondence Analysis</a></li>
+  <li><a href="#classical-multidimensional-scaling" id="toc-classical-multidimensional-scaling" class="nav-link" data-scroll-target="#classical-multidimensional-scaling"><span class="header-section-number">5.4</span> Classical Multidimensional Scaling</a></li>
+  <li><a href="#sec-fa" id="toc-sec-fa" class="nav-link" data-scroll-target="#sec-fa"><span class="header-section-number">5.5</span> Factor Analysis</a></li>
+  <li><a href="#sec-rank" id="toc-sec-rank" class="nav-link" data-scroll-target="#sec-rank"><span class="header-section-number">5.6</span> Low rank Matrix Approximation</a></li>
+  </ul></li>
+  <li><a href="#sec-discussion" id="toc-sec-discussion" class="nav-link" data-scroll-target="#sec-discussion"><span class="header-section-number">6</span> Discussion</a></li>
+  <li><a href="#sec-code" id="toc-sec-code" class="nav-link" data-scroll-target="#sec-code"><span class="header-section-number">7</span> Code</a></li>
+  <li><a href="#sec-references" id="toc-sec-references" class="nav-link" data-scroll-target="#sec-references"><span class="header-section-number">8</span> References</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="gevd.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Differentiating Generalized Eigen and Singular Value Decompositions</h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Jan de Leeuw <a href="mailto:jan@deleeuwpdx.net" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> <a href="https://orcid.org/0000-0003-1420-1797" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            <a href="www.ucla.edu">
+            University of California Los Angeles
+            </a>
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 11, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    The derivatives of eigenvalues and eigenvectors (and singular values and vectors) are used in many places in multivariate data analysis. This paper reviews formulas for these derivatives and discusses several applications. R code implementing the basic formulas and applications is included. The results extend, generalize, correct, and improve the results of <span class="citation" data-cites="deleeuw_R_07c">De Leeuw (<a href="#ref-deleeuw_R_07c" role="doc-biblioref">2007</a>)</span>.
+  </div>
+</div>
+
+
+</header>
+
+
+<p><strong>Note:</strong> This is a working manuscript which will be expanded/updated frequently. All suggestions for improvement are welcome. All qmd, tex, html, pdf, R, and C files are in the public domain. Attribution will be appreciated, but is not required. Files can be found at https://github.com/deleeuw/generalized-eigen-derivatives</p>
+<section id="sec-intro" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>Suppose <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are real symmetric matrices of order <span class="math inline">\(n\)</span>, with <span class="math inline">\(B\)</span> positive definite (PSD, from now on). Generalized eigenvalues and eigenvectors are defined as the solutions <span class="math inline">\((x,\lambda)\)</span> of the system of equations We call this a GEV system, short for generalized eigenvalue system.</p>
+<p>The properties of the solutions of the system <span class="math inline">\(\eqref{eq-evd1}\)</span>,<span class="math inline">\(\eqref{eq-evd2}\)</span> can be found in any textbook on matrix algebra, for example in my personal favorite <span class="citation" data-cites="wilkinson_65">Wilkinson (<a href="#ref-wilkinson_65" role="doc-biblioref">1965</a>)</span>. We briefly summarise them here.</p>
+<p>Solving equation <span class="math inline">\(\eqref{eq-evd1}\)</span> is equivalent to solving the determinantal equation <span class="math inline">\(\text{det}(A-\lambda B)=0\)</span>. The polynomial <span class="math inline">\(\text{det}(A-\lambda B)\)</span> is of degree <span class="math inline">\(n\)</span>, and consequently has <span class="math inline">\(n\)</span> roots. Because <span class="math inline">\(A\)</span> is symmetric and <span class="math inline">\(B\)</span> is positive definite all <span class="math inline">\(n\)</span> roots are real. Note that <span class="math inline">\(A\)</span> can be indefinite and/or singular, which means that some roots can be negative or zero.</p>
+<p>If <span class="math inline">\(\lambda_s\not=\lambda_t\)</span> are two solutions of the determinantal equation then the corresponding eigenvectors, which are defined up to a scale factor, <span class="math inline">\(x_s\)</span> and <span class="math inline">\(x_t\)</span> are B-orthogonal, i.e.&nbsp;<span class="math inline">\(\smash{x_s'Bx_t=0}\)</span>. If <span class="math inline">\(\lambda_s\)</span> is a root of multiplicity <span class="math inline">\(p\)</span> then there are <span class="math inline">\(p\)</span> corresponding eigenvectors, spanning a <span class="math inline">\(p\)</span>-dimensional subspace of <span class="math inline">\(\mathbb{R}^n\)</span>, and these <span class="math inline">\(p\)</span> eigenvectors can be chosen to be B-orthogonal as well. If we use the normalization in <span class="math inline">\(\eqref{eq-evd2}\)</span> it follows that there exists a non-singular matrix <span class="math inline">\(X\)</span> and a diagonal <span class="math inline">\(\Lambda\)</span> such that <span class="math inline">\(X'BX=I\)</span> and <span class="math inline">\(AX=BX\Lambda\)</span>, which implies <span class="math inline">\(X'AX=\Lambda\)</span>. If all roots are different the solution <span class="math inline">\((X,\Lambda)\)</span> is unique up to a permutation of the columns of <span class="math inline">\(X\)</span>, and we can eliminate this non-uniqueness by requiring that <span class="math inline">\(\lambda_1&gt;\lambda_2&gt;\cdots&gt;\lambda_n\)</span>. If there are multiple roots, and we require <span class="math inline">\(\lambda_1\geq\lambda_2\geq\cdots\geq\lambda_n\)</span>, the solution is unique up to a rotation within each of the subspaces associated with multiple roots.</p>
+<p>If <span class="math inline">\(\lambda_s\)</span> is a simple eigenvalue, i.e.&nbsp;it is different from all other roots, then both <span class="math inline">\(\lambda_s\)</span> and <span class="math inline">\(x_s\)</span> are differentiable at <span class="math inline">\((A,B)\)</span> (see <span class="citation" data-cites="wilkinson_65">Wilkinson (<a href="#ref-wilkinson_65" role="doc-biblioref">1965</a>)</span>, chapter 2, and for much more detail <span class="citation" data-cites="kato_76">Kato (<a href="#ref-kato_76" role="doc-biblioref">1976</a>)</span>). Suppose the matrices <span class="math inline">\(\Delta_A\)</span> and <span class="math inline">\(\Delta_B\)</span> are real and symmetric perturbations. Define Differentiability of <span class="math inline">\(\lambda_s\)</span> and <span class="math inline">\(x_s\)</span> implies that the differentials exist. Our notation surpresses the dependence of <span class="math inline">\(d\lambda_s\)</span> and <span class="math inline">\(dx_s\)</span> on <span class="math inline">\((A,B)\)</span> and on <span class="math inline">\((\Delta_A,\Delta_B)\)</span> because for our purposes these are just fixed constants.</p>
+</section>
+<section id="sec-perturb" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Perturbation</h1>
+<section id="sec-basic" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sec-basic"><span class="header-section-number">2.1</span> Basic Perturbations</h2>
+<p>We study the effect of symmetric perturbations <span class="math inline">\(A+\epsilon\Delta_A+o(\epsilon)\)</span> and <span class="math inline">\(B+\epsilon\Delta_B+o(\epsilon)\)</span> of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> on the eigenvalues <span class="math inline">\(\lambda_s\)</span> and their corresponding eigenvectors <span class="math inline">\(x_s\)</span>. Throughout we assume that <span class="math inline">\(\lambda_s\)</span> has multiplicity one, i.e.&nbsp;that <span class="math inline">\(\lambda_t\not=\lambda_s\)</span> if <span class="math inline">\(t\not=s\)</span>. Note that this does not mean all eigenvalues need to be different. Also note that if <span class="math inline">\(\epsilon\)</span> is small enough then <span class="math inline">\(B(\epsilon)\)</span> is still positive definite and <span class="math inline">\(\lambda_s(A(\epsilon),B(\epsilon))\)</span> is still a simple eigenvalue.</p>
+<p>To find <span class="math inline">\(d\lambda_s\)</span> and <span class="math inline">\(dx_s\)</span> we must solve the equations </p>
+<p>Expand <span class="math inline">\(\eqref{eq-witheps1}\)</span> and <span class="math inline">\(\eqref{eq-witheps2}\)</span> and only keep the first order terms. This gives Premultiply equation <span class="math inline">\(\eqref{eq-fo1}\)</span> with <span class="math inline">\(x_s'\)</span>. This gives <span class="math display">\[\begin{equation}
+d\lambda_s=x_s'(\Delta_A-\lambda_s\Delta_B)x_s,\label{eq-def1}
+\end{equation}\]</span> We next solve for <span class="math inline">\(dx_s\)</span>. Write <span class="math inline">\(dx_s=X\alpha\)</span>, where <span class="math inline">\(X\)</span> is any complete set of eigenvectors from <span class="math inline">\(AX=BX\Lambda\)</span>, normalized by <span class="math inline">\(X'BX=I\)</span>. Then <span class="math inline">\(\eqref{eq-fo1}\)</span> becomes <span class="math display">\[\begin{equation}
+BX(\Lambda-\lambda_sI)\alpha=d\lambda_s Bx_s-(\Delta_Ax_s-\lambda_s\Delta_B)x_s.\label{eq-alp1}
+\end{equation}\]</span> Premultiplying by <span class="math inline">\(X'\)</span> gives <span class="math display">\[\begin{equation}
+(\Lambda-\lambda_sI)\alpha=(d\lambda_s)e_s-X'(\Delta_A-\lambda_s\Delta_B)x_s,\label{eq-alp2}
+\end{equation}\]</span> with <span class="math inline">\(e_s\)</span> a unit vector. Both sides of <span class="math inline">\(\eqref{eq-alp2}\)</span> are vectors of length <span class="math inline">\(n\)</span>. Using <span class="math inline">\(\eqref{eq-def1}\)</span> we see that element <span class="math inline">\(s\)</span> of both vectors is equal to zero. For <span class="math inline">\(t\not= s\)</span> we obtain <span class="math display">\[\begin{equation}
+\alpha_t=-\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s},\label{eq-alp3}
+\end{equation}\]</span> and, using <span class="math inline">\(\eqref{eq-fo2}\)</span>, <span class="math display">\[\begin{equation}
+\alpha_s=-\frac12x_s'\Delta_Bx_s.\label{eq-alp3}
+\end{equation}\]</span> Thus <span class="math display">\[\begin{equation}
+dx_s=-\sum_{t\not= s}\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s.\label{eq-def2}
+\end{equation}\]</span> The two equations <span class="math inline">\(\eqref{eq-def1}\)</span> and <span class="math inline">\(\eqref{eq-def2}\)</span> are the basic tools we use in this paper.</p>
+<p>Equations <span class="math inline">\(\eqref{eq-def1}\)</span> and <span class="math inline">\(\eqref{eq-def2}\)</span> simplify in some important special cases. For example, we can perturb <span class="math inline">\(A\)</span> but not <span class="math inline">\(B\)</span>. Thus <span class="math inline">\(\Delta_B=0\)</span>, and If, in addition, <span class="math inline">\(B=I\)</span> we have perturbation equations for an SEV or simple eigenvalue problem. The case in which we perturb <span class="math inline">\(B\)</span> and not <span class="math inline">\(A\)</span> is handled in the same way. Other special cases and simplifications will be treated next.</p>
+</section>
+<section id="sec-parametric" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-parametric"><span class="header-section-number">2.2</span> Parametric Perturbations</h2>
+<p>If <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are differentiable functions of a vector of <span class="math inline">\(q\)</span> parameters <span class="math inline">\(\theta\)</span> then Here the <span class="math inline">\(\mathcal{D}_rA\)</span> is a matrix with partial derivatives of <span class="math inline">\(A\)</span> with respect to <span class="math inline">\(\theta_r\)</span>, evaluated at <span class="math inline">\(\theta\)</span>, and <span class="math inline">\(d\theta_r\)</span> is element <span class="math inline">\(r\)</span> of the perturbation <span class="math inline">\(d\theta\)</span>. And similarly for <span class="math inline">\(B\)</span>.</p>
+<p>We now can apply equations <span class="math inline">\(\eqref{eq-def1}\)</span> and <span class="math inline">\(\eqref{eq-def2}\)</span> with If <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> depend on two different sets of parameters then we can use the same equations with some of the <span class="math inline">\(\mathcal{D}_rA\)</span> and some of the <span class="math inline">\(\mathcal{D}_rB\)</span> equal to zero.</p>
+<section id="sec-perlinear" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="sec-perlinear"><span class="header-section-number">2.2.1</span> Linear Perturbations</h3>
+<p>In an important special case <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are linear in <span class="math inline">\(\theta\)</span>. So In that case <span class="math inline">\(\Delta_A=\mathcal{D}_rA=A_r\)</span> and <span class="math inline">\(\Delta_B=\mathcal{D}_rB=B_r\)</span>.</p>
+</section>
+<section id="sec-perelementwise" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="sec-perelementwise"><span class="header-section-number">2.2.2</span> Elementwise Perturbations</h3>
+<p>In an important special case of the linear case the parameters are all the <span class="math inline">\(n(n+1)\)</span> elements of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> on and above the diagonal. We have with <span class="math inline">\(\smash{E_{ij}:=e_ie_j'+e_je_i'}\)</span> and <span class="math inline">\(\smash{E_i:=e_ie_i'}\)</span>.</p>
+</section>
+</section>
+<section id="sec-pertcode" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-pertcode"><span class="header-section-number">2.3</span> Perturbation Code</h2>
+<p>The code in <a href="#sec-code" class="quarto-xref">Section&nbsp;7</a> has the function perturbGeigen(), written in R (<span class="citation" data-cites="r_core_team_24">R Core Team (<a href="#ref-r_core_team_24" role="doc-biblioref">2024</a>)</span>), which has arguments <span class="math inline">\(a, b, da, db\)</span> and <span class="math inline">\(p\)</span>. The first four arguments are the values of <span class="math inline">\(A, B, \Delta_A,\Delta_B\)</span>. The remaining argument <span class="math inline">\(p\)</span> is a subset of <span class="math inline">\(\{1,2,\cdots,n\}\)</span>, with <span class="math inline">\(1\leq m\leq n\)</span> elements. The program computes <span class="math inline">\(d\lambda_s\)</span> and <span class="math inline">\(dx_s\)</span> for all <span class="math inline">\(s\in p\)</span> and returns them, respectively, in a vector with <span class="math inline">\(m\)</span> elements and an <span class="math inline">\(n\times m\)</span> matrix. The computations use <span class="math inline">\(\eqref{eq-sim1}\)</span> and <span class="math inline">\(\eqref{eq-sim2}\)</span>.</p>
+<p>The code section also has the function perturbCheck(), with the same arguments as perturbGeigen(), plus the additional argument <span class="math inline">\(eps\)</span>, the value of <span class="math inline">\(\epsilon\)</span>. The function computes generalized eigenvalues and eigenvectors of the pair <span class="math inline">\((A+\epsilon\Delta_A, B+\epsilon\Delta_B)\)</span> and compares them with the output of perturbGeigen().</p>
+<p>Our example uses two matrices <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> of order three. They are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]      [,2]      [,3]     
+[1,] +4.000000 +1.000000 +2.000000
+[2,] +1.000000 +5.000000 +3.000000
+[3,] +2.000000 +3.000000 +6.000000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]      [,2]      [,3]     
+[1,] +3.000000 -1.000000 -1.000000
+[2,] -1.000000 +3.000000 -1.000000
+[3,] -1.000000 -1.000000 +3.000000</code></pre>
+</div>
+</div>
+<p>The generalized eigen decomposition of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> has eigenvalues</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] +9.080056 +0.859087 +0.560857</code></pre>
+</div>
+</div>
+<p>and eigenvectors</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]      [,2]      [,3]     
+[1,] +0.539749 -0.410185 -0.201044
+[2,] +0.575284 +0.290249 -0.291211
+[3,] +0.608749 +0.015385 +0.359428</code></pre>
+</div>
+</div>
+<p>The perturbations <span class="math inline">\(\Delta_A\)</span> and <span class="math inline">\(\Delta_B\)</span> we use are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]      [,2]      [,3]     
+[1,] +1.000000 +0.000000 +0.000000
+[2,] +0.000000 +0.000000 +0.000000
+[3,] +0.000000 +0.000000 +0.000000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]      [,2]      [,3]     
+[1,] +0.000000 +0.000000 +0.000000
+[2,] +0.000000 +0.000000 +0.000000
+[3,] +0.000000 +0.000000 +0.000000</code></pre>
+</div>
+</div>
+<p>So <span class="math inline">\(B\)</span> is not perturbed at all. The output of perturbGeigen() is</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>$dl
+[1] 0.29132948 0.16825178 0.04041874
+
+$dx
+             [,1]        [,2]         [,3]
+[1,]  0.013607411 -0.04105592  0.120297564
+[2,] -0.004107324 -0.06503134 -0.072930515
+[3,] -0.004992561  0.11578144  0.003499643</code></pre>
+</div>
+</div>
+<p>We run perturbCheck() with <span class="math inline">\(\epsilon\)</span> equal to <span class="math inline">\(0.01\)</span>. The generalized eigenvalues and eigenvectors of <span class="math inline">\(A+\epsilon\Delta_A\)</span> and <span class="math inline">\(B+\epsilon\Delta_B\)</span> are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] +9.0829695442 +0.8607716139 +0.5612588419</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]          [,2]          [,3]         
+[1,] +0.5398854997 -0.4105912934 -0.1998460332
+[2,] +0.5752433377 +0.2896010798 -0.2919354673
+[3,] +0.6086986633 +0.0165387642 +0.3594612728</code></pre>
+</div>
+</div>
+<p>and the first order approximations <span class="math inline">\(\Lambda+\eps d\Lambda\)</span> and <span class="math inline">\(X+\eps dX\)</span> are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] +9.0829688098 +0.8607699411 +0.5612612491</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]          [,2]          [,3]         
+[1,] +0.5398855373 -0.4105956100 -0.1998411515
+[2,] +0.5752433585 +0.2895982756 -0.2919398461
+[3,] +0.6086986857 +0.0165432294 +0.3594628991</code></pre>
+</div>
+</div>
+<p>The approximation is very good, although this is not surprising given the small example and the separation of the eigenvalues. It does indicate our formula are probably OK.</p>
+</section>
+</section>
+<section id="sec-partial" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Partial Derivatives</h1>
+<section id="sec-parbasic" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="sec-parbasic"><span class="header-section-number">3.1</span> Basic Partial Derivatives</h2>
+<p>The parametric perturbation results can be easily translated into the language and notation for partial derivatives. Let’s introduce the notation first. If <span class="math inline">\(f\)</span> is a function of a vector <span class="math inline">\(\theta\)</span> then the partial derivative with respect to <span class="math inline">\(\theta_r\)</span> is <span class="math inline">\(\mathcal{D}_rf\)</span>, defined by <span class="math display">\[
+\mathcal{D}_rf(\theta):=\lim_{\epsilon\rightarrow 0}\frac{f(\theta+\epsilon e_r)-f(\theta)}{\epsilon},
+\]</span> with <span class="math inline">\(e_r\)</span> a unit vector.</p>
+<p>To find partial derivatives we set <span class="math inline">\(d\theta=e_r\)</span> In our perturbation equations <span class="math inline">\(\eqref{eq-par3}\)</span> and <span class="math inline">\(\eqref{eq-par4}\)</span>. Thus we only perturb <span class="math inline">\(\theta_r\)</span>. We then have <span class="math inline">\(\Delta_A=\mathcal{D}_rA\)</span> and <span class="math inline">\(\Delta_B=\mathcal{D}_rB\)</span>, and thus For linear parametric perturbations we have the same equations for the partial derivatives with <span class="math inline">\(\mathcal{D}_rA=A_r\)</span> and <span class="math inline">\(\mathcal{D}_rB=B_r\)</span>.</p>
+</section>
+<section id="sec-parelementwise" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sec-parelementwise"><span class="header-section-number">3.2</span> Elementwise Perturbations</h2>
+<p>For elementwise perturbations there are some useful simplifications. If we apply <span class="math inline">\(\eqref{eq-elemper1}\)</span> and <span class="math inline">\(\eqref{eq-elemper2}\)</span> to <span class="math inline">\(\eqref{eq-parper1}\)</span> and <span class="math inline">\(\eqref{eq-parper2}\)</span> we get In <span class="math inline">\(\eqref{eq-elempar1}\)</span>-<span class="math inline">\(\eqref{eq-elempar4}\)</span> we use the somewhat ad-hoc notation <span class="math inline">\(\mathcal{D}_{ij}^A\)</span> and <span class="math inline">\(\mathcal{D}_{ij}^B\)</span> for the partial derivatives with respect to <span class="math inline">\(a_{ij}\)</span> and <span class="math inline">\(b_{ij}\)</span>.</p>
+<p>As an aside, instead of deriving <span class="math inline">\(\eqref{eq-elempar1}\)</span>-<span class="math inline">\(\eqref{eq-elempar4}\)</span> from <span class="math inline">\(\eqref{eq-parper1}\)</span> and <span class="math inline">\(\eqref{eq-parper2}\)</span> we could also have used the chain rule to derive <span class="math inline">\(\eqref{eq-parper1}\)</span> and <span class="math inline">\(\eqref{eq-parper2}\)</span> from <span class="math inline">\(\eqref{eq-elempar1}\)</span>-<span class="math inline">\(\eqref{eq-elempar4}\)</span>. This looks like </p>
+</section>
+<section id="sec-second" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="sec-second"><span class="header-section-number">3.3</span> Second Order Partials</h2>
+<p>For various purposes in data analysis, such as Newton’s method or asymptotic bias correction, we need the second derivatives of the eigenvalues and eigenvectors.</p>
+<p>We start by differentiating equation <span class="math inline">\(\eqref{eq-parper1}\)</span> with respect to <span class="math inline">\(\theta_u\)</span>. This gives</p>
+<p><span class="math display">\[\begin{equation}
+\mathcal{D}_u\mathcal{D}_r\lambda_s=2(d_ux_s)'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s+
+x_s'(\mathcal{D}_{ru}A-\lambda_s\mathcal{D}_{ru}B)x_s-d_u\lambda_sx_s'\mathcal{D}_rBx_s,
+\label{eq-secparlbd}
+\end{equation}\]</span></p>
+<p>We could expand this further by substituting <span class="math inline">\(d_t\lambda_s\)</span> from <span class="math inline">\(d_tx_s\)</span> from <span class="math inline">\(\eqref{eq-parper1}\)</span> and <span class="math inline">\(\eqref{eq-parper2}\)</span>. But in computation we will use <span class="math inline">\(\eqref{eq-secparlbd}\)</span> as is, even though <span class="math inline">\(\eqref{eq-secparlbd}\)</span> does not show immediately that for each <span class="math inline">\(s\)</span> the Hessian <span class="math inline">\(\mathcal{D}_{ru}\lambda_s\)</span> is a symmetric matrix of order <span class="math inline">\(q\)</span>. Note that in the linear case <span class="math inline">\(\mathcal{D}_{ru}A=\mathcal{D}_{ru}B=0\)</span>, so the middle term on the right disappears.</p>
+<p>The logical next step is to differentiate <span class="math inline">\(\eqref{eq-parper2}\)</span> with respect to <span class="math inline">\(\theta_u\)</span>. We compute the second partials for one single element <span class="math inline">\(x_{ks}\)</span> of <span class="math inline">\(X\)</span> at a time. For each element <span class="math inline">\(x_{ks}\)</span> the Hessian will be a symmetric matrix of order <span class="math inline">\(q\)</span>. From <span class="math inline">\(\eqref{eq-parper2}\)</span> <span class="math display">\[\begin{equation}
+\mathcal{D}_rx_{ks}=-\sum_{t\not= s}\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_{kt}-\frac12(x_s'\mathcal{D}_rBx_s)x_{ks}.\label{eq-parper3}
+\end{equation}\]</span></p>
+<p>We start by working on the first term on the right of <span class="math inline">\(\eqref{eq-parper3}\)</span>. Differentiating with respect to <span class="math inline">\(\theta_u\)</span> gives <span class="math display">\[\begin{multline}
+\mathcal{D}_{u}\left\{\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_{kt}\right\}=\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}d_ux_{kt}+
+\\\mathcal{D}_{u}\left\{\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}\right\}x_{kt}.\label{eq-hess1}
+\end{multline}\]</span> The derivative in the second term on the right of <span class="math inline">\(\eqref{eq-hess1}\)</span> evaluates to <span class="math display">\[\begin{multline}
+\mathcal{D}_{u}\left\{\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}\right\}=\\
+\frac{(\lambda_t-\lambda_s)\mathcal{D}_u\{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s\}-x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}.\label{eq-hess2}
+\end{multline}\]</span> The derivative in the first term of the numerator on the right of <span class="math inline">\(\eqref{eq-hess2}\)</span> is <span class="math display">\[\begin{multline}
+\mathcal{D}_u\{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s\}=
+(d_ux_t)'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s+\\
+x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)d_ux_s+
+x_t'(\mathcal{D}_{ru}A-\lambda_s\mathcal{D}_{ru}B)x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s.
+\label{eq-hess3}\end{multline}\]</span> And finally, differentiating the last term in <span class="math inline">\(\eqref{eq-parper3}\)</span>, <span class="math display">\[\begin{equation}
+\mathcal{D}_u\{(x_s'D_rBx_s)x_{ks}\}=\{2(d_ux_s)'D_rBx_s+x_s'D_{ru}Bx_s\}x_{ks}+(x_s'D_rBx_s)d_ux_{ks}.
+\label{eq-hess4}
+\end{equation}\]</span></p>
+<p>We combine the results in <span class="math inline">\(\eqref{eq-hess1}\)</span>-<span class="math inline">\(\eqref{eq-hess4}\)</span> into one big equation. The resulting formula is pretty horrendous, but think of it as a recipe for calculation, not as a beautiful object in its own right. Define the shorthand <span class="math inline">\(C_{rs}:=\mathcal{D}_rA-\lambda_s\mathcal{D}_rB\)</span> and <span class="math inline">\(C_{rus}:=\mathcal{D}_{ru}A-\lambda_s\mathcal{D}_{ru}B\)</span> and</p>
+<p><span class="math display">\[\begin{align}
+\mathcal{D}_{ru}x_{ks}&amp;=-\sum_{t\not= s}^n\left\{\right.
+\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}d_ux_{kt}+\\
+&amp;\frac{(d_ux_t)'C_{rs}x_s+\\
+x_t'C_{rs}d_ux_s+
+x_t'C_{ru}x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}-\\
+&amp;\frac{x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}
+\end{align}\]</span></p>
+<p>There are simplifications in the linear case, where the second derivatives of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are zero, and we can replace <span class="math inline">\(\mathcal{D}_rA\)</span> and <span class="math inline">\(\mathcal{D}_rB\)</span> by <span class="math inline">\(A_r\)</span> and <span class="math inline">\(B_r\)</span>. And there are more simplifications for SEV problems where <span class="math inline">\(B\)</span> does not depend on <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\mathcal{D}_rB=0\)</span>.</p>
+<p>In the linear case, using the abbreviation <span class="math inline">\(C_{rs}:=A_r-\lambda_sB_r\)</span> we have <span class="math display">\[\begin{equation}
+\mathcal{D}_{ru}\lambda_s=2(d_ux_s)'C_{rs}x_s-d_u\lambda_sx_s'B_rx_s,
+\end{equation}\]</span> and <span class="math display">\[\begin{align}
+\mathcal{D}_{ru}x_{ks}&amp;=-\sum_{t\not= s}\left\{\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}d_ux_{kt}\right.\notag\\
+&amp;+\frac{(d_ux_t)'C_{rs}x_s+
+x_t'C_{rs}d_ux_s-(d_u\lambda_s)x_t'B_rx_s}{\lambda_t-\lambda_s}x_{kt}\notag\\
+&amp;\left.-\frac{x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}x_{kt}\right\}\notag\\
+&amp;-((d_ux_s)'B_rx_s)x_{ks}-\frac12(x_s'B_rx_s)d_ux_{ks}.
+\end{align}\]</span></p>
+</section>
+<section id="sec-partialcode" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="sec-partialcode"><span class="header-section-number">3.4</span> Partial Derivative Code</h2>
+<p>The functions partialGeigen() and partialCheck() can be used for linear perturbations. They have both have arguments <span class="math inline">\(theta, a, b, s\)</span>, where <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> are lists of matrices of lengths <span class="math inline">\(q\)</span> qnd <span class="math inline">\(p\)</span> and <span class="math inline">\(theta\)</span> is a vector of length <span class="math inline">\(p+q\)</span>. The last <span class="math inline">\(q\)</span> matrices in the list <span class="math inline">\(a\)</span> are zero, as are the first <span class="math inline">\(p\)</span> matrices in the list <span class="math inline">\(b\)</span>. The index <span class="math inline">\(1\leq s\leq n\)</span> dictates which eigen-pair we study.</p>
+<p>partialGeigen() uses the formulas <span class="math inline">\(\eqref{eq-parper1}\)</span> and <span class="math inline">\(\eqref{eq-parper2}\)</span>, while partialCheck computes numerical derivatives using grad() and jacobian() from the numDeriv package (<span class="citation" data-cites="gilbert_varadhan_19">Gilbert and Varadhan (<a href="#ref-gilbert_varadhan_19" role="doc-biblioref">2019</a>)</span>). For our example we use the same <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> as before, and we use elementwise perturbation. For the dominant eigenvalue partialGeigen() gives the derivatives with respect to the elements of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> as</p>
+<p>We also used partialCheck() to compute numerical derivatives. The maximum absolute difference between the numerical and analytical partials of the eigenvalue is</p>
+<p>The partialGeigen() function also gives the partials of the dominant eigenvector. The partials of the three eigenvector elements with respect to the elements of <span class="math inline">\(A\)</span> are</p>
+<p>and those with respect to <span class="math inline">\(B\)</span> are</p>
+<p>The maximum absolute differences between the numerical and analytical partials of the eigenvector are, for <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>,</p>
+<p>In elementwise perturbation partialGeigen() uses equations <span class="math inline">\(\eqref{eq-parper1}\)</span> and <span class="math inline">\(\eqref{eq-parper2}\)</span> and consequently needs lists of binary sparse matrices as arguments. This is very wasteful, both in memory and speed, given the fact that we also have the compact equations <span class="math inline">\(\eqref{eq-elempar1}\)</span> and <span class="math inline">\(\eqref{eq-elempar2}\)</span>. We have added the more specialized function partialElement() that uses these compact equations. It does not use <span class="math inline">\(\theta\)</span> and the lists with the <span class="math inline">\(A_r\)</span> and <span class="math inline">\(B_r\)</span>. It gives the same results as partialGeigen(), but is much faster.</p>
+<p>The function hessianGeigenEval() computes the second partials of the eigenvalues for linear perturbations. It has the same arguments as partialGeigen(). The function returns a list with the second partials of the eigenvalues.</p>
+<p>hessianCheckEval() that computes numerical second partials. Even in our small example the Hessian is already of order 12, so we do not show the actual matrix. We do show that the maximum absolute difference between the numerical and analytical second partials of the eigenvalue is</p>
+</section>
+</section>
+<section id="sec-GSV" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Generalized SVD</h1>
+<p>Suppose <span class="math inline">\(F\)</span> is an <span class="math inline">\(n\times m\)</span> matrix, <span class="math inline">\(G\)</span> is a positive definite matrix of order <span class="math inline">\(n\)</span>, and <span class="math inline">\(H\)</span> is a positive definite matrix of order <span class="math inline">\(m\)</span>. We suppose without loss of generality that <span class="math inline">\(n\geq m\)</span>. The generalized singular value problem for the triple <span class="math inline">\((F,G,H)\)</span> is to find solutions to the system We refer to this as a GSV system, short for generalized singular value system.</p>
+<p>Now consider the GEV system It is easy to see that <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> satisfy <span class="math inline">\(\eqref{eq-gsevd1}\)</span> and <span class="math inline">\(\eqref{eq-gsevd2}\)</span> if and only if they satisfy <span class="math inline">\(\eqref{eq-svd1}\)</span> and <span class="math inline">\(\eqref{eq-svd2}\)</span>.</p>
+<p>In GSV systems the normalization constraint <span class="math inline">\(\eqref{eq-svd3}\)</span> is often replaced by the constraint <span class="math inline">\(x'Gx=y'Hy=1\)</span>. We now show that this does not change the solutions, except for multiplying the singular vectors with a scale factor <span class="math inline">\(\frac12\sqrt{2}\)</span>.</p>
+<p>The GSV system has <span class="math inline">\(r=\text{rank}(F)\)</span> solutions with <span class="math inline">\(\lambda_s&gt;0\)</span>. For each of these solutions <span class="math inline">\((\lambda_s,x_s,y_s)\)</span> there is a mirror solution <span class="math inline">\((-\lambda_s,x_s,-y_s)\)</span>, and these <span class="math inline">\(2r\)</span> solutions are also solutions of the GEV system. Because in GEV two solutions with different eigenvalues are orthogonal it follows that for a pair of mirror solutions with non-zero eigenvalue <span class="math inline">\(x_s'Gx_s-y_s'Hy_s=0\)</span>, and thus, using <span class="math inline">\(\eqref{eq-gsevd2}\)</span>, <span class="math inline">\(x_s'Gx_s=y_s'Hy_s=\frac12\)</span>. In addition both systems have <span class="math inline">\(n+m-2r\)</span> solutions with zero eigenvalues, with eigenvectors in the direct sum of the null spaces of <span class="math inline">\(F\)</span> and <span class="math inline">\(F'\)</span>.</p>
+<p>In summary, the solutions of the GEV and GSV systems for the ordered eigenvalues are with <span class="math inline">\(X_\perp\)</span> a G-orthonomal basis for the null-space of <span class="math inline">\(F'\)</span> and <span class="math inline">\(Y_\perp\)</span> an H-orthonormal basis for the null-space of <span class="math inline">\(F\)</span>. The four distinct parts of the solutions in <span class="math inline">\(\eqref{eq-svdsol1}\)</span> amd <span class="math inline">\(\eqref{eq-svdsol2}\)</span> are of orders <span class="math inline">\(r, n-r, m-r\)</span>, and <span class="math inline">\(r\)</span>. We are only really interested in the first <span class="math inline">\(r\)</span> solutions, for which the singular values can be chosen to be positive.</p>
+<p>We now have enough information to apply our previous perturbation results to GSV systems, only considering perturbations of the form <span class="math display">\[
+\Delta_A=\begin{bmatrix}
+0&amp;\Delta_F\\
+\Delta_F'&amp;0
+\end{bmatrix},
+\]</span> and <span class="math display">\[
+\Delta_B=\begin{bmatrix}
+\Delta_G&amp;0\\
+0&amp;\Delta_H
+\end{bmatrix},
+\]</span> so that the perturbed system is still a GSV system.</p>
+<p>From <span class="math inline">\(\eqref{eq-def1}\)</span>we have <span class="math display">\[
+d\lambda_s=2x_s'\Delta_Fy_s-\lambda_s(x_s'\Delta_Gx_s+y_s'\Delta_Hy_s),
+\]</span> Now suppose <span class="math inline">\(s\leq r\)</span>, so that <span class="math inline">\(\lambda_s\)</span> is one of the first <span class="math inline">\(r\)</span> positive singular values. From <span class="math inline">\(\eqref{eq-def2}\)</span>we have <span class="math display">\[
+dx_s=-\sum_{\substack{t=1\\t\not= s}}^n\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s
+\]</span> Partial Derivatives</p>
+</section>
+<section id="sec-applications" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Applications</h1>
+<section id="sec-pca" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="sec-pca"><span class="header-section-number">5.1</span> Principal Component Analysis</h2>
+<p>If we think of PCA as a function of the elements of covariance matrix then using our results is real simple. The elementwise perturbation results and partial derivative results from <a href="#sec-parelementwise" class="quarto-xref">Section&nbsp;3.2</a> apply directly, using <span class="math inline">\(B=I\)</span> and <span class="math inline">\(\Delta_B=0\)</span>. If we interpret PCA as a function of the correlation matrix matters become slightly more complicated. <span class="math inline">\(A\)</span> is still the covariance matrix, but <span class="math inline">\(B\)</span> is now the diagonal of the covariance matrix. The <span class="math inline">\(\frac12n(n+1)\)</span> covariances are still the parameters, but the diagonal elements contribute to both <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>. Thus there are <span class="math inline">\(\frac12n(n+1)\)</span> design matrices <span class="math inline">\(A_r\)</span> and <span class="math inline">\(B_r\)</span>, where the <span class="math inline">\(B_r\)</span> corresponding with off-diagonal elements are zero.</p>
+<p>It is perhaps more interesting to interpret PCA as a function of the data matrix. Suppose we have <span class="math inline">\(m\)</span> numerical variables, with variable <span class="math inline">\(j\)</span> having <span class="math inline">\(k_j\)</span> possible values. This defines <span class="math inline">\(q:=\smash{\prod_{j=1}^m k_j}\)</span> possible profiles, which are vectors of length <span class="math inline">\(m\)</span> with all combinations of the variable values. The data are the relative frequencies of these profiles, collected in a vector <span class="math inline">\(p\)</span> of length <span class="math inline">\(q\)</span>. Write <span class="math inline">\(G\)</span> for the <span class="math inline">\(q\times m\)</span> matrix of profiles.</p>
+<p>The GEV problem for the principal component analysis (PCA) of a covariance matrix has <span class="math display">\[
+A=G'(P-pp')G,\\
+B=I
+\]</span> while for a PCA of the correlation matrix <span class="math display">\[
+A=G'(P-pp')G,\\
+B=\text{diag}(G'(P-pp')G)
+\]</span> From …<br>
+<span class="math display">\[
+\mathcal{D}_rA=g_rg_r'-(\mu e_r'+e_r\mu'),
+\]</span> with <span class="math inline">\(\mu:=Gp\)</span>.</p>
+<p>From … <span class="math inline">\(\mathcal{D}_rB=0\)</span>. From … <span class="math display">\[
+\mathcal{D}_rB=\text{diag}(g_rg_r')-2\mu_r
+\]</span> These can be used in <strong>?@eq-parper2</strong> and <strong>?@eq-parper2</strong>.</p>
+<p><span class="math display">\[
+\mathcal{D}_r\lambda_s=
+x_s'\{g_rg_r'-(\mu e_r'+e_r\mu')-\lambda_s\{\text{diag}(g_rg_r')-2\mu_r\}x_s
+\]</span></p>
+<p>Alternative data matrix <span class="math inline">\(Z\)</span> and PCA is an SVD of <span class="math inline">\(JZ\)</span>, which</p>
+<p>Jackknife, Infinitesimal Jackknife</p>
+</section>
+<section id="sec-canonical" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="sec-canonical"><span class="header-section-number">5.2</span> Canonical Analysis</h2>
+<p>In Canonical Analysis <span class="math display">\[
+A=\begin{bmatrix}
+0&amp;F'G\\
+G'F&amp;0
+\end{bmatrix},
+\]</span> and <span class="math display">\[
+B=\begin{bmatrix}
+F'F&amp;0\\
+0&amp;G'G
+\end{bmatrix}
+\]</span> Perturb <span class="math inline">\(F\)</span> and <span class="math inline">\(G\)</span>, which gives <span class="math display">\[
+\Delta_A=\begin{bmatrix}
+0&amp;\Delta_F'G+F'\Delta_G\\
+G'\Delta_F+F\Delta_G&amp;0
+\end{bmatrix}
+\]</span> and <span class="math display">\[
+\Delta_B=\begin{bmatrix}
+\Delta_F'F+F'\Delta_F&amp;0\\
+0&amp;\Delta_G'G+G'\Delta_G
+\end{bmatrix}
+\]</span></p>
+</section>
+<section id="sec-mca" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="sec-mca"><span class="header-section-number">5.3</span> Multiple Correspondence Analysis</h2>
+<p>We could introduce Multiple Correspondence Analysis (MCA) as a form of canonical analysis and use the perturbation results from <a href="#sec-canonical" class="quarto-xref">Section&nbsp;5.2</a>. Instead we go directly to a parametric approach.</p>
+<p>Suppose we have <span class="math inline">\(m\)</span> categorical variables, with variable <span class="math inline">\(j\)</span> having <span class="math inline">\(k_j\)</span> categories. This defines <span class="math inline">\(q:=\smash{\prod_{j=1}^m k_j}\)</span> profiles, which are binary vectors of length <span class="math inline">\(\smash{\sum_{j=1}^m k_j}\)</span>. The data are the relative frequencies of the profiles (cf. <span class="citation" data-cites="gifi_B_90">Gifi (<a href="#ref-gifi_B_90" role="doc-biblioref">1990</a>)</span>, chapter 2).</p>
+<p>In <span class="math display">\[
+A=\sum_{r=1}^qp_rg_rg_r',\\
+B=\sum_{r=1}^qp_rG_r,
+\]</span> where <span class="math inline">\(p_r\)</span> is the relative frequency of profile <span class="math inline">\(r\)</span>, and <span class="math inline">\(g_r\)</span> is the profile vector. Matri <span class="math inline">\(G_r\)</span> is diagonal, with <span class="math inline">\(g_r\)</span> on the diagonal.</p>
+<p>This is a linear parametric model, and consequently we can apply the formulas from <a href="#sec-perlinear" class="quarto-xref">Section&nbsp;2.2.1</a> to find the derivatives of the eigenvalues and eigenvectors with respect to the <span class="math inline">\(p_r\)</span>.</p>
+<p></p>
+</section>
+<section id="classical-multidimensional-scaling" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="classical-multidimensional-scaling"><span class="header-section-number">5.4</span> Classical Multidimensional Scaling</h2>
+<p>In classical multidimensional scaling (MDS) we have a symmetric matrix <span class="math inline">\(D\)</span> of squared dissimilarities.</p>
+<p><span class="math display">\[
+\xi_{ij}=-\frac12\left\{\theta_{ij}^2-\frac{1}{n}\sum_{l=1}^n\theta_{il}^2-\frac{1}{n}\sum_{l=1}^n\theta_{lj}^2
++\frac{1}{n^2}\sum_{k=1}^n\sum_{l=1}^n\theta_{kl}^2\right\}
+\]</span> <span class="math display">\[
+A=\mathop{\sum\sum}_{1\leq i&lt;j\leq n}\xi_{ij}E_{ij}+\sum_{i=1}^n\xi_{ii}E_i
+\]</span></p>
+</section>
+<section id="sec-fa" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="sec-fa"><span class="header-section-number">5.5</span> Factor Analysis</h2>
+</section>
+<section id="sec-rank" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="sec-rank"><span class="header-section-number">5.6</span> Low rank Matrix Approximation</h2>
+</section>
+</section>
+<section id="sec-discussion" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Discussion</h1>
+<p>If <span class="math inline">\(B\)</span> is a singular, if <span class="math inline">\(B\)</span> is indefinite. If <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are not symmetric.</p>
+</section>
+<section id="sec-code" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Code</h1>
+</section>
+<section id="sec-references" class="level1 unnumbered" data-number="8">
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">8 References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-deleeuw_R_07c" class="csl-entry" role="listitem">
+De Leeuw, J. 2007. <span>“Derivatives of Generalized Eigen Systems with Applications.”</span> Preprint Series 528. Los Angeles, CA: UCLA Department of Statistics. <a href="https://jansweb.netlify.app/publication/deleeuw-r-07-c/deleeuw-r-07-c.pdf">https://jansweb.netlify.app/publication/deleeuw-r-07-c/deleeuw-r-07-c.pdf</a>.
+</div>
+<div id="ref-gifi_B_90" class="csl-entry" role="listitem">
+Gifi, A. 1990. <em>Nonlinear Multivariate Analysis</em>. New York, N.Y.: Wiley.
+</div>
+<div id="ref-gilbert_varadhan_19" class="csl-entry" role="listitem">
+Gilbert, P., and R. Varadhan. 2019. <em><span class="nocase">numDeriv: Accurate Numerical Derivatives</span></em>. <a href="https://CRAN.R-project.org/package=numDeriv">https://CRAN.R-project.org/package=numDeriv</a>.
+</div>
+<div id="ref-kato_76" class="csl-entry" role="listitem">
+Kato, T. 1976. <em>Perturbation Theory for Linear Operators</em>. Second Edition. Springer.
+</div>
+<div id="ref-r_core_team_24" class="csl-entry" role="listitem">
+R Core Team. 2024. <em>R: A Language and Environment for Statistical Computing</em>. <span>Vienna, Austria</span>: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-wilkinson_65" class="csl-entry" role="listitem">
+Wilkinson, J. H. 1965. <em><span>The Algebraic Eigenvalue Problem</span></em>. Clarendon Press.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

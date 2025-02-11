@@ -369,48 +369,66 @@ As an aside, instead of deriving \eqref{eq-elempar1}-\eqref{eq-elempar4} from \e
 
 For various purposes in data analysis, such as Newton's method or asymptotic bias correction, we need the second derivatives of the eigenvalues and eigenvectors. 
 
-We start by differentiating equation \eqref{eq-parper1} with respect to $\theta_u$. This gives
+We start by differentiating equation \eqref{eq-parper1} with respect to $\theta_u$. 
+Define the abbreviations
+$C_{rs}:=\mathcal{D}_rA-\lambda_s\mathcal{D}_rB$ and 
+$C_{rus}:=\mathcal{D}_{ru}A-\lambda_s\mathcal{D}_{ru}B$. This gives
 
 \begin{equation}
-\mathcal{D}_{ru}\lambda_s=2(d_ux_s)'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s+
-x_s'(\mathcal{D}_{ru}A-\lambda_s\mathcal{D}_{ru}B)x_s-d_u\lambda_sx_s'\mathcal{D}_rBx_s,
-\label{eq-secparlbd}\end{equation}
+\mathcal{D}_{ur}\lambda_s=2(d_ux_s)'C_{rs}x_s+
+x_s'C_{rus}x_s-(d_u\lambda_s)x_s'\mathcal{D}_rBx_s,
+\label{eq-secparlbd}
+\end{equation}
 
-We could expand this further by substituting $d_t\lambda_s$ from $d_tx_s$ from \eqref{eq-parper1} and \eqref{eq-parper2}. But in computation we will use \eqref{eq-secparlbd} as is, even though \eqref{eq-secparlbd} does not show immediately that for each $s$ the Hessian $\mathcal{D}_{ru}\lambda_s$ is a symmetric matrix of order $q$. Note that in the linear case $\mathcal{D}_{ru}A=\mathcal{D}_{ru}B=0$, so the middle term on the right disappears. 
+We could expand this further by substituting $d_u\lambda_s$ and $d_ux_s$ from \eqref{eq-parper1} and \eqref{eq-parper2}. But in computation we will use \eqref{eq-secparlbd} as is, even though \eqref{eq-secparlbd} does not show immediately that for each $s$ the Hessian $\mathcal{D}_{ru}\lambda_s$ is a symmetric matrix of order $q$. Note that in the linear case $\mathcal{D}_{ru}A=\mathcal{D}_{ru}B=0$, so the middle term on the right disappears. 
 
 The logical next step is to differentiate \eqref{eq-parper2} with respect to $\theta_u$. 
-The resulting formula is pretty horrendous, but think of it as a recipe for calculation, not as a beautiful object in its own right. We compute the second partials for one single
+We compute the second partials for one single
 element $x_{ks}$ of $X$ at a time. For each element $x_{ks}$ the Hessian will be a symmetric matrix of order $q$. From \eqref{eq-parper2}
 \begin{equation}
-\mathcal{D}_rx_{ks}=-\sum_{t\not= s}\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_{kt}-\frac12(x_s'\mathcal{D}_rBx_s)x_{ks}.\label{eq-parper3}
+\mathcal{D}_rx_{ks}=-\sum_{t\not= s}\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}x_{kt}-\frac12(x_s'\mathcal{D}_rBx_s)x_{ks}.\label{eq-parper3}
 \end{equation}
 
 We start by working on the first term on the right of \eqref{eq-parper3}. Differentiating with respect to $\theta_u$ gives
 \begin{multline}
-\mathcal{D}_{u}\left\{\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_{kt}\right\}=\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}d_ux_{kt}+
-\\\mathcal{D}_{u}\left\{\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}\right\}x_{kt}.\label{hess1}
+\mathcal{D}_{u}\left\{\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}x_{kt}\right\}=\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}d_ux_{kt}+
+\\\mathcal{D}_{u}\left\{\frac{x_t'C_{rs})x_s}{\lambda_t-\lambda_s}\right\}x_{kt}.\label{eq-hess1}
 \end{multline}
-The derivative in the second term on the right of \eqref{hess1} evaluates to
+The derivative in the second term on the right of \eqref{eq-hess1} evaluates to
 \begin{multline}
-\mathcal{D}_{u}\left\{\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}\right\}=\\
-\frac{(\lambda_t-\lambda_s)\mathcal{D}_u\{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s\}-x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}\label{hess2}
+\mathcal{D}_{u}\left\{\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}\right\}=\\
+\frac{(\lambda_t-\lambda_s)\mathcal{D}_u\{x_t'C_{rs}x_s\}-x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}.\label{eq-hess2}
 \end{multline}
-The derivative in the first term of the numerator on the right of \eqref{hess2} is
+The derivative in the first term of the numerator on the right of \eqref{eq-hess2} is
 \begin{multline}
-\mathcal{D}_u\{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s\}=
+\mathcal{D}_u\{x_t'C_{rs}x_s\}=
 (d_ux_t)'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s+\\
-x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)d_ux_s+
-x_t'(\mathcal{D}_{ru}A-\lambda_s\mathcal{D}_{ru}B)x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s.
-\label{hess3}\end{multline}
+x_t'C_{rs}d_ux_s+
+x_t'C_{rus}x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s.
+\label{eq-hess3}\end{multline}
 And finally, differentiating the last term in \eqref{eq-parper3},
 \begin{equation}
-\mathcal{D}_u\{(x_s'D_rBx_s)x_{ks}\}=\{2(d_ux_s)'D_rBx_s+x_s'D_{ru}Bx_s\}x_{ks}+(x_s'D_rBx_s)d_ux_{ks}.
+\mathcal{D}_u\{(x_s'\mathcal{D}_rBx_s)x_{ks}\}=\{2(d_ux_s)'\mathcal{D}_rBx_s+x_s'\mathcal{D}_{ru}Bx_s\}x_{ks}+(x_s'\mathcal{D}_rBx_s)d_ux_{ks}.
+\label{eq-hess4}
 \end{equation}
+
+We combine the results in \eqref{eq-hess1}-\eqref{eq-hess4} into one big 
+equation. The resulting formula is pretty horrendous, but think of it as a recipe for calculation, not as a beautiful object in its own right. 
+
+\begin{align}
+\mathcal{D}_{ru}x_{ks}&=-\sum_{t\not= s}^n\left\{
+\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}d_ux_{kt}+\right.\notag\\
+&\frac{(d_ux_t)'C_{rs}x_s+x_t'C_{rs}d_ux_s+
+x_t'C_{rus}x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_{kt}+\notag\\
+&\left.-\frac{x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}x_{kt}\right\}+\notag\\
+&-\{(d_ux_s)'D_rBx_s+x_s'\mathcal{D}_{ru}Bx_s\}x_{ks}-\frac12(x_s'\mathcal{D}_rBx_s)d_ux_{ks}.\label{eq-horrible}
+\end{align}
+
 There are simplifications in the linear case, where the second derivatives
 of $A$ and $B$ are zero, and we can replace $\mathcal{D}_rA$ and $\mathcal{D}_rB$ 
-by $A_r$ and $B_r$. And there are more simplifications for SEV problems where $B$ does not depend on $\theta$ and $\mathcal{D}_rB=0$.
-
-In the linear case, using the abbreviation $C_{rs}:=A_r-\lambda_sB_r$ we have
+in \eqref{eq-horrible} by $A_r$ and $B_r$. Thus $C_{rs}=A_r-\lambda_sB_r$.
+Also $C_{rus}=0$ and $\mathcal{D}_{ru}B=0$. Thus equations
+\eqref{eq-secparlbd} and \eqref{eq-horrible} become
 \begin{equation}
 \mathcal{D}_{ru}\lambda_s=2(d_ux_s)'C_{rs}x_s-d_u\lambda_sx_s'B_rx_s,
 \end{equation}
@@ -422,7 +440,7 @@ x_t'C_{rs}d_ux_s-(d_u\lambda_s)x_t'B_rx_s}{\lambda_t-\lambda_s}x_{kt}\notag\\
 &\left.-\frac{x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}x_{kt}\right\}\notag\\
 &-((d_ux_s)'B_rx_s)x_{ks}-\frac12(x_s'B_rx_s)d_ux_{ks}.
 \end{align}
-
+There are more simplifications for SEV problems where $B$ does not depend on $theta$ and thus $\mathcal{D}B=0$.
 
 ## Partial Derivative Code {#sec-partialcode}
 
@@ -433,21 +451,11 @@ and $theta$ is a vector of length $p+q$. The last $q$ matrices in the list $a$ a
 partialGeigen() uses the formulas \eqref{eq-parper1} and \eqref{eq-parper2}, while partialCheck computes numerical derivatives using grad() and jacobian() from the numDeriv package (@gilbert_varadhan_19). For our example we use the same $A$ and $B$ as before, and we use elementwise perturbation. For the dominant eigenvalue partialGeigen() gives the
 derivatives with respect to the elements of $A$ and $B$ as
 
-```{r dopartialcheck1, echo = FALSE}
-pa <- partialGeigen(theta, a, b, 1)
-matrixPrint(makeMatrix(c(pa$dl[1:6], rep(0, 6)), a))
-matrixPrint(makeMatrix(c(rep(0,6), pa$dl[7:12]), b))
-```
-
-```{r dopartialcheck2, echo = FALSE}
-pb <- partialCheck(theta, a, b, 1)
-```
-
-We also used partialCheck() to compute numerical derivatives. The maximum absolute difference between the numerical and analytical partials of the eigenvalue is `r formatC(max(abs(pa$dl - pb$dl)), digits = 10, format = "f")`. 
+We also used partialCheck() to compute numerical derivatives. The maximum absolute difference between the numerical and analytical partials of the eigenvalue is 
 
 The partialGeigen() function also gives the partials of the dominant eigenvector. The partials of the three eigenvector elements with respect to the elements of $A$ are
 
-```{r dopartialcheck3a, echo = FALSE}
+```{r dopartialcheck3a, echo = FALSE, eval = FALSE}
 pa <- pa$dx
 pb <- pb$dx
 ra <- c(0, 0, 0)
@@ -459,7 +467,7 @@ for (i in 1:3) {
 
 and those with respect to $B$ are 
 
-```{r dopartialcheck3b, echo = FALSE}
+```{r dopartialcheck3b, echo = FALSE, eval = FALSE}
 rb <- c(0, 0, 0)
 for (i in 1:3) {
   matrixPrint(makeMatrix(c(rep(0,6), pb[i, 7:12]), b))
@@ -469,7 +477,7 @@ for (i in 1:3) {
 
 The maximum absolute differences between the numerical and analytical partials of the eigenvector are, for $A$ and $B$,
 
-```{r diffparevec, echo = FALSE}
+```{r diffparevec, echo = FALSE, eval = FALSE}
 cat(formatC(ra, digits = 15, format = "f"),"\n")
 cat(formatC(rb, digits = 15, format = "f"),"\n")
 ```
@@ -479,16 +487,10 @@ the lists with the $A_r$ and $B_r$. It gives the same results as partialGeigen()
 
 The function hessianGeigenEval() computes the second partials of the eigenvalues for linear perturbations. It has the same arguments as partialGeigen(). The function returns a list with the second partials of the eigenvalues. 
 
-```{r dohessian, echo = FALSE}
-hessa <- hessianGeigenEval(theta, a, b, 1)
-hessn <- hessianCheckEval(theta, a, b, 1)
-```
-
 hessianCheckEval() that computes numerical second partials. Even in our small example the Hessian is already of order 12, so we do not show the actual
 matrix. We do show that
 the maximum absolute difference between the numerical and analytical second partials 
 of the eigenvalue is 
-`r formatC(max(abs(hessa - hessn)), digits = 15, format = "f")`.
 
 \sectionbreak
 
@@ -619,7 +621,7 @@ From ... $\mathcal{D}_rB=0$. From ...
 $$
 \mathcal{D}_rB=\text{diag}(g_rg_r')-2\mu_r
 $$
-These can be used in @eq-parper2 and @eq-parper2.
+These can be used in \eqref{eq-parper2} and \eqref{eq-parper2}.
 
 $$
 \mathcal{D}_r\lambda_s=
