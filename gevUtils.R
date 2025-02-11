@@ -6,6 +6,8 @@ myGeigen <- function(a, b) {
   vec <- e$vectors
   d <- diag(crossprod(vec, b %*% vec))
   vec <- vec %*% diag(1 / sqrt(d))
+  sig <- sign(colSums((1:length(val)) * vec))
+  vec <- vec %*% diag(sig)
   return(list(val = val, vec = vec))
 }
 

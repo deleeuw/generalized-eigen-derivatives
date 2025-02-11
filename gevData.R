@@ -1,3 +1,5 @@
+source("gevUtils.R")
+
 da <- outer(ei(1, 4), ei(1, 4))
 db <- matrix(0, 4, 4)
 
@@ -32,9 +34,6 @@ b <- list(
 )
 
 theta <- c(1, 2, 3, 4, 5, 6, -1, -1, -1, 3, 3, 3)
-aa <- makeMatrix(theta, a)
-bb <- makeMatrix(theta, b)
-eab <- myGeigen(aa, bb)
 
 ar <- list(
   ar1 = matrix(c(0, 1, 0, 1, 0, 0, 0, 0, 0), 3, 3),
@@ -53,6 +52,17 @@ br <- list(
   br6 = matrix(c(0, 0, 0, 0, 0, 0, 0, 0, 1), 3, 3))
 
 tr <- c(1, 2, 3, 4, 5, 6)
-aar <- makeMatrix(tr, ar)
-bbr <- makeMatrix(tr, br)
-eabr <- myGeigen(aar, bbr)
+
+as <- list(
+  as1 = matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1), 3, 3),
+  as2 = matrix(c(0, -1, -1, -1, 0, -1, -1, -1, 0), 3, 3),
+  as3 = matrix(0, 3, 3),
+  as4 = matrix(0, 3, 3))
+
+bs <- list(
+  bs1 = matrix(0, 3, 3),
+  bs2 = matrix(0, 3, 3),
+  bs3 = matrix(c(2, -1, 0, -1, 2, 0, 0, 0, 0), 3, 3),
+  bs4 = matrix(c(0, 0, 0, 0, 2, -1, 0, -1 ,2), 3, 3))
+
+ts <- c(3, 1, 1, 1) 

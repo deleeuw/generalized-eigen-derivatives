@@ -1,156 +1,122 @@
-library(numDeriv)
 
-partialGeigen <- function(theta, a, b, s) {
-  q <- length(a)
-  n <- nrow(a[[1]])
+gradGeigenEval <- function(theta, a, b, ind) {
+  nthe <- length(theta)
+  nind <- length(ind)
   aa <- makeMatrix(theta, a)
   bb <- makeMatrix(theta, b)
   eig <- myGeigen(aa, bb)
   xmat <- eig$vec
   labd <- eig$val
-  xs <- xmat[, s]
-  ls <- labd[s]
-  dl <- rep(0, q)
-  dx <- matrix(0, n, q)
-  for (p in 1:q) {
-    dl[p] <- sum(xs * ((a[[p]] - ls * b[[p]]) %*% xs))
-    aa <- crossprod(xmat, (a[[p]] - ls * b[[p]]) %*% xs)
-    bb <- 1 / ((labd - ls) + ei(s, n)) - ei(s, n)
-    cc <- aa * bb
-    dd <- drop(crossprod(xs, b[[p]] %*% xs))
-    dx[, p] <- -xmat %*% cc - dd * xs / 2.0
-  }
-  return(list(dl = dl, dx = dx))
-}
-
-partialCheck <- function(theta, a, b, s) {
-  myFuncEval <- function(x, ain, bin, ss) {
-    q <- length(ain)
-    n <- nrow(ain[[1]])
-    aa <- makeMatrix(x, ain)
-    bb <- makeMatrix(x, bin)
-    eig <- myGeigen(aa, bb)
-    return(eig$val[ss])
-  }
-  myFuncEvec <- function(x, ain, bin, ss) {
-    q <- length(ain)
-    n <- nrow(ain[[1]])
-    aa <- matrix(0, n, n)
-    bb <- matrix(0, n, n)
-    aa <- makeMatrix(x, ain)
-    bb <- makeMatrix(x, bin)
-    eig <- myGeigen(aa, bb)
-    return(drop(eig$vec[, ss]))
-    
-  }
-  grad <- grad(
-    myFuncEval,
-    x = theta,
-    ain = a,
-    bin = b,
-    ss = s
-  )
-  jaco <- jacobian(
-    myFuncEvec,
-    x = theta,
-    ain = a,
-    bin = b,
-    ss = s
-  )
-  return(list(dl = grad, dx = jaco))
-}
-
-partialElementEval <- function(a, b, s) {
-  n <- nrow(a)
-  eig <- myGeigen(a, b)
-  xmat <- eig$vec
-  labd <- eig$val
-  xs <- xmat[, s]
-  ls <- labd[s]
-  dla <- 2 * outer(xs, xs)
-  diag(dla) <- diag(dla) / 2
-  dlb <- -2 * ls * outer(xs, xs)
-  diag(dlb) <- diag(dlb) / 2
-  for (t in 1:n) {
-    num <- outer(xs, xmat[, t])
-    num <- num + t(num)
-    den <- outer
-  }
-  return(list(dla = dla, dlb = dlb))
-}
-
-partialElementEvec <- function(a, b, k, s) {
-  n <- nrow(a)
-  eig <- myGeigen(a, b)
-  xmat <- eig$vec
-  labd <- eig$val
-  xs <- xmat[, s]
-  ls <- labd[s]
-  dxa <- matrix(0, n, n)
-  dxb <- matrix(0, n, n)
-  for (t in 1:n) {
-    if (t == s) {
-      next
+  dl <- matrix(0, nind, nthe)
+  for (s in 1:nind) {
+    si <- ind[s]
+    xs <- xmat[, si]
+    ls <- labd[si]
+    for (p in 1:nthe) {
+      dl[s, p] <- sum(xs * ((a[[p]] - ls * b[[p]]) %*% xs))
     }
-    num <- outer(xs, xmat[, t])
-    num <- num + t(num) 
-    diag(num) <- xs * xmat[, t]
-    num <- num / (labd[t] - ls)
-    dxa <- dxa - num * xmat[k, t]
-    dxb <- dxb + ls * num * xmat[k, t]
   }
-  cer <- outer(xs, xs) * xmat[k, s]
-  diag(cer) <- diag(cer) / 2
-  dxb <- dxb - cer
-  return(list(dxa = dxa, dxb = dxb))
+  return(dl)
 }
 
-hessianGeigenEval <- function(theta, a, b, s) {
-  q <- length(a)
-  n <- nrow(a[[1]])
+
+
+gradGeigenEvec <- function(theta, a, b, ind) {
+  nthe <- length(theta)
+  nind <- length(ind)
+  nobj <- nrow(a[[1]])
   aa <- makeMatrix(theta, a)
   bb <- makeMatrix(theta, b)
   eig <- myGeigen(aa, bb)
   xmat <- eig$vec
   labd <- eig$val
-  xs <- xmat[, s]
-  ls <- labd[s]
-  dl <- rep(0, q)
-  dx <- matrix(0, n, q)
-  for (p in 1:q) {
-    dl[p] <- sum(xs * ((a[[p]] - ls * b[[p]]) %*% xs))
-    aa <- crossprod(xmat, (a[[p]] - ls * b[[p]]) %*% xs)
-    bb <- 1 / ((labd - ls) + ei(s, n)) - ei(s, n)
-    cc <- aa * bb
-    dd <- drop(crossprod(xs, b[[p]] %*% xs))
-    dx[, p] <- -xmat %*% cc - dd * xs / 2.0
-  }
-  hess <- matrix(0, q, q)
-  for (p in 1:q) {
-    del <- (a[[p]] - ls * b[[p]]) %*% xs
-    dal <- sum(xs * (b[[p]] %*% xs))
-    for (r in 1:q) {
-      hess[p, r] <- 2 * sum(dx[, r] * del) - dl[r] * dal
+  dx <- array(0, c(nobj, nind, nthe))
+  for (s in 1:nind) {
+    si <- ind[s]
+    xs <- xmat[, si]
+    ls <- labd[si]
+    for (p in 1:nthe) {
+      aa <- crossprod(xmat, (a[[p]] - ls * b[[p]]) %*% xs)
+      bb <- 1 / ((labd - ls) + ei(si, nobj)) - ei(si, nobj)
+      cc <- aa * bb
+      dd <- drop(crossprod(xs, b[[p]] %*% xs))
+      dx[, s, p] <- -xmat %*% cc - dd * xs / 2.0
     }
   }
-  return(hess)
+  return(dx)
 }
 
-hessianCheckEval <- function(theta, a, b, s) {
-  myFuncEval <- function(x, ain, bin, ss) {
-    q <- length(ain)
-    n <- nrow(ain[[1]])
-    aa <- makeMatrix(x, ain)
-    bb <- makeMatrix(x, bin)
-    eig <- myGeigen(aa, bb)
-    return(eig$val[ss])
+
+hessianGeigenEval <- function(theta, a, b, ind) {
+  nthe <- length(theta)
+  nobj <- nrow(a[[1]])
+  nind <- length(ind)
+  aa <- makeMatrix(theta, a)
+  bb <- makeMatrix(theta, b)
+  eig <- myGeigen(aa, bb)
+  xmat <- eig$vec
+  labd <- eig$val
+  dl <- gradGeigenEval(theta, a, b, ind)
+  dx <- gradGeigenEvec(theta, a, b, ind)
+  ddl <- array(0, c(nthe, nthe, nind))
+  for (s in 1:nind) {
+    si <- ind[s]
+    xs <- xmat[, si]
+    ls <- labd[si]
+    for (p in 1:nthe) {
+      del <- (a[[p]] - ls * b[[p]]) %*% xs
+      dal <- sum(xs * (b[[p]] %*% xs))
+      for (r in 1:nthe) {
+        ddl[p, r, s] <- 2 * sum(dx[, s, r] * del) - dl[s, r] * dal
+      }
+    }
   }
-  hess <- hessian(
-    myFuncEval,
-    x = theta,
-    ain = a,
-    bin = b,
-    ss = s
-  )
-  return(hess)
+  return(ddl)
+}
+
+
+hessianGeigenEvec <- function(theta, a, b, ind) {
+  nthe <- length(theta)
+  nobj <- nrow(a[[1]])
+  nind <- length(ind)
+  aa <- makeMatrix(theta, a)
+  bb <- makeMatrix(theta, b)
+  eig <- myGeigen(aa, bb)
+  xmat <- eig$vec
+  labd <- eig$val
+  dl <- gradGeigenEval(theta, a, b, 1:nobj)
+  dx <- gradGeigenEvec(theta, a, b, 1:nobj)
+  ddx <- array(0, c(nthe, nthe, nobj, nind))
+  for (k in 1:nobj) {
+    for (s in 1:nind) {
+      si <- ind[s]
+      xs <- xmat[, si]
+      for (r in 1:nthe) {
+        carr <- a[[r]] - labd[si] * b[[r]]
+        for (u in 1:nthe) {
+          dxs <- dx[, si, u]
+          hess <- 0.0
+          for (t in 1:nobj) {
+            if (t == si) {
+              next
+            }
+            xt <- xmat[, t]
+            dxt <- dx[, t, u]
+            dil <- labd[t] - labd[si]
+            hess <- hess + dxt[k] * sum(xt * (carr %*% xs)) / dil
+            fac <- sum(dxt * (carr %*% xs)) + sum(dxs * (carr %*% xt))
+            fac <- fac - dl[si, u] * sum(xs * (b[[r]] %*% xt))
+            hess <- hess + (fac / dil) * xt[k]
+            fac <- xt[k] * sum(xs * (carr %*% xt))
+            fac <- fac * (dl[t, u] - dl[si, u])
+            hess <- hess - fac / (dil^2)
+          }
+          hess <- hess + sum(dxs * (b[[r]] %*% xs)) * xs[k]
+          hess <- hess + sum(xs * (b[[r]] %*% xs)) * dxs[k] / 2
+          ddx[u, r, k, s] <- -hess
+        }
+      }
+    }
+  }
+  return(ddx)
 }

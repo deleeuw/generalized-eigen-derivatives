@@ -705,9 +705,9 @@ $$
 A=\mathop{\sum\sum}_{1\leq i<j\leq n}\xi_{ij}E_{ij}+\sum_{i=1}^n\xi_{ii}E_i
 $$
 
-# Factor Analysis {#sec-fa}
+## Factor Analysis {#sec-fa}
 
-# Low rank Matrix Approximation {#sec-rank}
+## Low rank Matrix Approximation {#sec-rank}
 
 
 # Discussion {#sec-discussion}
