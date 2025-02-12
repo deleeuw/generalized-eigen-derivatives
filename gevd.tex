@@ -231,7 +231,7 @@
 \title{Differentiating Generalized Eigen and Singular Value
 Decompositions}
 \author{Jan de Leeuw}
-\date{February 11, 2025}
+\date{February 12, 2025}
 
 \begin{document}
 \maketitle
@@ -769,10 +769,12 @@ the numerical and analytical second partials of the eigenvalue is
 
 \section{Generalized SVD}\label{sec-GSV}
 
+\subsection{Perturbation}\label{perturbation}
+
 Suppose \(F\) is an \(n\times m\) matrix, \(G\) is a positive definite
 matrix of order \(n\), and \(H\) is a positive definite matrix of order
 \(m\). We suppose without loss of generality that \(n\geq m\). The
-generalized singular value problem for the triple \((F,G,H)\) is to find
+generalized singular value problem for the triple \((F,G,H)\) finds
 solutions to the system \begin{subequations}
 \begin{align}
 Fy&=\lambda Gx,\label{eq-svd1}\\
@@ -802,67 +804,81 @@ x\\y
 \end{equation}
 with normalization
 \begin{equation}
-x'Gx+y'Hy=1.
-\end{equation}\label{eq-gsevd2}
-\end{subequations} It is easy to see that \(x\) and \(y\) satisfy
-\eqref{eq-gsevd1} and \eqref{eq-gsevd2} if and only if they satisfy
-\eqref{eq-svd1} and \eqref{eq-svd2}.
+x'Gx+y'Hy=1.\label{eq-gsevd2}
+\end{equation}
+\end{subequations} It is easy to see that \(x, y\) and \(\lambda\)
+satisfy \eqref{eq-gsevd1} and \eqref{eq-gsevd2} if and only if they
+satisfy \eqref{eq-svd1}-\eqref{eq-svd3}.
 
 In GSV systems the normalization constraint \eqref{eq-svd3} is often
 replaced by the constraint \(x'Gx=y'Hy=1\). We now show that this does
 not change the solutions, except for multiplying the singular vectors
 with a scale factor \(\frac12\sqrt{2}\).
 
-The GSV system has \(r=\text{rank}(F)\) solutions with \(\lambda_s>0\).
-For each of these solutions \((\lambda_s,x_s,y_s)\) there is a mirror
-solution \((-\lambda_s,x_s,-y_s)\), and these \(2r\) solutions are also
-solutions of the GEV system. Because in GEV two solutions with different
-eigenvalues are orthogonal it follows that for a pair of mirror
+The GSV system has \(m\) solutions with \(\Lambda\geq 0\), \(Y'HY=I\),
+and \(X'GX=I\). Of these \(m\) solutions there are \(r=\text{rank}(F)\)
+solutions with \(\lambda_s>0\). For each of these \(m\) solutions
+\((\lambda_s,x_s,y_s)\) there is a mirror solution
+\((-\lambda_s,x_s,-y_s)\), and these \(2m\) solutions are also solutions
+of the GEV system. Because in GEV two solutions with different
+eigenvalues are \(B\)-orthogonal it follows that for a pair of mirror
 solutions with non-zero eigenvalue \(x_s'Gx_s-y_s'Hy_s=0\), and thus,
-using \eqref{eq-gsevd2}, \(x_s'Gx_s=y_s'Hy_s=\frac12\). In addition both
-systems have \(n+m-2r\) solutions with zero eigenvalues, with
-eigenvectors in the direct sum of the null spaces of \(F\) and \(F'\).
+using \eqref{eq-gsevd2}, \(x_s'Gx_s=y_s'Hy_s=\frac12\). In addition
+there are \(n-m\) solutions with \(\lambda_s=0\) and \(Y=0\). The
+\(n-m\) eigenvectors \(X_\perp\) satisfy \(F'X_\perp=0\) and
+\(\smash{X_\perp'GX_\perp=I}\). Note that if we replace \eqref{eq-svd3}
+by \(x'Gx=y'Hy=1\) then the \(n-m\) solutions of
+\eqref{eq-gsevd1}-\eqref{eq-gsevd2} with \(y_s=0\) are no longer
+solutions of \eqref{eq-svd1}-\eqref{eq-svd3}.
 
 In summary, the solutions of the GEV and GSV systems for the ordered
 eigenvalues are \begin{subequations}
 \begin{equation}
 \begin{bmatrix}
-\Lambda&0&0&-\Lambda
-\end{bmatrix},\label{eq-svdsol2}
+\Lambda&0&-\Lambda
+\end{bmatrix},\label{eq-svdsol1}
 \end{equation}
 and for the corresponding eigenvectors
 \begin{equation}
 \begin{bmatrix}
-X&X_\perp&0&\hfill X\\
-Y&0&Y_\perp&-Y
-\end{bmatrix},
-\end{equation}\label{eq-svdsol2}
-\end{subequations} with \(X_\perp\) a G-orthonomal basis for the
+X&X_\perp&\hfill X\\
+Y&0&-Y
+\end{bmatrix},\label{eq-svdsol2}
+\end{equation}
+\end{subequations} with \(X_\perp\) a G-orthonormal basis for the
 null-space of \(F'\) and \(Y_\perp\) an H-orthonormal basis for the
-null-space of \(F\). The four distinct parts of the solutions in
-\eqref{eq-svdsol1} amd \eqref{eq-svdsol2} are of orders \(r, n-r, m-r\),
-and \(r\). We are only really interested in the first \(r\) solutions,
-for which the singular values can be chosen to be positive.
+null-space of \(F\). The three distinct parts of the solutions in
+\eqref{eq-svdsol1} and \eqref{eq-svdsol2} are of orders \(m, n-m\), and
+\(m\). We are only really interested in the first \(r\) solutions, for
+which the singular values can be chosen to be positive.
 
 We now have enough information to apply our previous perturbation
-results to GSV systems, only considering perturbations of the form \[
+results to GSV systems, only considering perturbations of the form
+\begin{subequations}
+\begin{equation}
 \Delta_A=\begin{bmatrix}
 0&\Delta_F\\
 \Delta_F'&0
 \end{bmatrix},
-\] and \[
+\end{equation}
+and
+\begin{equation}
 \Delta_B=\begin{bmatrix}
 \Delta_G&0\\
 0&\Delta_H
 \end{bmatrix},
-\] so that the perturbed system is still a GSV system.
+\end{equation}
+\end{subequations} so that the perturbed system is still a GSV system.
 
-From \eqref{eq-def1}we have \[
-d\lambda_s=2x_s'\Delta_Fy_s-\lambda_s(x_s'\Delta_Gx_s+y_s'\Delta_Hy_s),
-\] Now suppose \(s\leq r\), so that \(\lambda_s\) is one of the first
-\(r\) positive singular values. From \eqref{eq-def2}we have \[
-dx_s=-\sum_{\substack{t=1\\t\not= s}}^n\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s
-\] Partial Derivatives
+From \eqref{eq-def1}we have \begin{equation}
+d\lambda_s=2x_s'\Delta_Fy_s-\lambda_s(x_s'\Delta_Gx_s+y_s'\Delta_Hy_s),\label{eq-svdlbd}
+\end{equation} Now suppose \(s\leq r\), so that \(\lambda_s\) is one of
+the first \(r\) positive singular values. From \eqref{eq-def2}we have
+\begin{equation}
+dx_s=-\sum_{\substack{t=1\\t\not= s}}^n\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s.\label{eq-svdvec}
+\end{equation}
+
+\subsection{Partial Derivatives}\label{partial-derivatives}
 
 \section{Applications}\label{sec-applications}
 

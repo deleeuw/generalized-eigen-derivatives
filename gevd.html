@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jan de Leeuw">
-<meta name="dcterms.date" content="2025-02-11">
+<meta name="dcterms.date" content="2025-02-12">
 
 <title>Differentiating Generalized Eigen and Singular Value Decompositions</title>
 <style>
@@ -125,7 +125,11 @@ window.Quarto = {
   <li><a href="#sec-second" id="toc-sec-second" class="nav-link" data-scroll-target="#sec-second"><span class="header-section-number">3.3</span> Second Order Partials</a></li>
   <li><a href="#sec-partialcode" id="toc-sec-partialcode" class="nav-link" data-scroll-target="#sec-partialcode"><span class="header-section-number">3.4</span> Partial Derivative Code</a></li>
   </ul></li>
-  <li><a href="#sec-GSV" id="toc-sec-GSV" class="nav-link" data-scroll-target="#sec-GSV"><span class="header-section-number">4</span> Generalized SVD</a></li>
+  <li><a href="#sec-GSV" id="toc-sec-GSV" class="nav-link" data-scroll-target="#sec-GSV"><span class="header-section-number">4</span> Generalized SVD</a>
+  <ul class="collapse">
+  <li><a href="#perturbation" id="toc-perturbation" class="nav-link" data-scroll-target="#perturbation"><span class="header-section-number">4.1</span> Perturbation</a></li>
+  <li><a href="#partial-derivatives" id="toc-partial-derivatives" class="nav-link" data-scroll-target="#partial-derivatives"><span class="header-section-number">4.2</span> Partial Derivatives</a></li>
+  </ul></li>
   <li><a href="#sec-applications" id="toc-sec-applications" class="nav-link" data-scroll-target="#sec-applications"><span class="header-section-number">5</span> Applications</a>
   <ul class="collapse">
   <li><a href="#sec-pca" id="toc-sec-pca" class="nav-link" data-scroll-target="#sec-pca"><span class="header-section-number">5.1</span> Principal Component Analysis</a></li>
@@ -171,7 +175,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 11, 2025</p>
+      <p class="date">February 12, 2025</p>
     </div>
   </div>
   
@@ -370,6 +374,7 @@ x_t'C_{rus}x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s.
 &amp;+\frac{(d_ux_t)'C_{rs}x_s+x_t'C_{rs}(d_ux_s)+
 x_t'C_{rus}x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_{kt}+\notag\\
 &amp;\left.-\frac{x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}x_{kt}\right\}+\notag\\
+&amp;-\{(d_ux_s)'D_rBx_s+x_s'\mathcal{D}_{ru}Bx_s\}x_{ks}-\frac12(x_s'\mathcal{D}_rBx_s)d_ux_{ks}.
 \label{eq-horrible}
 \end{align}\]</span></p>
 <p>There are simplifications in the linear case, where the second derivatives of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are zero, and we can replace <span class="math inline">\(\mathcal{D}_rA\)</span> and <span class="math inline">\(\mathcal{D}_rB\)</span> in <span class="math inline">\(\eqref{eq-horrible}\)</span> by <span class="math inline">\(A_r\)</span> and <span class="math inline">\(B_r\)</span>. Thus <span class="math inline">\(C_{rs}=A_r-\lambda_sB_r\)</span>. Also <span class="math inline">\(C_{rus}=0\)</span> and <span class="math inline">\(\mathcal{D}_{ru}B=0\)</span>. Thus equations <span class="math inline">\(\eqref{eq-secparlbd}\)</span> and <span class="math inline">\(\eqref{eq-horrible}\)</span> become <span class="math display">\[\begin{equation}
@@ -397,27 +402,23 @@ x_t'C_{rs}d_ux_s-(d_u\lambda_s)x_t'B_rx_s}{\lambda_t-\lambda_s}x_{kt}\notag\\
 </section>
 <section id="sec-GSV" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Generalized SVD</h1>
-<p>Suppose <span class="math inline">\(F\)</span> is an <span class="math inline">\(n\times m\)</span> matrix, <span class="math inline">\(G\)</span> is a positive definite matrix of order <span class="math inline">\(n\)</span>, and <span class="math inline">\(H\)</span> is a positive definite matrix of order <span class="math inline">\(m\)</span>. We suppose without loss of generality that <span class="math inline">\(n\geq m\)</span>. The generalized singular value problem for the triple <span class="math inline">\((F,G,H)\)</span> is to find solutions to the system We refer to this as a GSV system, short for generalized singular value system.</p>
-<p>Now consider the GEV system It is easy to see that <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> satisfy <span class="math inline">\(\eqref{eq-gsevd1}\)</span> and <span class="math inline">\(\eqref{eq-gsevd2}\)</span> if and only if they satisfy <span class="math inline">\(\eqref{eq-svd1}\)</span> and <span class="math inline">\(\eqref{eq-svd2}\)</span>.</p>
+<section id="perturbation" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="perturbation"><span class="header-section-number">4.1</span> Perturbation</h2>
+<p>Suppose <span class="math inline">\(F\)</span> is an <span class="math inline">\(n\times m\)</span> matrix, <span class="math inline">\(G\)</span> is a positive definite matrix of order <span class="math inline">\(n\)</span>, and <span class="math inline">\(H\)</span> is a positive definite matrix of order <span class="math inline">\(m\)</span>. We suppose without loss of generality that <span class="math inline">\(n\geq m\)</span>. The generalized singular value problem for the triple <span class="math inline">\((F,G,H)\)</span> finds solutions to the system We refer to this as a GSV system, short for generalized singular value system.</p>
+<p>Now consider the GEV system It is easy to see that <span class="math inline">\(x, y\)</span> and <span class="math inline">\(\lambda\)</span> satisfy <span class="math inline">\(\eqref{eq-gsevd1}\)</span> and <span class="math inline">\(\eqref{eq-gsevd2}\)</span> if and only if they satisfy <span class="math inline">\(\eqref{eq-svd1}\)</span>-<span class="math inline">\(\eqref{eq-svd3}\)</span>.</p>
 <p>In GSV systems the normalization constraint <span class="math inline">\(\eqref{eq-svd3}\)</span> is often replaced by the constraint <span class="math inline">\(x'Gx=y'Hy=1\)</span>. We now show that this does not change the solutions, except for multiplying the singular vectors with a scale factor <span class="math inline">\(\frac12\sqrt{2}\)</span>.</p>
-<p>The GSV system has <span class="math inline">\(r=\text{rank}(F)\)</span> solutions with <span class="math inline">\(\lambda_s&gt;0\)</span>. For each of these solutions <span class="math inline">\((\lambda_s,x_s,y_s)\)</span> there is a mirror solution <span class="math inline">\((-\lambda_s,x_s,-y_s)\)</span>, and these <span class="math inline">\(2r\)</span> solutions are also solutions of the GEV system. Because in GEV two solutions with different eigenvalues are orthogonal it follows that for a pair of mirror solutions with non-zero eigenvalue <span class="math inline">\(x_s'Gx_s-y_s'Hy_s=0\)</span>, and thus, using <span class="math inline">\(\eqref{eq-gsevd2}\)</span>, <span class="math inline">\(x_s'Gx_s=y_s'Hy_s=\frac12\)</span>. In addition both systems have <span class="math inline">\(n+m-2r\)</span> solutions with zero eigenvalues, with eigenvectors in the direct sum of the null spaces of <span class="math inline">\(F\)</span> and <span class="math inline">\(F'\)</span>.</p>
-<p>In summary, the solutions of the GEV and GSV systems for the ordered eigenvalues are with <span class="math inline">\(X_\perp\)</span> a G-orthonomal basis for the null-space of <span class="math inline">\(F'\)</span> and <span class="math inline">\(Y_\perp\)</span> an H-orthonormal basis for the null-space of <span class="math inline">\(F\)</span>. The four distinct parts of the solutions in <span class="math inline">\(\eqref{eq-svdsol1}\)</span> amd <span class="math inline">\(\eqref{eq-svdsol2}\)</span> are of orders <span class="math inline">\(r, n-r, m-r\)</span>, and <span class="math inline">\(r\)</span>. We are only really interested in the first <span class="math inline">\(r\)</span> solutions, for which the singular values can be chosen to be positive.</p>
-<p>We now have enough information to apply our previous perturbation results to GSV systems, only considering perturbations of the form <span class="math display">\[
-\Delta_A=\begin{bmatrix}
-0&amp;\Delta_F\\
-\Delta_F'&amp;0
-\end{bmatrix},
-\]</span> and <span class="math display">\[
-\Delta_B=\begin{bmatrix}
-\Delta_G&amp;0\\
-0&amp;\Delta_H
-\end{bmatrix},
-\]</span> so that the perturbed system is still a GSV system.</p>
-<p>From <span class="math inline">\(\eqref{eq-def1}\)</span>we have <span class="math display">\[
-d\lambda_s=2x_s'\Delta_Fy_s-\lambda_s(x_s'\Delta_Gx_s+y_s'\Delta_Hy_s),
-\]</span> Now suppose <span class="math inline">\(s\leq r\)</span>, so that <span class="math inline">\(\lambda_s\)</span> is one of the first <span class="math inline">\(r\)</span> positive singular values. From <span class="math inline">\(\eqref{eq-def2}\)</span>we have <span class="math display">\[
-dx_s=-\sum_{\substack{t=1\\t\not= s}}^n\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s
-\]</span> Partial Derivatives</p>
+<p>The GSV system has <span class="math inline">\(m\)</span> solutions with <span class="math inline">\(\Lambda\geq 0\)</span>, <span class="math inline">\(Y'HY=I\)</span>, and <span class="math inline">\(X'GX=I\)</span>. Of these <span class="math inline">\(m\)</span> solutions there are <span class="math inline">\(r=\text{rank}(F)\)</span> solutions with <span class="math inline">\(\lambda_s&gt;0\)</span>. For each of these <span class="math inline">\(m\)</span> solutions <span class="math inline">\((\lambda_s,x_s,y_s)\)</span> there is a mirror solution <span class="math inline">\((-\lambda_s,x_s,-y_s)\)</span>, and these <span class="math inline">\(2m\)</span> solutions are also solutions of the GEV system. Because in GEV two solutions with different eigenvalues are <span class="math inline">\(B\)</span>-orthogonal it follows that for a pair of mirror solutions with non-zero eigenvalue <span class="math inline">\(x_s'Gx_s-y_s'Hy_s=0\)</span>, and thus, using <span class="math inline">\(\eqref{eq-gsevd2}\)</span>, <span class="math inline">\(x_s'Gx_s=y_s'Hy_s=\frac12\)</span>. In addition there are <span class="math inline">\(n-m\)</span> solutions with <span class="math inline">\(\lambda_s=0\)</span> and <span class="math inline">\(Y=0\)</span>. The <span class="math inline">\(n-m\)</span> eigenvectors <span class="math inline">\(X_\perp\)</span> satisfying <span class="math inline">\(F'X_\perp=0\)</span> and <span class="math inline">\(\smash{X_\perp'GX_\perp=I\)</span>.</p>
+<p>In summary, the solutions of the GEV and GSV systems for the ordered eigenvalues are with <span class="math inline">\(X_\perp\)</span> a G-orthonormal basis for the null-space of <span class="math inline">\(F'\)</span> and <span class="math inline">\(Y_\perp\)</span> an H-orthonormal basis for the null-space of <span class="math inline">\(F\)</span>. The three distinct parts of the solutions in <span class="math inline">\(\eqref{eq-svdsol1}\)</span> and <span class="math inline">\(\eqref{eq-svdsol2}\)</span> are of orders <span class="math inline">\(m, n-m\)</span>, and <span class="math inline">\(m\)</span>. We are only really interested in the first <span class="math inline">\(r\)</span> solutions, for which the singular values can be chosen to be positive.</p>
+<p>We now have enough information to apply our previous perturbation results to GSV systems, only considering perturbations of the form so that the perturbed system is still a GSV system.</p>
+<p>From <span class="math inline">\(\eqref{eq-def1}\)</span>we have <span class="math display">\[\begin{equation}
+d\lambda_s=2x_s'\Delta_Fy_s-\lambda_s(x_s'\Delta_Gx_s+y_s'\Delta_Hy_s),\label{eq-svdlbd}
+\end{equation}\]</span> Now suppose <span class="math inline">\(s\leq r\)</span>, so that <span class="math inline">\(\lambda_s\)</span> is one of the first <span class="math inline">\(r\)</span> positive singular values. From <span class="math inline">\(\eqref{eq-def2}\)</span>we have <span class="math display">\[\begin{equation}
+dx_s=-\sum_{\substack{t=1\\t\not= s}}^n\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s.\label{eq-svdvec}
+\end{equation}\]</span></p>
+</section>
+<section id="partial-derivatives" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="partial-derivatives"><span class="header-section-number">4.2</span> Partial Derivatives</h2>
+</section>
 </section>
 <section id="sec-applications" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Applications</h1>
