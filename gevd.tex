@@ -667,20 +667,20 @@ Hessian will be a symmetric matrix of order \(q\). From
 
 We start by working on the first term on the right of
 \eqref{eq-parper3}. Differentiating with respect to \(\theta_u\) gives
-\begin{multline}
+\begin{equation}
 \mathcal{D}_{u}\left\{\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}x_{kt}\right\}=\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}d_ux_{kt}+
-\\\mathcal{D}_{u}\left\{\frac{x_t'C_{rs})x_s}{\lambda_t-\lambda_s}\right\}x_{kt}.\label{eq-hess1}
-\end{multline} The derivative in the second term on the right of
-\eqref{eq-hess1} evaluates to \begin{multline}
-\mathcal{D}_{u}\left\{\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}\right\}=\\
-\frac{(\lambda_t-\lambda_s)\mathcal{D}_u\{x_t'C_{rs}x_s\}-x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}.\label{eq-hess2}
-\end{multline} The derivative in the first term of the numerator on the
-right of \eqref{eq-hess2} is \begin{multline}
+\mathcal{D}_{u}\left\{\frac{x_t'C_{rs})x_s}{\lambda_t-\lambda_s}\right\}x_{kt}.\label{eq-hess1}
+\end{equation} The derivative in the second term on the right of
+\eqref{eq-hess1} evaluates to \begin{equation}
+\mathcal{D}_{u}\left\{\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}\right\}=
+\frac{(\lambda_t-\lambda_s)\mathcal{D}_u\{x_t'C_{rs}x_s\}-x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}.\label{eq-hess2}
+\end{equation} The derivative in the first term of the numerator on the
+right of \eqref{eq-hess2} is \begin{equation}
 \mathcal{D}_u\{x_t'C_{rs}x_s\}=
-(d_ux_t)'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s+\\
+(d_ux_t)'C_{rs}x_s+
 x_t'C_{rs}d_ux_s+
 x_t'C_{rus}x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s.
-\label{eq-hess3}\end{multline} And finally, differentiating the last
+\label{eq-hess3}\end{equation} And finally, differentiating the last
 term in \eqref{eq-parper3}, \begin{equation}
 \mathcal{D}_u\{(x_s'\mathcal{D}_rBx_s)x_{ks}\}=\{2(d_ux_s)'\mathcal{D}_rBx_s+x_s'\mathcal{D}_{ru}Bx_s\}x_{ks}+(x_s'\mathcal{D}_rBx_s)d_ux_{ks}.
 \label{eq-hess4}
@@ -691,12 +691,13 @@ equation. The resulting formula is pretty horrendous, but think of it as
 a recipe for calculation, not as a beautiful object in its own right.
 
 \begin{align}
-\mathcal{D}_{ru}x_{ks}&=-\sum_{t\not= s}^n\left\{
+\mathcal{D}_{ru}x_{ks}=&-\sum_{t\not= s}^n\left\{
 \frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}d_ux_{kt}+\right.\notag\\
-&\frac{(d_ux_t)'C_{rs}x_s+x_t'C_{rs}d_ux_s+
+&+\frac{(d_ux_t)'C_{rs}x_s+x_t'C_{rs}(d_ux_s)+
 x_t'C_{rus}x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_{kt}+\notag\\
 &\left.-\frac{x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}x_{kt}\right\}+\notag\\
-&-\{(d_ux_s)'D_rBx_s+x_s'\mathcal{D}_{ru}Bx_s\}x_{ks}-\frac12(x_s'\mathcal{D}_rBx_s)d_ux_{ks}.\label{eq-horrible}
+&-\{(d_ux_s)'D_rBx_s+x_s'\mathcal{D}_{ru}Bx_s\}x_{ks}-\frac12(x_s'\mathcal{D}_rBx_s)d_ux_{ks}.
+\label{eq-horrible}
 \end{align}
 
 There are simplifications in the linear case, where the second
@@ -713,7 +714,7 @@ x_t'C_{rs}d_ux_s-(d_u\lambda_s)x_t'B_rx_s}{\lambda_t-\lambda_s}x_{kt}\notag\\
 &\left.-\frac{x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}x_{kt}\right\}\notag\\
 &-((d_ux_s)'B_rx_s)x_{ks}-\frac12(x_s'B_rx_s)d_ux_{ks}.
 \end{align} There are more simplifications for SEV problems where \(B\)
-does not depend on \(theta\) and thus \(\mathcal{D}B=0\).
+does not depend on \(\theta\) and thus \(\mathcal{D}B=0\).
 
 \subsection{Partial Derivative Code}\label{sec-partialcode}
 

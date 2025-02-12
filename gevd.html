@@ -338,42 +338,41 @@ $dx
 <section id="sec-second" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="sec-second"><span class="header-section-number">3.3</span> Second Order Partials</h2>
 <p>For various purposes in data analysis, such as Newton’s method or asymptotic bias correction, we need the second derivatives of the eigenvalues and eigenvectors.</p>
-<p>We start by differentiating equation <span class="math inline">\(\eqref{eq-parper1}\)</span> with respect to <span class="math inline">\(\theta_u\)</span>. This gives</p>
+<p>We start by differentiating equation <span class="math inline">\(\eqref{eq-parper1}\)</span> with respect to <span class="math inline">\(\theta_u\)</span>. Define the abbreviations <span class="math inline">\(C_{rs}:=\mathcal{D}_rA-\lambda_s\mathcal{D}_rB\)</span> and <span class="math inline">\(C_{rus}:=\mathcal{D}_{ru}A-\lambda_s\mathcal{D}_{ru}B\)</span>. This gives</p>
 <p><span class="math display">\[\begin{equation}
-\mathcal{D}_u\mathcal{D}_r\lambda_s=2(d_ux_s)'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s+
-x_s'(\mathcal{D}_{ru}A-\lambda_s\mathcal{D}_{ru}B)x_s-d_u\lambda_sx_s'\mathcal{D}_rBx_s,
+\mathcal{D}_{ur}\lambda_s=2(d_ux_s)'C_{rs}x_s+
+x_s'C_{rus}x_s-(d_u\lambda_s)x_s'\mathcal{D}_rBx_s,
 \label{eq-secparlbd}
 \end{equation}\]</span></p>
-<p>We could expand this further by substituting <span class="math inline">\(d_t\lambda_s\)</span> from <span class="math inline">\(d_tx_s\)</span> from <span class="math inline">\(\eqref{eq-parper1}\)</span> and <span class="math inline">\(\eqref{eq-parper2}\)</span>. But in computation we will use <span class="math inline">\(\eqref{eq-secparlbd}\)</span> as is, even though <span class="math inline">\(\eqref{eq-secparlbd}\)</span> does not show immediately that for each <span class="math inline">\(s\)</span> the Hessian <span class="math inline">\(\mathcal{D}_{ru}\lambda_s\)</span> is a symmetric matrix of order <span class="math inline">\(q\)</span>. Note that in the linear case <span class="math inline">\(\mathcal{D}_{ru}A=\mathcal{D}_{ru}B=0\)</span>, so the middle term on the right disappears.</p>
+<p>We could expand this further by substituting <span class="math inline">\(d_u\lambda_s\)</span> and <span class="math inline">\(d_ux_s\)</span> from <span class="math inline">\(\eqref{eq-parper1}\)</span> and <span class="math inline">\(\eqref{eq-parper2}\)</span>. But in computation we will use <span class="math inline">\(\eqref{eq-secparlbd}\)</span> as is, even though <span class="math inline">\(\eqref{eq-secparlbd}\)</span> does not show immediately that for each <span class="math inline">\(s\)</span> the Hessian <span class="math inline">\(\mathcal{D}_{ru}\lambda_s\)</span> is a symmetric matrix of order <span class="math inline">\(q\)</span>. Note that in the linear case <span class="math inline">\(\mathcal{D}_{ru}A=\mathcal{D}_{ru}B=0\)</span>, so the middle term on the right disappears.</p>
 <p>The logical next step is to differentiate <span class="math inline">\(\eqref{eq-parper2}\)</span> with respect to <span class="math inline">\(\theta_u\)</span>. We compute the second partials for one single element <span class="math inline">\(x_{ks}\)</span> of <span class="math inline">\(X\)</span> at a time. For each element <span class="math inline">\(x_{ks}\)</span> the Hessian will be a symmetric matrix of order <span class="math inline">\(q\)</span>. From <span class="math inline">\(\eqref{eq-parper2}\)</span> <span class="math display">\[\begin{equation}
-\mathcal{D}_rx_{ks}=-\sum_{t\not= s}\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_{kt}-\frac12(x_s'\mathcal{D}_rBx_s)x_{ks}.\label{eq-parper3}
+\mathcal{D}_rx_{ks}=-\sum_{t\not= s}\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}x_{kt}-\frac12(x_s'\mathcal{D}_rBx_s)x_{ks}.\label{eq-parper3}
 \end{equation}\]</span></p>
-<p>We start by working on the first term on the right of <span class="math inline">\(\eqref{eq-parper3}\)</span>. Differentiating with respect to <span class="math inline">\(\theta_u\)</span> gives <span class="math display">\[\begin{multline}
-\mathcal{D}_{u}\left\{\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_{kt}\right\}=\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}d_ux_{kt}+
-\\\mathcal{D}_{u}\left\{\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}\right\}x_{kt}.\label{eq-hess1}
-\end{multline}\]</span> The derivative in the second term on the right of <span class="math inline">\(\eqref{eq-hess1}\)</span> evaluates to <span class="math display">\[\begin{multline}
-\mathcal{D}_{u}\left\{\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}\right\}=\\
-\frac{(\lambda_t-\lambda_s)\mathcal{D}_u\{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s\}-x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}.\label{eq-hess2}
-\end{multline}\]</span> The derivative in the first term of the numerator on the right of <span class="math inline">\(\eqref{eq-hess2}\)</span> is <span class="math display">\[\begin{multline}
-\mathcal{D}_u\{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s\}=
-(d_ux_t)'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s+\\
-x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)d_ux_s+
-x_t'(\mathcal{D}_{ru}A-\lambda_s\mathcal{D}_{ru}B)x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s.
-\label{eq-hess3}\end{multline}\]</span> And finally, differentiating the last term in <span class="math inline">\(\eqref{eq-parper3}\)</span>, <span class="math display">\[\begin{equation}
-\mathcal{D}_u\{(x_s'D_rBx_s)x_{ks}\}=\{2(d_ux_s)'D_rBx_s+x_s'D_{ru}Bx_s\}x_{ks}+(x_s'D_rBx_s)d_ux_{ks}.
+<p>We start by working on the first term on the right of <span class="math inline">\(\eqref{eq-parper3}\)</span>. Differentiating with respect to <span class="math inline">\(\theta_u\)</span> gives <span class="math display">\[\begin{equation}
+\mathcal{D}_{u}\left\{\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}x_{kt}\right\}=\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}d_ux_{kt}+
+\mathcal{D}_{u}\left\{\frac{x_t'C_{rs})x_s}{\lambda_t-\lambda_s}\right\}x_{kt}.\label{eq-hess1}
+\end{equation}\]</span> The derivative in the second term on the right of <span class="math inline">\(\eqref{eq-hess1}\)</span> evaluates to <span class="math display">\[\begin{equation}
+\mathcal{D}_{u}\left\{\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}\right\}=
+\frac{(\lambda_t-\lambda_s)\mathcal{D}_u\{x_t'C_{rs}x_s\}-x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}.\label{eq-hess2}
+\end{equation}\]</span> The derivative in the first term of the numerator on the right of <span class="math inline">\(\eqref{eq-hess2}\)</span> is <span class="math display">\[\begin{equation}
+\mathcal{D}_u\{x_t'C_{rs}x_s\}=
+(d_ux_t)'C_{rs}x_s+
+x_t'C_{rs}d_ux_s+
+x_t'C_{rus}x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s.
+\label{eq-hess3}\end{equation}\]</span> And finally, differentiating the last term in <span class="math inline">\(\eqref{eq-parper3}\)</span>, <span class="math display">\[\begin{equation}
+\mathcal{D}_u\{(x_s'\mathcal{D}_rBx_s)x_{ks}\}=\{2(d_ux_s)'\mathcal{D}_rBx_s+x_s'\mathcal{D}_{ru}Bx_s\}x_{ks}+(x_s'\mathcal{D}_rBx_s)d_ux_{ks}.
 \label{eq-hess4}
 \end{equation}\]</span></p>
-<p>We combine the results in <span class="math inline">\(\eqref{eq-hess1}\)</span>-<span class="math inline">\(\eqref{eq-hess4}\)</span> into one big equation. The resulting formula is pretty horrendous, but think of it as a recipe for calculation, not as a beautiful object in its own right. Define the shorthand <span class="math inline">\(C_{rs}:=\mathcal{D}_rA-\lambda_s\mathcal{D}_rB\)</span> and <span class="math inline">\(C_{rus}:=\mathcal{D}_{ru}A-\lambda_s\mathcal{D}_{ru}B\)</span> and</p>
+<p>We combine the results in <span class="math inline">\(\eqref{eq-hess1}\)</span>-<span class="math inline">\(\eqref{eq-hess4}\)</span> into one big equation. The resulting formula is pretty horrendous, but think of it as a recipe for calculation, not as a beautiful object in its own right.</p>
 <p><span class="math display">\[\begin{align}
-\mathcal{D}_{ru}x_{ks}&amp;=-\sum_{t\not= s}^n\left\{\right.
-\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}d_ux_{kt}+\\
-&amp;\frac{(d_ux_t)'C_{rs}x_s+\\
-x_t'C_{rs}d_ux_s+
-x_t'C_{ru}x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}-\\
-&amp;\frac{x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}
+\mathcal{D}_{ru}x_{ks}=&amp;-\sum_{t\not= s}^n\left\{
+\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}d_ux_{kt}+\right.\notag\\
+&amp;+\frac{(d_ux_t)'C_{rs}x_s+x_t'C_{rs}(d_ux_s)+
+x_t'C_{rus}x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_{kt}+\notag\\
+&amp;\left.-\frac{x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}x_{kt}\right\}+\notag\\
+\label{eq-horrible}
 \end{align}\]</span></p>
-<p>There are simplifications in the linear case, where the second derivatives of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are zero, and we can replace <span class="math inline">\(\mathcal{D}_rA\)</span> and <span class="math inline">\(\mathcal{D}_rB\)</span> by <span class="math inline">\(A_r\)</span> and <span class="math inline">\(B_r\)</span>. And there are more simplifications for SEV problems where <span class="math inline">\(B\)</span> does not depend on <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\mathcal{D}_rB=0\)</span>.</p>
-<p>In the linear case, using the abbreviation <span class="math inline">\(C_{rs}:=A_r-\lambda_sB_r\)</span> we have <span class="math display">\[\begin{equation}
+<p>There are simplifications in the linear case, where the second derivatives of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are zero, and we can replace <span class="math inline">\(\mathcal{D}_rA\)</span> and <span class="math inline">\(\mathcal{D}_rB\)</span> in <span class="math inline">\(\eqref{eq-horrible}\)</span> by <span class="math inline">\(A_r\)</span> and <span class="math inline">\(B_r\)</span>. Thus <span class="math inline">\(C_{rs}=A_r-\lambda_sB_r\)</span>. Also <span class="math inline">\(C_{rus}=0\)</span> and <span class="math inline">\(\mathcal{D}_{ru}B=0\)</span>. Thus equations <span class="math inline">\(\eqref{eq-secparlbd}\)</span> and <span class="math inline">\(\eqref{eq-horrible}\)</span> become <span class="math display">\[\begin{equation}
 \mathcal{D}_{ru}\lambda_s=2(d_ux_s)'C_{rs}x_s-d_u\lambda_sx_s'B_rx_s,
 \end{equation}\]</span> and <span class="math display">\[\begin{align}
 \mathcal{D}_{ru}x_{ks}&amp;=-\sum_{t\not= s}\left\{\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}d_ux_{kt}\right.\notag\\
@@ -381,7 +380,7 @@ x_t'C_{ru}x_s-(d_u\lambda_s)x_t'(\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}-\\
 x_t'C_{rs}d_ux_s-(d_u\lambda_s)x_t'B_rx_s}{\lambda_t-\lambda_s}x_{kt}\notag\\
 &amp;\left.-\frac{x_t'C_{rs}x_s(d_u\lambda_t-d_u\lambda_s)}{(\lambda_t-\lambda_s)^2}x_{kt}\right\}\notag\\
 &amp;-((d_ux_s)'B_rx_s)x_{ks}-\frac12(x_s'B_rx_s)d_ux_{ks}.
-\end{align}\]</span></p>
+\end{align}\]</span> There are more simplifications for SEV problems where <span class="math inline">\(B\)</span> does not depend on <span class="math inline">\(\theta\)</span> and thus <span class="math inline">\(\mathcal{D}B=0\)</span>.</p>
 </section>
 <section id="sec-partialcode" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="sec-partialcode"><span class="header-section-number">3.4</span> Partial Derivative Code</h2>
@@ -438,7 +437,7 @@ B=\text{diag}(G'(P-pp')G)
 \]</span> with <span class="math inline">\(\mu:=Gp\)</span>.</p>
 <p>From … <span class="math inline">\(\mathcal{D}_rB=0\)</span>. From … <span class="math display">\[
 \mathcal{D}_rB=\text{diag}(g_rg_r')-2\mu_r
-\]</span> These can be used in <strong>?@eq-parper2</strong> and <strong>?@eq-parper2</strong>.</p>
+\]</span> These can be used in <span class="math inline">\(\eqref{eq-parper2}\)</span> and <span class="math inline">\(\eqref{eq-parper2}\)</span>.</p>
 <p><span class="math display">\[
 \mathcal{D}_r\lambda_s=
 x_s'\{g_rg_r'-(\mu e_r'+e_r\mu')-\lambda_s\{\text{diag}(g_rg_r')-2\mu_r\}x_s
