@@ -231,7 +231,7 @@
 \title{Differentiating Generalized Eigen and Singular Value
 Decompositions}
 \author{Jan de Leeuw}
-\date{February 12, 2025}
+\date{February 15, 2025}
 
 \begin{document}
 \maketitle
@@ -271,20 +271,26 @@ of equations \begin{subequations}
 Ax&=\lambda Bx,\label{eq-evd1}\\
 x'Bx&=1.\label{eq-evd2}
 \end{align}
-\end{subequations} We call this a GEV system, short for generalized
-eigenvalue system.
+\end{subequations} We call this a GEV system, short for Generalized
+EigenValue system.
 
 The properties of the solutions of the system
 \eqref{eq-evd1},\eqref{eq-evd2} can be found in any textbook on matrix
-algebra, for example in my personal favorite Wilkinson
-(\citeproc{ref-wilkinson_65}{1965}). We briefly summarise them here.
+algebra, for example in Wilkinson (\citeproc{ref-wilkinson_65}{1965}).
+We briefly summarise them here.
 
 Solving equation \eqref{eq-evd1} is equivalent to solving the
-determinantal equation \(\text{det}(A-\lambda B)=0\). The polynomial
-\(\text{det}(A-\lambda B)\) is of degree \(n\), and consequently has
-\(n\) roots. Because \(A\) is symmetric and \(B\) is positive definite
-all \(n\) roots are real. Note that \(A\) can be indefinite and/or
-singular, which means that some roots can be negative or zero.
+determinantal equation \(\text{det}(A-\lambda B)=0\) for \(\lambda\). If
+\(\lambda\) is a solution then \(A-\lambda B\) is singular and has a
+non-trivial null-space. Any vector \(x\) in that null space satisfies
+\eqref{eq-evd1}.
+
+The determinant \(\text{det}(A-\lambda B)\) is a polynomial in
+\(\lambda\) of degree \(n\), and consequently, by the Fundamental
+Theorem of Algebra, has \(n\) roots. Because \(A\) is symmetric and
+\(B\) is positive definite all \(n\) roots are real. Note that \(A\) can
+be indefinite and/or singular, which means that some roots can be
+negative or zero.
 
 If \(\lambda_s\not=\lambda_t\) are two solutions of the determinantal
 equation then the corresponding eigenvectors, which are defined up to a
@@ -340,7 +346,7 @@ We study the effect of symmetric perturbations
 \(A+\epsilon\Delta_A+o(\epsilon)\) and
 \(B+\epsilon\Delta_B+o(\epsilon)\) of \(A\) and \(B\) on the eigenvalues
 \(\lambda_s\) and their corresponding eigenvectors \(x_s\). Throughout
-we assume that \(\lambda_s\) has multiplicity one, i.e.~that
+we assume that \(\lambda_s\) is a simple eigenvalue, i.e.~that
 \(\lambda_t\not=\lambda_s\) if \(t\not=s\). Note that this does not mean
 all eigenvalues need to be different. Also note that if \(\epsilon\) is
 small enough then \(B(\epsilon)\) is still positive definite and
@@ -360,30 +366,51 @@ and
 Expand \eqref{eq-witheps1} and \eqref{eq-witheps2} and only keep the
 first order terms. This gives \begin{subequations}
 \begin{align}
-Adx_s+\Delta_Ax_s&=d\lambda_s Bx_s+\lambda_sBdx_s+\lambda_s\Delta_Bx_s,\label{eq-fo1}\\
-x_s'\Delta_Bx_s+2x_s'Bdx_s&=0.\label{eq-fo2}
+A(dx_s)+\Delta_Ax_s&=d\lambda_sBx_s+\lambda_sB(dx_s)+\lambda_s\Delta_Bx_s,\label{eq-fo1}\\
+x_s'\Delta_Bx_s+2x_s'B(dx_s)&=0.\label{eq-fo2}
 \end{align}
 \end{subequations} Premultiply equation \eqref{eq-fo1} with \(x_s'\).
-This gives \begin{equation}
+After some simplification this gives \begin{equation}
 d\lambda_s=x_s'(\Delta_A-\lambda_s\Delta_B)x_s,\label{eq-def1}
-\end{equation} We next solve for \(dx_s\). Write \(dx_s=X\alpha\), where
-\(X\) is any complete set of eigenvectors from \(AX=BX\Lambda\),
-normalized by \(X'BX=I\). Then \eqref{eq-fo1} becomes \begin{equation}
+\end{equation}
+
+We next solve for \(dx_s\). Write \(dx_s=X\alpha\), where \(X\) is any
+complete set of eigenvectors from \(AX=BX\Lambda\), normalized by
+\(X'BX=I\). Then \eqref{eq-fo1} becomes \begin{equation}
 BX(\Lambda-\lambda_sI)\alpha=d\lambda_s Bx_s-(\Delta_Ax_s-\lambda_s\Delta_B)x_s.\label{eq-alp1}
 \end{equation} Premultiplying by \(X'\) gives \begin{equation}
 (\Lambda-\lambda_sI)\alpha=(d\lambda_s)e_s-X'(\Delta_A-\lambda_s\Delta_B)x_s,\label{eq-alp2}
 \end{equation} with \(e_s\) a unit
 vector.\footnote{A unit vector $e_s$ has element $s$ equal to one and all other elements equal to zero.}
-Both sides of \eqref{eq-alp2} are vectors of length \(n\). Using
-\eqref{eq-def1} we see that element \(s\) of both vectors is equal to
-zero. For \(t\not= s\) we obtain \begin{equation}
+
+Premultiply both sides of \eqref{eq-alp2} by \(e_s'\). The result on the
+left hand side is zero, and using \eqref{eq-def1} the right hand side is
+also zero. Thus \eqref{eq-alp2} cannot be used to find \(\alpha_s\). For
+\(t\not= s\) we obtain \begin{equation}
 \alpha_t=-\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s},\label{eq-alp3}
 \end{equation} and, using \eqref{eq-fo2}, \begin{equation}
 \alpha_s=-\frac12x_s'\Delta_Bx_s.\label{eq-alp3}
 \end{equation} Thus \begin{equation}
-dx_s=-\sum_{t\not= s}\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s.\label{eq-def2}
+dx_s=-\sum_{t\not= s}^n\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s.\label{eq-def2}
 \end{equation} The two equations \eqref{eq-def1} and \eqref{eq-def2} are
 the basic tools we use in this paper.
+
+Suppose that for there is an eigenvalue \(\lambda\not=\lambda_s\) with
+multiplicity \(r>1\). In that case the corresponding eigenvectors are
+not uniquely defined, and it may seem that \eqref{eq-def2} may give
+different results for different choices of these eigenvectors. We
+briefly investigate this case. Suppose \(T\) is the index set with
+\(\lambda_t=\lambda\) for all \(t\in  T\). There is an \(n\times r\)
+matrix \(Y\) with \(AY=\lambda BY\), \(Y'BY=I\), unique up to a
+rotation. From \eqref{eq-def2} \begin{equation}
+\sum_{t\in T}\frac{y_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}y_t=\frac{YY'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda-\lambda_s},\label{eq-multi}
+\end{equation} and the right hand side of \label{eq-multi} is invariant
+under rotations of \(Y\). Thus it does not matter how we choose the
+\(r\) eigenvectors corresponding to the multiple eigenvalue, the result
+of equation \eqref{eq-multi}, and thus of \eqref{eq-def2}, will always
+be the same. As long as \(\lambda_s\) is simple, we will have
+differentiability of both the eigenvalue \(\lambda_s\) and the
+corresponding eigenvector \(x_s\).
 
 Equations \eqref{eq-def1} and \eqref{eq-def2} simplify in some important
 special cases. For example, we can perturb \(A\) but not \(B\). Thus
@@ -393,7 +420,7 @@ d\lambda_s=x_s'\Delta_Ax_s\label{eq-sim1},
 \end{equation}
 and
 \begin{equation}
-dx_s=-\sum_{t\not= s}\frac{x_t'\Delta_Ax_s}{\lambda_t-\lambda_s}x_t.\label{eq-sim2}
+dx_s=-\sum_{t\not= s}^n\frac{x_t'\Delta_Ax_s}{\lambda_t-\lambda_s}x_t.\label{eq-sim2}
 \end{equation}
 \end{subequations} If, in addition, \(B=I\) we have perturbation
 equations for an SEV or simple eigenvalue problem. The case in which we
@@ -405,8 +432,8 @@ cases and simplifications will be treated next.
 If \(A\) and \(B\) are differentiable functions of a vector of \(q\)
 parameters \(\theta\) then \begin{subequations}
 \begin{align}
-A(\theta+\epsilon d\theta)&=A(\theta)+\epsilon\sum_{r=1}^q d\theta_r\mathcal{D}_rA+o(\epsilon),\label{eq-par1}\\
-B(\theta+\epsilon d\theta)&=B(\theta)+\epsilon\sum_{r=1}^q d\theta_r\mathcal{D}_rB+o(\epsilon).\label{eq-par2}
+A(\theta+\epsilon d\theta)&=A(\theta)+\epsilon\sum_{r=1}^q (d\theta_r)\mathcal{D}_rA+o(\epsilon),\label{eq-par1}\\
+B(\theta+\epsilon d\theta)&=B(\theta)+\epsilon\sum_{r=1}^q (d\theta_r)\mathcal{D}_rB+o(\epsilon).\label{eq-par2}
 \end{align}
 \end{subequations} Here the \(\mathcal{D}_rA\) is a matrix with partial
 derivatives of \(A\) with respect to \(\theta_r\), evaluated at
@@ -416,8 +443,8 @@ derivatives of \(A\) with respect to \(\theta_r\), evaluated at
 We now can apply equations \eqref{eq-def1} and \eqref{eq-def2} with
 \begin{subequations}
 \begin{align}
-\Delta_A&=\sum_{r=1}^qd\theta_r\mathcal{D}_rA,\label{eq-par3}\\
-\Delta_B&=\sum_{r=1}^qd\theta_r\mathcal{D}_rB.\label{eq-par4}
+\Delta_A&=\sum_{r=1}^q(d\theta_r)\mathcal{D}_rA,\label{eq-par3}\\
+\Delta_B&=\sum_{r=1}^q(d\theta_r)\mathcal{D}_rB.\label{eq-par4}
 \end{align}
 \end{subequations} If \(A\) and \(B\) depend on two different sets of
 parameters then we can use the same equations with some of the
@@ -450,112 +477,26 @@ B&=\mathop{\sum\sum}_{1\leq i<j\leq n}b_{ij}E_{ij}+\sum_{i=1}^nb_{ii}E_{i},\labe
 
 The code in Section~\ref{sec-code} has the function perturbGeigen(),
 written in R (R Core Team (\citeproc{ref-r_core_team_24}{2024})), which
-has arguments \(a, b, da, db\) and \(p\). The first four arguments are
-the values of \(A, B, \Delta_A,\Delta_B\). The remaining argument \(p\)
+has arguments \(A, B, \Delta_A,\Delta_B\) and \(p\). The argument \(p\)
 is a subset of \(\{1,2,\cdots,n\}\), with \(1\leq m\leq n\) elements.
 The program computes \(d\lambda_s\) and \(dx_s\) for all \(s\in p\) and
 returns them, respectively, in a vector with \(m\) elements and an
 \(n\times m\) matrix. The computations use \eqref{eq-sim1} and
 \eqref{eq-sim2}.
 
-The code section also has the function perturbCheck(), with the same
-arguments as perturbGeigen(), plus the additional argument \(eps\), the
-value of \(\epsilon\). The function computes generalized eigenvalues and
-eigenvectors of the pair \((A+\epsilon\Delta_A, B+\epsilon\Delta_B)\)
-and compares them with the output of perturbGeigen().
+The code section also has the function perturbCheck(), whichb has the
+same arguments as perturbGeigen(), plus the additional argument \(eps\),
+the value of \(\epsilon\). The function computes generalized eigenvalues
+and eigenvectors of the pair
+\((A+\epsilon\Delta_A, B+\epsilon\Delta_B)\) and compares them with the
+output of perturbGeigen().
 
-Our example uses two matrices \(A\) and \(B\) of order three. They are
-
-\begin{verbatim}
-     [,1]      [,2]      [,3]     
-[1,] +4.000000 +1.000000 +2.000000
-[2,] +1.000000 +5.000000 +3.000000
-[3,] +2.000000 +3.000000 +6.000000
-\end{verbatim}
-
-\begin{verbatim}
-     [,1]      [,2]      [,3]     
-[1,] +3.000000 -1.000000 -1.000000
-[2,] -1.000000 +3.000000 -1.000000
-[3,] -1.000000 -1.000000 +3.000000
-\end{verbatim}
-
-The generalized eigen decomposition of \(A\) and \(B\) has eigenvalues
-
-\begin{verbatim}
-[1] +9.080056 +0.859087 +0.560857
-\end{verbatim}
-
-and eigenvectors
-
-\begin{verbatim}
-     [,1]      [,2]      [,3]     
-[1,] +0.539749 -0.410185 -0.201044
-[2,] +0.575284 +0.290249 -0.291211
-[3,] +0.608749 +0.015385 +0.359428
-\end{verbatim}
-
-The perturbations \(\Delta_A\) and \(\Delta_B\) we use are
-
-\begin{verbatim}
-     [,1]      [,2]      [,3]     
-[1,] +1.000000 +0.000000 +0.000000
-[2,] +0.000000 +0.000000 +0.000000
-[3,] +0.000000 +0.000000 +0.000000
-\end{verbatim}
-
-\begin{verbatim}
-     [,1]      [,2]      [,3]     
-[1,] +0.000000 +0.000000 +0.000000
-[2,] +0.000000 +0.000000 +0.000000
-[3,] +0.000000 +0.000000 +0.000000
-\end{verbatim}
-
-So \(B\) is not perturbed at all. The output of perturbGeigen() is
-
-\begin{verbatim}
-$dl
-[1] 0.29132948 0.16825178 0.04041874
-
-$dx
-             [,1]        [,2]         [,3]
-[1,]  0.013607411 -0.04105592  0.120297564
-[2,] -0.004107324 -0.06503134 -0.072930515
-[3,] -0.004992561  0.11578144  0.003499643
-\end{verbatim}
-
-We run perturbCheck() with \(\epsilon\) equal to \(0.01\). The
-generalized eigenvalues and eigenvectors of \(A+\epsilon\Delta_A\) and
-\(B+\epsilon\Delta_B\) are
-
-\begin{verbatim}
-[1] +9.0829695442 +0.8607716139 +0.5612588419
-\end{verbatim}
-
-\begin{verbatim}
-     [,1]          [,2]          [,3]         
-[1,] +0.5398854997 -0.4105912934 -0.1998460332
-[2,] +0.5752433377 +0.2896010798 -0.2919354673
-[3,] +0.6086986633 +0.0165387642 +0.3594612728
-\end{verbatim}
-
-and the first order approximations \(\Lambda+\eps d\Lambda\) and
-\(X+\eps dX\) are
-
-\begin{verbatim}
-[1] +9.0829688098 +0.8607699411 +0.5612612491
-\end{verbatim}
-
-\begin{verbatim}
-     [,1]          [,2]          [,3]         
-[1,] +0.5398855373 -0.4105956100 -0.1998411515
-[2,] +0.5752433585 +0.2895982756 -0.2919398461
-[3,] +0.6086986857 +0.0165432294 +0.3594628991
-\end{verbatim}
-
-The approximation is very good, although this is not surprising given
-the small example and the separation of the eigenvalues. It does
-indicate our formula are probably OK.
+We do not give numerical examples using these functions, because they
+just generate a large number of values that have no meaning. Suffices it
+to say that our checks indicate the perturbation functions work well and
+our approximations are as close as can be expected. Readers can use the
+code to try their their own examples. We will give numerical examples in
+Section~\ref{sec-applications}, where they are more meaningful.
 
 \sectionbreak
 
@@ -564,23 +505,23 @@ indicate our formula are probably OK.
 \subsection{Basic Partial Derivatives}\label{sec-parbasic}
 
 The parametric perturbation results can be easily translated into the
-language and notation for partial derivatives. Let's introduce the
-notation first. If \(f\) is a function of a vector \(\theta\) then the
-partial derivative with respect to \(\theta_r\) is \(\mathcal{D}_rf\),
-defined by \[
-\mathcal{D}_rf(\theta):=\lim_{\epsilon\rightarrow 0}\frac{f(\theta+\epsilon e_r)-f(\theta)}{\epsilon},
-\] with \(e_r\) a unit vector.
+notation for partial derivatives. Let's introduce the notation first. If
+\(f\) is a function of a vector \(\theta\) then the partial derivative
+with respect to \(\theta_r\) is \(\mathcal{D}_rf\), defined by
+\begin{equation}
+\mathcal{D}_rf(\theta):=\lim_{\epsilon\rightarrow 0}\frac{f(\theta+\epsilon e_r)-f(\theta)}{\epsilon},\label{eq-parderdef}
+\end{equation} with \(e_r\) a unit vector.
 
-To find partial derivatives we set \(d\theta=e_r\) In our perturbation
-equations \eqref{eq-par3} and \eqref{eq-par4}. Thus we only perturb
-\(\theta_r\). We then have \(\Delta_A=\mathcal{D}_rA\) and
+To find partial derivatives we only perturb \(\theta_r\) by setting
+\(d\theta=e_r\) in our perturbation equations \eqref{eq-par3} and
+\eqref{eq-par4}. We then have \(\Delta_A=\mathcal{D}_rA\) and
 \(\Delta_B=\mathcal{D}_rB\), and thus \begin{subequations}
 \begin{equation}
 \mathcal{D}_r\lambda_s=x_s'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s,\label{eq-parper1}
 \end{equation}
 and
 \begin{equation}
-\mathcal{D}_rx_s=-\sum_{t\not= s}\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\mathcal{D}_rBx_s)x_s.\label{eq-parper2}
+\mathcal{D}_rx_s=-\sum_{t\not= s}^n\frac{x_t'(\mathcal{D}_rA-\lambda_s\mathcal{D}_rB)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\mathcal{D}_rBx_s)x_s.\label{eq-parper2}
 \end{equation}
 \end{subequations} For linear parametric perturbations we have the same
 equations for the partial derivatives with \(\mathcal{D}_rA=A_r\) and
@@ -604,15 +545,15 @@ x_{is}^2&\text{ if }i=j.
 \begin{equation}
 \mathcal{D}_{ij}^Ax_s=
 \begin{cases}
--\sum_{t\not= s}\frac{x_{is}x_{jt}+x_{js}x_{it}}{\lambda_t-\lambda_s}x_t&\text{ if }i\not= j,\\
--\sum_{t\not= s}\frac{x_{is}x_{it}}{\lambda_t-\lambda_s}x_t&\text{ if }i=j.
+-\sum_{t\not= s}^n\frac{x_{is}x_{jt}+x_{js}x_{it}}{\lambda_t-\lambda_s}x_t&\text{ if }i\not= j,\\
+-\sum_{t\not= s}^n\frac{x_{is}x_{it}}{\lambda_t-\lambda_s}x_t&\text{ if }i=j.
 \end{cases}\label{eq-elempar3}
 \end{equation}
 \begin{equation}
 \mathcal{D}_{ij}^Bx_s=
 \begin{cases}
-\lambda_s\sum_{t\not= s}\frac{x_{is}x_{jt}+x_{js}x_{it}}{\lambda_t-\lambda_s}x_t-x_{is}x_{js}x_s&\text{ if }i\not= j,\\
-\lambda_s\sum_{t\not= s}\frac{x_{is}x_{it}}{\lambda_t-\lambda_s}x_t-\frac12x_{is}^2x_s&\text{ if }i=j.
+\lambda_s\sum_{t\not= s}^n\frac{x_{is}x_{jt}+x_{js}x_{it}}{\lambda_t-\lambda_s}x_t-x_{is}x_{js}x_s&\text{ if }i\not= j,\\
+\lambda_s\sum_{t\not= s}^n\frac{x_{is}x_{it}}{\lambda_t-\lambda_s}x_t-\frac12x_{is}^2x_s&\text{ if }i=j.
 \end{cases}\label{eq-elempar4}
 \end{equation}
 \end{subequations} In \eqref{eq-elempar1}-\eqref{eq-elempar4} we use the
@@ -638,7 +579,7 @@ asymptotic bias correction, we need the second derivatives of the
 eigenvalues and eigenvectors.
 
 We start by differentiating equation \eqref{eq-parper1} with respect to
-\(\theta_u\). Define the abbreviations
+\(\theta_u\), using the abbreviations
 \(C_{rs}:=\mathcal{D}_rA-\lambda_s\mathcal{D}_rB\) and
 \(C_{rus}:=\mathcal{D}_{ru}A-\lambda_s\mathcal{D}_{ru}B\). This gives
 
@@ -649,11 +590,11 @@ x_s'C_{rus}x_s-(d_u\lambda_s)x_s'\mathcal{D}_rBx_s,
 \end{equation}
 
 We could expand this further by substituting \(d_u\lambda_s\) and
-\(d_ux_s\) from \eqref{eq-parper1} and \eqref{eq-parper2}. But in
-computation we will use \eqref{eq-secparlbd} as is, even though
+\(d_ux_s\) from \eqref{eq-parper1} and \eqref{eq-parper2}. But in our
+computations we will use \eqref{eq-secparlbd} as is, even though
 \eqref{eq-secparlbd} does not show immediately that for each \(s\) the
-Hessian \(\mathcal{D}_{ru}\lambda_s\) is a symmetric matrix of order
-\(q\). Note that in the linear case
+Hessian with elements \(\mathcal{D}_{ru}\lambda_s\) is a symmetric
+matrix of order \(q\). Note that in the linear case
 \(\mathcal{D}_{ru}A=\mathcal{D}_{ru}B=0\), so the middle term on the
 right disappears.
 
@@ -662,7 +603,7 @@ respect to \(\theta_u\). We compute the second partials for one single
 element \(x_{ks}\) of \(X\) at a time. For each element \(x_{ks}\) the
 Hessian will be a symmetric matrix of order \(q\). From
 \eqref{eq-parper2} \begin{equation}
-\mathcal{D}_rx_{ks}=-\sum_{t\not= s}\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}x_{kt}-\frac12(x_s'\mathcal{D}_rBx_s)x_{ks}.\label{eq-parper3}
+\mathcal{D}_rx_{ks}=-\sum_{t\not= s}^n\frac{x_t'C_{rs}x_s}{\lambda_t-\lambda_s}x_{kt}-\frac12(x_s'\mathcal{D}_rBx_s)x_{ks}.\label{eq-parper3}
 \end{equation}
 
 We start by working on the first term on the right of
@@ -687,8 +628,8 @@ term in \eqref{eq-parper3}, \begin{equation}
 \end{equation}
 
 We combine the results in \eqref{eq-hess1}-\eqref{eq-hess4} into one big
-equation. The resulting formula is pretty horrendous, but think of it as
-a recipe for calculation, not as a beautiful object in its own right.
+equation. The resulting formula is rather ugly, but think of it as a
+recipe for calculation, not as a beautiful object in its own right.
 
 \begin{align}
 \mathcal{D}_{ru}x_{ks}=&-\sum_{t\not= s}^n\left\{
@@ -870,17 +811,71 @@ and
 \end{equation}
 \end{subequations} so that the perturbed system is still a GSV system.
 
-From \eqref{eq-def1}we have \begin{equation}
+From \eqref{eq-def1} we have \begin{equation}
 d\lambda_s=2x_s'\Delta_Fy_s-\lambda_s(x_s'\Delta_Gx_s+y_s'\Delta_Hy_s),\label{eq-svdlbd}
 \end{equation} Now suppose \(s\leq r\), so that \(\lambda_s\) is one of
-the first \(r\) positive singular values. From \eqref{eq-def2}we have
+the first \(r\) positive singular values. From \eqref{eq-def2} we have
 \begin{equation}
-dx_s=-\sum_{\substack{t=1\\t\not= s}}^n\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s.\label{eq-svdvec}
+dx_s=-\sum_{t\not s}^n\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s.\label{eq-svdvec}
 \end{equation}
 
 \subsection{Partial Derivatives}\label{partial-derivatives}
 
 \section{Applications}\label{sec-applications}
+
+\subsection{Generalized Canonical
+Analysis}\label{generalized-canonical-analysis}
+
+Suppose we have \(m\) variables, with variable \(j\) having \(k_j\)
+categories or levels. This defines \(q:=\smash{\prod_{j=1}^m k_j}\)
+profiles, which are binary vectors of length
+\(\smash{\sum_{j=1}^m k_j}\). The data are the relative frequencies of
+the profiles (cf. Gifi (\citeproc{ref-gifi_B_90}{1990}), chapter 2). If
+the number of variables is large the number of profiles will be very
+large, even if the number of categories for each variable is moderate.
+The profile frequencies will tend to be small and many of them will be
+zero.
+
+In \begin{subequations}
+\begin{align}
+A&=\sum_{r=1}^qp_rg_rg_r',\\
+B&=\sum_{r=1}^qp_rB_r,
+\end{align}
+\end{subequations} where \(p_r\) is the relative frequency of profile
+\(r\), and \(g_r\) is the profile vector. Matrix \(B_r\) is diagonal,
+with \(g_r\) on the diagonal.
+
+This is a linear parametric model, and consequently we can apply the
+formulas from Section~\ref{sec-perlinear} to find the derivatives of the
+eigenvalues and eigenvectors with respect to the \(p_r\).
+
+First \begin{subequations}
+\begin{equation}
+\mathcal{D}_r\lambda_s=x_s'(g_rg_r'-\lambda_sB_r)x_s,\label{eq-linper1}
+\end{equation}
+and
+\begin{equation}
+\mathcal{D}_rx_s=-\sum_{t\not= s}\frac{x_t'(g_rg_r'-\lambda_sD_r)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'D_rx_s)x_s.\label{eq-linper2}
+\end{equation}
+\end{subequations}
+
+We now apply the delta method (Mann and Wald
+(\citeproc{ref-mann_wald_43}{1943})), assuming that \(p\) is a
+realization of a multinomial random variable \(\underline{p}\)
+\footnote{We use the "Dutch convention" 
+(Hemelrijk, 1966) of underlining random variables} with parameters
+\((N,\pi)\) from a multinomial with probabilities \(\pi_r\). It follows
+that the eigenvalues \(N^{-\frac12}(\underline{\lambda}-\lambda)\)
+converges in distribution to a multivariate normal with mean zero and
+covariances \[
+\text{ACOV}(\underline{\lambda}_s, \underline{\lambda}_t)=\sum_{r=1}^R\pi_rx_s'(g_rg_r'-\lambda_sB_r)x_sx_t'(g_rg_r'-\lambda_tB_r)x_t,
+\] assuming that \(\lambda_s\) and \(\lambda_t\) are simple eigenvalues.
+
+\begin{equation}
+\mathcal{D}_{ur}\lambda_s=2(d_ux_s)'C_{rs}x_s+
+x_s'C_{rus}x_s-(d_u\lambda_s)x_s'\mathcal{D}_rBx_s,
+\label{eq-hosanna}
+\end{equation}
 
 \subsection{Principal Component Analysis}\label{sec-pca}
 
@@ -953,39 +948,10 @@ G'\Delta_F+F\Delta_G&0
 \end{bmatrix}
 \]
 
-\subsection{Multiple Correspondence Analysis}\label{sec-mca}
-
 We could introduce Multiple Correspondence Analysis (MCA) as a form of
 canonical analysis and use the perturbation results from
 Section~\ref{sec-canonical}. Instead we go directly to a parametric
 approach.
-
-Suppose we have \(m\) categorical variables, with variable \(j\) having
-\(k_j\) categories. This defines \(q:=\smash{\prod_{j=1}^m k_j}\)
-profiles, which are binary vectors of length
-\(\smash{\sum_{j=1}^m k_j}\). The data are the relative frequencies of
-the profiles (cf. Gifi (\citeproc{ref-gifi_B_90}{1990}), chapter 2).
-
-In \[
-A=\sum_{r=1}^qp_rg_rg_r',\\
-B=\sum_{r=1}^qp_rG_r,
-\] where \(p_r\) is the relative frequency of profile \(r\), and \(g_r\)
-is the profile vector. Matri \(G_r\) is diagonal, with \(g_r\) on the
-diagonal.
-
-This is a linear parametric model, and consequently we can apply the
-formulas from Section~\ref{sec-perlinear} to find the derivatives of the
-eigenvalues and eigenvectors with respect to the \(p_r\).
-
-\begin{subequations}
-\begin{equation}
-\mathcal{D}_r\lambda_s=x_s'(g_rg_r'-\lambda_s\text{diag}(g_rg_r'))x_s,\label{eq-linper1}
-\end{equation}
-and
-\begin{equation}
-\mathcal{D}_rx_s=-\sum_{t\not= s}\frac{x_t'(A_r-\lambda_sB_r)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'B_rx_s)x_s.\label{eq-linper2}
-\end{equation}
-\end{subequations}
 
 \subsection{Classical Multidimensional
 Scaling}\label{classical-multidimensional-scaling}
@@ -1033,6 +999,10 @@ Derivatives}}. \url{https://CRAN.R-project.org/package=numDeriv}.
 \bibitem[\citeproctext]{ref-kato_76}
 Kato, T. 1976. \emph{Perturbation Theory for Linear Operators}. Second
 Edition. Springer.
+
+\bibitem[\citeproctext]{ref-mann_wald_43}
+Mann, H. B., and A. Wald. 1943. {``{On Stochastic Limit and Order
+Relationships}.''} \emph{Annals of Mathematical Statistics} 14: 217--26.
 
 \bibitem[\citeproctext]{ref-r_core_team_24}
 R Core Team. 2024. \emph{R: A Language and Environment for Statistical
