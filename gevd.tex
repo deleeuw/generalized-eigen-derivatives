@@ -723,7 +723,7 @@ F'x&=\lambda Hy,\label{eq-svd2}\\
 x'Gx+y'Hy&=1,\label{eq-svd3}
 \end{align}
 \end{subequations} We refer to this as a GSV system, short for
-generalized singular value system.
+Generalized Singular Value system.
 
 Now consider the GEV system \begin{subequations}
 \begin{equation}
@@ -749,12 +749,11 @@ x'Gx+y'Hy=1.\label{eq-gsevd2}
 \end{equation}
 \end{subequations} It is easy to see that \(x, y\) and \(\lambda\)
 satisfy \eqref{eq-gsevd1} and \eqref{eq-gsevd2} if and only if they
-satisfy \eqref{eq-svd1}-\eqref{eq-svd3}.
-
-In GSV systems the normalization constraint \eqref{eq-svd3} is often
-replaced by the constraint \(x'Gx=y'Hy=1\). We now show that this does
-not change the solutions, except for multiplying the singular vectors
-with a scale factor \(\frac12\sqrt{2}\).
+satisfy \eqref{eq-svd1}-\eqref{eq-svd3}. Note that in GSV systems the
+normalization constraint \eqref{eq-svd3} is often replaced by the
+constraint \(x'Gx=y'Hy=1\). We now show that this does not change the
+solutions, except for multiplying the singular vectors with a scale
+factor \(\frac12\sqrt{2}\).
 
 The GSV system has \(m\) solutions with \(\Lambda\geq 0\), \(Y'HY=I\),
 and \(X'GX=I\). Of these \(m\) solutions there are \(r=\text{rank}(F)\)
@@ -794,30 +793,35 @@ null-space of \(F\). The three distinct parts of the solutions in
 which the singular values can be chosen to be positive.
 
 We now have enough information to apply our previous perturbation
-results to GSV systems, only considering perturbations of the form
+results to GSV systems. The perturbations we consider have the form
 \begin{subequations}
 \begin{equation}
 \Delta_A=\begin{bmatrix}
 0&\Delta_F\\
 \Delta_F'&0
-\end{bmatrix},
+\end{bmatrix},\label{eq-asvdp}
 \end{equation}
 and
 \begin{equation}
 \Delta_B=\begin{bmatrix}
 \Delta_G&0\\
 0&\Delta_H
-\end{bmatrix},
+\end{bmatrix},\label{eq-bsvdp}
 \end{equation}
 \end{subequations} so that the perturbed system is still a GSV system.
 
-From \eqref{eq-def1} we have \begin{equation}
-d\lambda_s=2x_s'\Delta_Fy_s-\lambda_s(x_s'\Delta_Gx_s+y_s'\Delta_Hy_s),\label{eq-svdlbd}
-\end{equation} Now suppose \(s\leq r\), so that \(\lambda_s\) is one of
-the first \(r\) positive singular values. From \eqref{eq-def2} we have
-\begin{equation}
-dx_s=-\sum_{t\not s}^n\frac{x_t'(\Delta_A-\lambda_s\Delta_B)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\Delta_Bx_s)x_s.\label{eq-svdvec}
-\end{equation}
+We are only interested in perturbations of the first \(m\) singular
+values and vectors. For the singular values we find \begin{equation}
+d\lambda_s=2x_s'\Delta_Fy_s-\lambda_s(x_s'\Delta_Gx_s+y_s'\Delta_Hy_s).\label{eq-svdlbd}
+\end{equation} Now suppose \(s\leq m\) and \(\lambda_s>0\) is a simple
+singular value, not equal to any of the other \(\lambda_t\). From
+\eqref{eq-def2} and from \eqref{eq-asvdp}-\eqref{eq-bsvdp} we have
+\begin{align}
+\begin{bmatrix}dx_s\\dy_s\end{bmatrix}=
+&-\sum_{\substack{t=1\\t\not= s}}^m\frac{x_t'\Delta_Fy_s+x_s'\Delta_Fy_t-\lambda_s(x_s'\Delta_Gx_t+y_s'\Delta_Hy_t)}{\lambda_t-\lambda_s}\begin{bmatrix}x_t\\y_t\end{bmatrix}\notag\\
+&+\sum_{\substack{t=1\\t\not= s}}^m\frac{x_t'\Delta_Fy_s-x_s'\Delta_Fy_t+\lambda_s(x_s'\Delta_Gx_t-y_s'\Delta_Hy_t)}{\lambda_t+\lambda_s}\begin{bmatrix}x_t\\-y_t\end{bmatrix}\notag\\
+&-\frac12(x_s'\Delta_Gx_s+y_s'\Delta_Hy_s)\begin{bmatrix}x_s\\y_s\end{bmatrix}
+\end{align}
 
 \subsection{Partial Derivatives}\label{partial-derivatives}
 
