@@ -2,13 +2,14 @@
 
 myGeigen <- function(a, b) {
   e <- eigen(solve(b, a))
-  val <- e$values
-  vec <- e$vectors
+  val <- Re(e$values)
+  vec <- Re(e$vectors)
   d <- diag(crossprod(vec, b %*% vec))
   vec <- vec %*% diag(1 / sqrt(d))
   sig <- sign(colSums((1:length(val)) * vec))
   vec <- vec %*% diag(sig)
-  return(list(val = val, vec = vec))
+  ord <- order(val, decreasing = TRUE)
+  return(list(val = val[ord], vec = vec[, ord]))
 }
 
 ei <- function(i, n)
