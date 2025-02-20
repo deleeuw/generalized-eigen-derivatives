@@ -1,5 +1,5 @@
 library(numDeriv)
-source("gevUtils.R")
+source("gevdUtils.R")
 
 partialCheck <- function(theta, a, b, s) {
   myFuncEval <- function(x, ain, bin, ss) {

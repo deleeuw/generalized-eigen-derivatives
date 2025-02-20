@@ -1,4 +1,4 @@
-source("gevUtils.R")
+source("gevdUtils.R")
 
 da <- outer(ei(1, 4), ei(1, 4))
 db <- matrix(0, 4, 4)
