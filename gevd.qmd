@@ -52,7 +52,7 @@ source("gevdPartial.R")
 
 \sectionbreak
 
-**Note:** This is a working manuscript which will be expanded/updated frequently. All suggestions for improvement are welcome. All qmd, tex, html, pdf, R, and C files are in the public domain. Attribution will be appreciated, but is not required. Files can be found at https://github.com/deleeuw/generalized-eigen-derivatives
+**Note:** This is a working manuscript which will be updated frequently. All suggestions for improvement are welcome. All qmd, tex, html, pdf, R, and C files are in the public domain. Attribution will be appreciated, but is not required. Files can be found at https://github.com/deleeuw/generalized-eigen-derivatives
 
 \sectionbreak
 
@@ -60,7 +60,7 @@ source("gevdPartial.R")
 
 ## GEV Systems
 
-Suppose $A$ and $B$ are real symmetric matrices of order $n$, with $B$ positive definite (PSD, from now on). Generalized eigenvalues and eigenvectors are defined as the solutions $(x,\lambda)$ of the system of equations 
+Suppose $A$ and $B$ are real symmetric matrices of order $n$, with $B$ positive definite. Generalized eigenvalues and eigenvectors are defined as the solutions $(x,\lambda)$ of the system of equations 
 \begin{subequations}
 \begin{align}
 Ax&=\lambda Bx,\label{eq-evd1}\\
