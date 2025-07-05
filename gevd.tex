@@ -231,7 +231,7 @@
 \title{Differentiating Generalized Eigen and Singular Value
 Decompositions}
 \author{Jan de Leeuw}
-\date{February 18, 2025}
+\date{February 20, 2025}
 
 \begin{document}
 \maketitle
@@ -253,11 +253,11 @@ results of De Leeuw (\citeproc{ref-deleeuw_R_07c}{2007}).
 
 \sectionbreak
 
-\textbf{Note:} This is a working manuscript which will be
-expanded/updated frequently. All suggestions for improvement are
-welcome. All qmd, tex, html, pdf, R, and C files are in the public
-domain. Attribution will be appreciated, but is not required. Files can
-be found at https://github.com/deleeuw/generalized-eigen-derivatives
+\textbf{Note:} This is a working manuscript which will be updated
+frequently. All suggestions for improvement are welcome. All qmd, tex,
+html, pdf, R, and C files are in the public domain. Attribution will be
+appreciated, but is not required. Files can be found at
+https://github.com/deleeuw/generalized-eigen-derivatives
 
 \sectionbreak
 
@@ -266,9 +266,9 @@ be found at https://github.com/deleeuw/generalized-eigen-derivatives
 \subsection{GEV Systems}\label{gev-systems}
 
 Suppose \(A\) and \(B\) are real symmetric matrices of order \(n\), with
-\(B\) positive definite (PSD, from now on). Generalized eigenvalues and
-eigenvectors are defined as the solutions \((x,\lambda)\) of the system
-of equations \begin{subequations}
+\(B\) positive definite. Generalized eigenvalues and eigenvectors are
+defined as the solutions \((x,\lambda)\) of the system of equations
+\begin{subequations}
 \begin{align}
 Ax&=\lambda Bx,\label{eq-evd1}\\
 x'Bx&=1.\label{eq-evd2}
@@ -424,7 +424,7 @@ which the singular values can be chosen to be positive.
 
 \section{Perturbation}\label{sec-perturb}
 
-\subsection{Perturb GEV Systems}\label{sec-basic}
+\subsection{Perturbed GEV Systems}\label{sec-basic}
 
 We study the effect of symmetric perturbations
 \(A+\epsilon\Delta_A+o(\epsilon)\) and
@@ -511,7 +511,7 @@ equations for an SEV or simple eigenvalue problem. The case in which we
 perturb \(B\) and not \(A\) is handled in the same way. Other special
 cases and simplifications will be treated next.
 
-\subsection{Perturbing GSV Systems}\label{sec-GSV}
+\subsection{Perturbed GSV Systems}\label{sec-GSV}
 
 We now have enough information to apply our previous perturbation
 results to GSV systems. The perturbations we consider have the form

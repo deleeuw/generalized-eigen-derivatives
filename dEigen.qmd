@@ -1,0 +1,381 @@
+---
+title: Differentiating Generalized Eigenvalues/Vectors and Singular Values/Vectors 
+author: 
+    - name: Jan de Leeuw
+      orcid: 0000-0003-1420-1797
+      email: jan@deleeuwpdx.net
+      affiliation: 
+        - name: University of California Los Angeles
+          city: Los Angeles
+          state: CA
+          url: www.ucla.edu
+      license: "CC0"
+date: last-modified
+date-format: long
+bibliography: [mypubs.bib, total.bib]
+number-sections: true
+pdf-engine: lualatex
+keep-tex: true
+format:
+   pdf:
+    fontsize: 12pt
+    include-in-header: 
+     - preamble.tex
+    keep-tex: true
+    link-citations: true
+    documentclass: scrartcl
+    number-sections: true
+   html:
+    fontsize: 12pt
+    include-in-header: 
+     - preamble.css
+    keep-md: true
+    number-sections: true
+toc: true
+toc-depth: 3
+editor: source
+papersize: letter
+graphics: true
+link-citations: true
+mainfont: Times New Roman
+abstract: We give formulas for first and second derivatives of generalized eigenvalues/eigenvectors and generalized singular values/singular vectors. In addition, implementations in R (@r_core_team_25) are provided. Formulas are checked against Jacobians and Hessians computed by numerical differentiation. Some applications to multivariate data analysis are discussed.\sectionbreak
+---
+
+```{r loadpackages, echo = FALSE}
+suppressPackageStartupMessages(library(knitr, quietly = TRUE))
+suppressPackageStartupMessages(library(tinytex, quietly = TRUE))
+suppressPackageStartupMessages(library(numDeriv, quietly = TRUE))
+```
+
+```{r code, echo = FALSE}
+source("dEigen.R")
+matrixPrint <- function(x,
+                    digits = 6,
+                    width = 8,
+                    format = "f",
+                    flag = "+") {
+  print(noquote(formatC(
+    x,
+    digits = digits,
+    width = width,
+    format = format,
+    flag = flag
+  )))
+}
+```
+
+**Note:** This is a working manuscript which will be expanded/updated frequently. All suggestions for improvement are welcome. All Rmd, tex, html, pdf, R, and C files are in the public domain. Attribution will be appreciated, but is not required. The files can be found at <https://github.com/deleeuw/gevd>
+
+\sectionbreak
+
+# Introduction
+
+The generalized eigenvalue (GEV) problem for a pair $(A,B)$ of square symmetric matrices of order $n$ is to find a matrix $X$ of eigenvectors and a diagonal matrix $\Lambda$ of eigenvalues such that
+\begin{subequations}
+\begin{align}
+AX&=BX\Lambda,\label{eq-gevdef1}\\
+X'BX&=I\label{eq-gevdef2}.
+\end{align} 
+\end{subequations}
+We assume that $B$ is positive definite and that
+the eigenvalues are in decreasing\footnote{By "decreasing" we mean $\lambda_1\geq\lambda_2\geq\cdots\geq\lambda_n$.} order along the diagonal.
+
+A generalized singular value (GSV) problem is defined by a triple of
+matrices $(F,G,H)$. Here $F$ is $n\times m$, with $n\geq m$, $G$ is $n\times n$, and $\H$ is $m\times m$. In GSV we solve the system
+\begin{subequations}
+\begin{align}
+FY&=GX\Lambda,\label{eq-gsvdef1}\\
+F'X&=HY\Lambda,\label{eq-gsvdef2}\\
+X'GX&=I,\label{eq-gsvdef3}\\
+Y'HY&=I,\label{eq-gsvdef4}
+\end{align}
+\end{subequations}
+for the unknowns $X, Y,$ and $\Lambda$. The columns of $X$ are the left
+singular vectors, the columns of $Y$ the right singular vectors.
+Both $G$ and $H$ are assumed to be positive definite. 
+The singular values in $\Lambda$ are non-negative, and in decreasing order
+along the diagonal.
+
+The equations \eqref{eq-gevdef1} and \eqref{eq-gevdef2} 
+implicitly define $(X(),\Lambda())$ as a function of $(A,B)$.
+In the same way \eqref{eq-gsvdef1} to \eqref{eq-gsvdef4} implicitly define 
+$(X(),Y(),\Lambda())$ as a function of $(F,G,H)$. It turns out that under suitable assumptions on the matrix arguments these implicit functions are actually differentiable, and this makes it interesting to compute their derivatives.
+
+There is a humongous and scattered literature on formulas and computations of eigenvalue and eigenvector derivatives in linear algebra, numerical mathematics, engineering,  multivariate statistics, and even in physics. Reviewing and collecting all 
+relevant literature is an impossible task. We only give the basic mathematical references, which provide the foundation upon which our results will be build (@kato_84, @baumgartel_85). 
+
+The applications we have in mind are in large-sample 
+statistics. GEV and GSV are at the basis of almost all 
+of the computations in multivariate statistics. In
+multinormal small sample theory the derivatives are
+needed for the Jacobians in change-of-variable calculations to
+find the distribution of many complicated statistics. But, 
+more pertinently for our purposes, the derivatives
+are needed in large sample Delta Method computations of 
+standard errors and confidence intervals.
+
+Again, the Delta Method literature is huge and diverse.
+In the historical papers @verhoef_12 and  @gorroochurn_20
+candidates mentioned for the title of Delta Method inventor are Cotes,
+Gauss, Pearson, Dorfman, Cramer, and Doob. I would like to add
+@mann_wald_43, my personal favorite, although
+at the end of that paper (which is not even mentioned in the two historical
+papers) we find
+
+> A method of deriving limiting distributions and limit
+standard deviations ... is known as the $\delta$-method
+and has been extensively applied in statistical 
+literature (@mann_wald_43, p. 226).
+
+It seems safe to say that nobody invented the Delta Method, it was
+always there. For the types of applications we have in mind all the relevant
+details are given in @hsu_49. I should perhaps also mention a previous version of this paper (@deleeuw_R_07c), which has some errors and is not as complete as
+the current version.
+
+\sectionbreak
+
+# Basic Result
+
+Suppose $A()$ and $B()$ are differentiable matrix valued functions on an open subset $\Theta$ of $\mathbb{R}^p$, and suppose at $\theta\in\Theta$ the matrix $B(\theta)$ is positive definite and the generalized eigenvalues of $(A(\theta),B(\theta))$ are all different. Then the ordered eigenvalues $\Lambda()$ and the eigenvectors $X()$ are differentiable functions of the $p$ parameters in a neighborhood of $\theta$. 
+
+Differentiate \eqref{eq-gevdef1} with respect to any of the parameters. Then
+\begin{equation}
+(\mathcal{D}A)X+A(\mathcal{D}X)=BX(\mathcal{D}\Lambda)+B(\mathcal{D}X)\Lambda+(\mathcal{D}B)X\Lambda.
+\end{equation} 
+Premultiplying by $X'$ and rearranging gives 
+\begin{equation}
+\mathcal{D}\Lambda=\{X'(\mathcal{D}A)X-X'(\mathcal{D}B)X\Lambda\}+\{\Lambda X'B(\mathcal{D}X)-X'B(\mathcal{D}X)\Lambda\}.\label{eq-fulld}
+\end{equation} 
+The matrix $\Lambda X'B(\mathcal{D}X)-X'B(\mathcal{D}X)\Lambda$ is anti-symmetric, and
+consequently has a zero diagonal. Taking the diagonal on both sides of \eqref{eq-fulld} gives 
+\begin{equation}
+\mathcal{D}\Lambda=\text{diag}\{X'(\mathcal{D}A)X-X'(\mathcal{D}B)X\Lambda\},\label{eq-labsol}
+\end{equation} 
+or, for a single eigenvalue,
+\begin{equation}
+\mathcal{D}\lambda_s=x_s'(\mathcal{D}A-\lambda_s\mathcal{D}B)x_s.\label{eq-singval}
+\end{equation} 
+
+Taking the off-diagonal on both sides of \eqref{eq-labsol} gives \begin{equation}
+\text{off}\{\Lambda X'B(\mathcal{D}X)-X'B(\mathcal{D}X)\Lambda\}=-\text{off}\{X'(\mathcal{D}A)X-X'(\mathcal{D}B)X\Lambda\}.\label{eq-offd}
+\end{equation} 
+Now $X$ is non-singular, and thus we can change variables using $\mathcal{D}X=XH$. Then \eqref{eq-offd} becomes 
+\begin{equation}
+\text{off}\{\Lambda H-H\Lambda\}=-\text{off}\{X'(\mathcal{D}A)X-X'(\mathcal{D}B)X\Lambda\}.
+\end{equation} 
+Switch to index notation and solve for $H$. For $s\neq t$ 
+\begin{equation}
+h_{ts}=-\frac{x_s'\{\mathcal{D}A-\lambda_s\mathcal{D}B\}x_t}{\lambda_t-\lambda_s}.\label{eq-offh}
+\end{equation} 
+This does not define the diagonal of $H$. Differentiating \eqref{eq-gevdef2} gives 
+\begin{equation}
+X'B(\mathcal{D}X)+(\mathcal{D}X)'BX+X'\mathcal{D}BX=0.\label{eq-fromtwo}
+\end{equation} 
+Using $\mathcal{D}(X)=XH$ and taking the diagonal of \eqref{eq-fromtwo} gives 
+\begin{equation}
+h_{ss}=-\frac12 x_s'(\mathcal{D}B)x_s. \label{eq-diagh}
+\end{equation} 
+Combining \eqref{eq-offh} and \eqref{eq-diagh} shows that for the eigenvector corresponding with
+$\lambda_s$ we have
+\begin{equation}
+\mathcal{D}x_s=-\left\{\sum_{t\neq s}\frac{x_t'\{\mathcal{D}A-\lambda_s\mathcal{D}B\}x_s}{\lambda_t-\lambda_s}x_t+\frac12 x_s'(\mathcal{D}B)x_s\ x_s\right\}.
+\end{equation} 
+
+Define, following @deleeuw_R_07c, the generalized inverse
+\begin{equation}
+(A-\lambda_s B)^-:=X(\Lambda-\lambda_sI)^+X'.\label{eq-geninv}
+\end{equation} 
+Superscript $+$ is the Moore-Penrose inverse. The general inverse we define in \eqref{eq-geninv} is a Moore-Penrose inverse only if $X'X=I$. Now we have the simpler expression
+\begin{equation}
+\mathcal{D}x_s=-(A-\lambda_s B)^-(\mathcal{D}A-\lambda_t\mathcal{D}B)x_s-\frac12 x_s'(\mathcal{D}B)x_s\ x_s.\label{eq-singvec}
+\end{equation}
+
+Equations \eqref{eq-singval} and \eqref{eq-singvec} will be used throughout the paper.
+
+# Simple Perturbations
+
+The R function dEigen() in the Code section takes as arguments four symmetric matrices $A, B, \partial A,$ and $\partial B$, all of the same size, where we make sure that $B$ is solidly positive definite. The final argument is a small positive $\epsilon$, which is used to compute $A(\epsilon)=A+\epsilon\partial A$ and $B(\epsilon)=B+\epsilon\partial B$. We then compute the generalized eigen analysis of $(A,B)$ and $(A(\epsilon), B(\epsilon]))$, giving $\Lambda, X, \Lambda(\epsilon),$ and $X(\epsilon)$. Now compute \begin{subequations}
+\begin{align}
+&\frac{\Lambda(\epsilon)-\Lambda}{\epsilon},\\
+&\frac{X(\epsilon)-X}{\epsilon},
+\end{align}
+\end{subequations} which are numerical approximations to $\partial\Lambda$ from \eqref{eq-aleval} and $\partial X$ from \eqref{eq-vecpermat}. The program returns these numerical approximations, as well as the exact derivative values from \eqref{eq-aleval} and \eqref{eq-vecpermat}, which can then be compared.
+
+Here is a small example, just to get an idea. All four matrices are generated in the same way, by the statement
+
+```{r eval = FALSE}
+crossprod(matrix(rnorm(400), 100, 4)) / 100
+```
+
+For the numerical results we use the default value of $\epsilon$, which is $1e-6$.
+
+```{r echo = FALSE}
+a <- crossprod(matrix(rnorm(400), 100, 4)) / 100
+b <- crossprod(matrix(rnorm(400), 100, 4)) / 100
+da <- crossprod(matrix(rnorm(400), 100, 4)) / 100
+db <- crossprod(matrix(rnorm(400), 100, 4)) / 100
+h <- dEigen(a, b, da, db,1e-6)
+```
+
+Here is $\partial\Lambda$, first numerical, then from the formulas.
+
+```{r, echo = FALSE}
+matrixPrint(h$dvaln, digits = 10)
+matrixPrint(h$dvalf, digits = 10)
+```
+
+And here is $\partial X$, first numerical, then from the formulas.
+
+```{r, echo = FALSE}
+matrixPrint(h$dvecn, digits = 10)
+matrixPrint(h$dvecf, digits = 10)
+```
+
+In this example with $\epsilon=1e-6$ we get numerical and formula results with are identical to six decimal places. Smaller values of $\epsilon$ will give even closer approximations.
+
+# Parametric Example
+
+Suppose we have the simple two-parameter specification \begin{subequations}
+\begin{align}
+A&=A_0+\theta A_1+\frac12\theta^2 A_2+\cdots+\frac{1}{p}\theta^p A_p,\\
+B&=B_0+\xi B_1+\frac12\xi^2 B_2+\cdots+\frac{1}{q}\xi^q A_q.
+\end{align}
+\end{subequations} 
+By choosing suitable matrices $A_i$ and $B_i$ we can approximate arbitrary
+functions of the elements of $A$ and $B$ that have convergent power series 
+expansions.
+
+Thus \begin{subequations}
+\begin{align}
+\mathcal{D}_\theta\lambda_s&=x_s'(A_1+\theta A_2)x_s,\\
+\mathcal{D}_\xi\lambda_s&=-\lambda_sx_s'(B_1+\xi B_2)x_s.
+\end{align}
+\end{subequations} 
+\begin{subequations}
+\begin{align}
+\mathcal{D}_\theta x_s&=-\sum_{t\neq s}^n \frac{x_t'(A_1+\theta A_2)x_s}{\lambda_t-\lambda_s}x_t,\\
+\mathcal{D}_\xi x_s&=\lambda_s\sum_{t\neq s}^n \frac{x_t'(B_1+\xi B_2)x_s}{\lambda_t-\lambda_s}x_t-\frac12(x_s'\mathcal{D}_\xi Bx_s)x_s.
+\end{align}
+\end{subequations} 
+
+Again we generate the six matrices by the statement
+
+```{r eval = FALSE}
+crossprod(matrix(rnorm(400), 100, 4)) / 100
+```
+
+And we evaluate the derivatives at $\theta=.1$ and $\xi=.1$. We compare the numerical and formula-based derivatives in a different way, The numerical differentiation is done using the jacobian() function from the numDeriv package (@gilbert_varadhan_19). The appendix has the code for the two functions pEigenF(), using ... and ..., and pEigenN(), which is a wrapper around jacobian().
+
+```{r echo = FALSE}
+a0<-crossprod(matrix(rnorm(400), 100, 4))/100
+a1<-crossprod(matrix(rnorm(400), 100, 4))/100
+a2<-crossprod(matrix(rnorm(400), 100, 4))/100
+b0<-crossprod(matrix(rnorm(400), 100, 4))/100
+b1<-crossprod(matrix(rnorm(400), 100, 4))/100
+b2<-crossprod(matrix(rnorm(400), 100, 4))/100
+theta <- .01
+xi <- .01
+```
+
+```{r echo = FALSE}
+matrixPrint(pEigenF(a0, a1, a2, b0, b1, b2, theta, xi), digits = 10)
+```
+
+```{r echo - FALSE}
+matrixPrint(pEigenN(a0, a1, a2, b0, b1, b2, theta, xi), digits = 10)
+```
+
+# Jacobian
+
+To compute partial derivatives of eigenvalues and eigenvectors with repects to the elements of $A$ and $B$ we use the parametric results and \begin{subequations}
+\begin{align}
+A&=\mathop{\sum\sum}_{1\leq i\leq j}a_{ij}E_{ij},\\
+B&=\mathop{\sum\sum}_{1\leq i\leq j}b_{ij}E_{ij}.
+\end{align}
+\end{subequations} Here $E_{ij}:=(e_ie_j'+e_je_i')$ for $i\neq j$ and $E_{ii}=e_ie_i'$ with $e_i$ and $e_j$ unit vectors\footnote{A unit vector $e_i$ has zeroes everywhere, except for element $i$, which is one.}. Thus \begin{equation}
+\mathcal{D}_{(i,j)}A=\mathcal{D}_{(i,j)}B=E_{ij}.
+\end{equation} and, with some improvised but obvious notation, \begin{subequations}
+\begin{align}
+\mathcal{D}_{a_{ij}}\lambda_s&=
+\begin{cases}
+2x_{is}x_{js}&\text{ if }i\neq j,\\
+x_{is}^2&\text{ if }i = j.
+\end{cases}\\
+\mathcal{D}_{b_{ij}}\lambda_s&=
+\begin{cases}
+-2\lambda_sx_{is}x_{js}&\text{ if }i\neq j\\,
+-\lambda_sx_{is}^2&\text{ if }i = j.
+\end{cases}
+\end{align}
+\end{subequations} 
+
+# Hessian
+
+The derivative of $\lambda_s$ with repect to $\theta_i$ is
+$$
+\mathcal{D}_i\lambda_s=x_s'(\mathcal{D}_iA-\lambda_s\mathcal{D}_iB)x_s.
+$$
+If we differentiate this once again, now with respect to $\theta_j$
+we find
+$$
+\mathcal{D}_{ij}\lambda_s=2x_s'(\mathcal{D}_iA-\lambda_s\mathcal{D}_iB)\mathcal{D}_jx_s+
+x_s'(D_{ij}A-\lambda_s\mathcal{D}_{ij}B)x_s-\mathcal{D}_j\lambda_s\ x_s'\mathcal{D_i}Bx_s
+$$
+
+\sectionbreak
+
+# Simple Eigenvalue Decomposition
+
+$(A-\lambda B)^-=A-\lambda B)^+$
+
+If $B=I$ and $\partial B=0$ we are perturbing a simple eigenvalue (SEV) problem of the form \begin{align}
+AX&=X\Lambda,\\
+X'X&=I.
+\end{align} From \eqref{eq-seval} \begin{equation}
+\partial\lambda_s=x_s'\partial Ax_s.\label{eq-sevalsim}
+\end{equation} and from \eqref{eq-vecper} \begin{equation}
+\partial x_s=-\left\{\sum_{t\neq s}^n \frac{x_t'\partial Ax_s}{\lambda_t-\lambda_s}x_t\right\}.\label{eq-vecpersim}
+\end{equation} This can be written more compactly, using the Moore-Penrose inverse, as \begin{equation}
+\partial x_s=-(A-\lambda_sI)^+\partial Ax_s\label{eq-vecpersimmp}
+\end{equation}
+
+Here is a simple application. If $A=X\Lambda X'$ then $A^p=X\Lambda^p X'$. $$
+\sum_{s=1}^n(\lambda_s+\partial\lambda_s)^p(x_s+\partial x_s)(x_s+\partial x_s)'=\\
+\sum_{s=1}^n(p\lambda_s^{p-1}\partial\lambda_s)x_sx_s'+
+\sum_{s=1}^n\lambda_s^p(x_s\partial x_s'+\partial x_sx_s')
++$$
+
+If $\mathcal{D}_iB=0$ ... simplifies to
+$$
+\mathcal{D}_{ij}\lambda_s=2x_s'\mathcal{D}_iA\mathcal{D}_jx_s+x_s'D_{ij}Ax_s
+$$
+
+since
+$$
+\mathcal{D}_jx_s=-(A-\lambda_sI)^+\mathcal{D}A_jx_s
+$$
+we have 
+
+$$
+\mathcal{D}_{ij}\lambda_s=-2\ x_s'\mathcal{D}_iA(A-\lambda_sI)^+\mathcal{D}A_jx_s+x_s'D_{ij}Ax_s
+$$
+which clearly shows the symmetry of the Hessian. 
+
+\sectionbreak
+
+# Generalized Singular Value Decomposition
+
+$X=A^{-1}GY\Lambda^{-1}$ then $G'E^{-1}GY=BY\Lambda^2$
+
+$$
+(\mathcal{D}G'E^{-1}G)=(\mathcal{D}G)'E^{-1}G+G'E^{-1}(\mathcal{D}G)-G'E^{-1}(\mathcal{D}E)E^{-1}G
+$$
+$$
+\mathcal{D}\Lambda=\frac12\text{diag}\{\Lambda^{-1}Y'(\mathcal{D}G'E^{-1}G)Y-\Lambda^{-1}Y'(\mathcal{D}B)Y\Lambda^2\}
+$$
+$$
+\mathcal{D}\lambda_s=\frac12 y_s'\{\lambda_s^{-1}(\mathcal{D}G'E^{-1}G)-\lambda_s(\mathcal{D}B)\}y_s
+$$
+\sectionbreak
+
+# References
