@@ -48,7 +48,6 @@ suppressPackageStartupMessages(library(numDeriv, quietly = TRUE))
 ```
 
 ```{r code, echo = FALSE}
-source("dEigen.R")
 matrixPrint <- function(x,
                     digits = 6,
                     width = 8,
@@ -146,15 +145,15 @@ X'B(\mathcal{D}_sX)+(\mathcal{D}_sX)'BX+X'\mathcal{D}_sBX=0.\label{eq-fromtwo}
 \end{equation} 
 Using $\mathcal{D}_sX=XH_s$ and taking the diagonal of \eqref{eq-fromtwo} gives 
 \begin{equation}
-h_{ii}=-tfrac12 x_i'(\mathcal{D}_sB)x_i. \label{eq-diagh}
+h_{ii}=-\tfrac12 x_i'(\mathcal{D}_sB)x_i. \label{eq-diagh}
 \end{equation} 
 Combining \eqref{eq-offh} and \eqref{eq-diagh} shows that for the eigenvector corresponding with $\lambda_s$ we have\footnote{Symbol $\cdot$ is used for multiplication with a scalar if using it makes a formula more clear, similar to parentheses.} then 
 \begin{equation}
-\mathcal{D}_sx_i=-\sum_{j\neq i}\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}x_j-tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot x_i.
+\mathcal{D}_sx_i=-\sum_{j\neq i}\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}x_j-\tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot x_i.
 \end{equation}
 which can also be written as
 \begin{equation}
-\mathcal{D}_sx_i=-\sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-tfrac12 x_i'(\mathcal{D}_sB)x_i)\cdot x_i
+\mathcal{D}_sx_i=-\sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-\tfrac12 x_i'(\mathcal{D}_sB)x_i)\cdot x_i
 \end{equation}
 It is convenient to have a matrix expression for this derivative. Define the matrices
 \begin{equation}
@@ -178,36 +177,41 @@ x_i'(D_{st}A-\lambda_s\mathcal{D}_{st}B)x_i-x_i'(\mathcal{D}_sB)x_i\cdot\mathcal
 \end{equation} 
 Substituting from \eqref{eq-singval} and \eqref{eq-singvec} gives
 \begin{multline}
-\mathcal{D}_{ij}\lambda_s=-2x_s'(\mathcal{D}_iA-\lambda_s\mathcal{D}_iB)W_s (\mathcal{D}_jA-\lambda_s\mathcal{D}_jB)x_s-x_s'(\mathcal{D}_iA-\lambda_s\mathcal{D}_iB) x_s'(\mathcal{D}_jB)x_s\}\\+
-x_s'(D_{ij}A-\lambda_s\mathcal{D}_{ij}B)x_s-(x_s'\mathcal{D_i}Bx_s)x_s'(\mathcal{D}_jA-\lambda_s\mathcal{D}_jB)x_s.\label{eq-seclbdmat}
+\mathcal{D}_{st}\lambda_i=-2x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)W_i (\mathcal{D}_tA-\lambda_i\mathcal{D}_tB)x_i+
+x_i'(D_{st}A-\lambda_i\mathcal{D}_{st}B)x_i\\-x_i'(\mathcal{D}_tB)x_i\cdot x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-x_i'(\mathcal{D_s}B)x_i\cdot x_s'(\mathcal{D}_tA-\lambda_i\mathcal{D}_tB)x_s.\label{eq-seclbdmat}
 \end{multline} 
-Formula \eqref{eq-seclbdmat} shows that $\mathcal{D}_{ij}\lambda_s=\mathcal{D}_{ji}\lambda_s$, just as it should be.
+Formula \eqref{eq-seclbdmat} shows that $\mathcal{D}_{st}\lambda_i=\mathcal{D}_{ts}\lambda_i$, just as it should be.
 
 The second partials of the generalized eigenvalues are, not surprisingly, more complicated. 
 Start with 
 $$
-\mathcal{D}_tW_i=X(\Lambda-\lambda_iI)^+D_tX'+D_tX(\Lambda-\lambda_iI)^+X'-XVX',
+\mathcal{D}_tW_i=X(\Lambda-\lambda_iI)^+(D_tX)'+(D_tX)(\Lambda-\lambda_iI)^+X'-XV_tX',
 $$
-where for $s\neq t$
+where for $i\neq j$
 $$
-v_{ij}:=\frac{\mathcal{D}_t\lambda_j-\mathcal{D}_t\lambda_i}{(\lambda_t-\lambda_i)^2},
+\{V_t\}_{ij}:=\frac{\mathcal{D}_t\lambda_j-\mathcal{D}_t\lambda_i}{(\lambda_j-\lambda_i)^2},
 $$
-and $v_{ss}=0$. Note that $V$ is anti-symmetric.
+and $\{V_t\}_{ii}:=0$. 
 
 It follows that
 \begin{align}
 \mathcal{D}_{st}x_i=&-\mathcal{D}_tW_i(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i\notag\\
 &-W_i(\mathcal{D}_{st}A-\lambda_i\mathcal{D}_{st}B)x_i\notag\\
-&+\mathcal{D}_s\lambda_i\cdot W_i(\mathcal{D}_sB)x_i\notag\\
+&+\mathcal{D}_t\lambda_i\cdot W_i(\mathcal{D}_sB)x_i\notag\\
 &-W_i(\mathcal{D}_{s}A-\lambda_i\mathcal{D}_{s}B)\mathcal{D}_tx_i\notag\\
 &-(\mathcal{D}_tx_s)'(\mathcal{D}_iB)x_i\cdot x_i\notag\\
-&-\tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot\mathcal{D}_jx_s\notag\\
+&-\tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot\mathcal{D}_tx_s\notag\\
 &-\tfrac12 x_i'(\mathcal{D}_{st}B)x_i\cdot x_s.\label{eq-hessgen}
 \end{align}
 
 We could, of course, again substitute the expressions for $\mathcal{D}_s\lambda_i$ and $\mathcal{D}_sx_i$ from \eqref{eq-singval} and \eqref{eq-singvec} into \eqref{eq-hessgen}. But computationally it makes more sense to first compute the various intermedate quantities and then use them to put the complete expression together.
 
 # Linear Combinations
+
+The case in which the parameters $\theta$ are coefficients of linear combinations of matrices is
+important in practice. Suppose we have $p+q$ matrices $A_s$ and $B_s$, such that
+$A_s=0$ if $p+1\leq s\leq p+q$ and $B_s=0$ if $1\leq s\leq p$. There are also "intercepts"
+$A_0$ and $B_0$ which may or may not be zero. Thus
 
 \begin{subequations}
 \begin{align}
@@ -234,13 +238,29 @@ From \eqref{eq-singval}
 and from \eqref{eq-singvec}
 \begin{equation}
 \mathcal{D}_sx_i=\begin{cases}-W_iA_sx_i&\text{ if }1\leq s\leq p,\\
-\lambda_iW_iB_sx_i-tfrac12 x_i'B_sx_i\cdot x_i.&\text{ if }p+1\leq s\leq p+q,
+\lambda_iW_iB_sx_i-\tfrac12 x_i'B_sx_i\cdot x_i.&\text{ if }p+1\leq s\leq p+q,
 \end{cases}
 \end{equation}
-The second partials simplify considerably because $\mathcal{D}_{st}A=\mathcal{D}_{st}B=0$.
 
+We distinguish four cases. 
 
-
+* If $1\leq s\leq p$ and $1\leq s\leq p$ then
+\begin{equation}
+\mathcal{D}_{st}\lambda_i=-2x_i'A_sW_iA_tx_i
+\end{equation}
+* If $1\leq s\leq p$ and $p+1\leq t\leq p+q$ then
+\begin{equation}
+\mathcal{D}_{st}\lambda_i=2\lambda_ix_i'A_sW_iB_tx_i-x_i'A_sx_i\cdot x_i'B_tx_i
+\end{equation}
+* If $p+1\leq s\leq p+q$ and $1\leq t\leq p$ then
+\begin{equation}
+\mathcal{D}_{st}\lambda_i=2\lambda_ix_i'A_tW_iB_sx_i-x_i'A_tx_i\cdot x_i'B_sx_i
+\end{equation}
+* If $p+1\leq s\leq p+q$ and $p+1\leq t\leq p+q$ then
+\begin{equation}
+\mathcal{D}_{st}\lambda_i=
+-2\lambda_i^2x_i'B_sW_iB_tx_i+2\lambda_ix_i'B_sx_i\cdot x_i'B_tx_i
+\end{equation}
 
 ## Partial Derivatives
 
