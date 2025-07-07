@@ -33,11 +33,11 @@ gevDer <- function(thetaa,
   pa <- length(thetaa) # number of parameters for a, s = 1,...,pa
   pb <- length(thetab) # number of parameters for b, s = 1,...,pb
   n <- nrow(aarray[, , 1]) # n is the order of the matrix, i=1,,,n
-  a <- aintercept
+  a <- matrix(aintercept, n, n)
   for (s in 1:pa) {
     a <- a + thetaa[s] * aarray[, , s]
   }
-  b <- bintercept
+  b <- matrix(bintercept, n, n)
   if (pb > 0) {
   for (s in 1:pb) {
     b <- b + thetab[s] * barray[, , s]
@@ -51,9 +51,8 @@ gevDer <- function(thetaa,
   for (i in 1:n) { # eigen loop, for each i dl_i is a p-vector and dx_i is an n * p matrix
     xi <- x[, i]
     li <- l[i]
-    mpl <- 1 / l
-    mpl[i] <- 0
-    mpl <- diag(mpl)
+    mpl <- l - li
+    mpl <- diag(ifelse(mpl == 0, 0, 1 / mpl))
     w <- x %*% mpl %*% t(x)
     for (s in 1:pa) {
       dfar <- aarray[, , s]

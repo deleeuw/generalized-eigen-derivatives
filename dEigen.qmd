@@ -148,7 +148,7 @@ Using $\mathcal{D}_sX=XH_s$ and taking the diagonal of \eqref{eq-fromtwo} gives
 \begin{equation}
 h_{ii}=-tfrac12 x_i'(\mathcal{D}_sB)x_i. \label{eq-diagh}
 \end{equation} 
-Combining \eqref{eq-offh} and \eqref{eq-diagh} shows that for the eigenvector corresponding with $\lambda_s$ we have\footnote{If using it makes a formula more clear then symbol $\cdot$ is used for multiplication with a scalar.}
+Combining \eqref{eq-offh} and \eqref{eq-diagh} shows that for the eigenvector corresponding with $\lambda_s$ we have\footnote{Symbol $\cdot$ is used for multiplication with a scalar if using it makes a formula more clear, similar to parentheses.} then 
 \begin{equation}
 \mathcal{D}_sx_i=-\sum_{j\neq i}\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}x_j-tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot x_i.
 \end{equation}
@@ -171,10 +171,10 @@ Equations \eqref{eq-singval} and \eqref{eq-singvec} will be used frequently in t
 
 ## Second Partials
 
-To find second partial derivatives we start simple, with the eigenvalues. Differentiate \eqref{eq-singval} with respect to $\theta_t$. This gives 
+To find second partial derivatives we start simple with the eigenvalues. Differentiate \eqref{eq-singval} with respect to $\theta_t$. This gives 
 \begin{equation}
-\mathcal{D}_{st}\lambda_i=2x_i'(\mathcal{D}_sA-\lambda_s\mathcal{D}_sB)\mathcal{D}_tx_i+
-x_i'(D_{st}A-\lambda_s\mathcal{D}_{st}B)x_i-x_i'(\mathcal{D_s}B)x_i)\cdot\mathcal{D}_t\lambda_i.\label{eq-seclbd}
+\mathcal{D}_{st}\lambda_i=2x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)\mathcal{D}_tx_i+
+x_i'(D_{st}A-\lambda_s\mathcal{D}_{st}B)x_i-x_i'(\mathcal{D}_sB)x_i\cdot\mathcal{D}_t\lambda_i.\label{eq-seclbd}
 \end{equation} 
 Substituting from \eqref{eq-singval} and \eqref{eq-singvec} gives
 \begin{multline}
