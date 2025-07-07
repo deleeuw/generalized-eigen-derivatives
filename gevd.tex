@@ -1,4 +1,5 @@
 % Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
@@ -8,22 +9,23 @@
   letterpaper,
   DIV=11,
   numbers=noendperiod]{scrartcl}
-
+\usepackage{xcolor}
 \usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else  
-    % xetex/luatex font selection
-    \setmainfont[]{Times New Roman}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+  \setmainfont[]{Times New Roman}
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -41,9 +43,6 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -69,8 +68,7 @@
 \makeatother
 
 
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -95,6 +93,8 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
+
+
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -128,6 +128,18 @@
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
 
 \usepackage{tcolorbox}
 \usepackage{amssymb}
@@ -212,11 +224,9 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
 \usepackage{bookmark}
-
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={Differentiating Generalized Eigen and Singular Value Decompositions},
   pdfauthor={Jan de Leeuw},
@@ -232,7 +242,6 @@
 Decompositions}
 \author{Jan de Leeuw}
 \date{February 20, 2025}
-
 \begin{document}
 \maketitle
 \begin{abstract}
@@ -594,7 +603,8 @@ B&=\mathop{\sum\sum}_{1\leq i<j\leq n}b_{ij}E_{ij}+\sum_{i=1}^nb_{ii}E_{i},\labe
 \subsection{Perturbation Code}\label{sec-pertcode}
 
 The code in Section~\ref{sec-code} has the function perturbGeigen(),
-written in R (R Core Team (\citeproc{ref-r_core_team_24}{2024})), which
+written in R
+((\citeproc{ref-r_core_team_24}{\textbf{r\_core\_team\_24?}})), which
 has arguments \(A, B, \Delta_A,\Delta_B\) and \(p\). The argument \(p\)
 is a subset of \(\{1,2,\cdots,n\}\), with \(1\leq m\leq n\) elements.
 The program computes \(d\lambda_s\) and \(dx_s\) for all \(s\in p\) and
@@ -1010,11 +1020,6 @@ Edition. Springer.
 \bibitem[\citeproctext]{ref-mann_wald_43}
 Mann, H. B., and A. Wald. 1943. {``{On Stochastic Limit and Order
 Relationships}.''} \emph{Annals of Mathematical Statistics} 14: 217--26.
-
-\bibitem[\citeproctext]{ref-r_core_team_24}
-R Core Team. 2024. \emph{R: A Language and Environment for Statistical
-Computing}. {Vienna, Austria}: R Foundation for Statistical Computing.
-\url{https://www.R-project.org/}.
 
 \bibitem[\citeproctext]{ref-wilkinson_65}
 Wilkinson, J. H. 1965. \emph{{The Algebraic Eigenvalue Problem}}.
