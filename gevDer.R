@@ -1,4 +1,5 @@
 
+
 set.seed(12345)
 aarray <- array(0, c(4, 4, 3))
 barray <- array(0, c(4, 4, 3))
@@ -24,12 +25,12 @@ myGeigen <- function(a, b) {
   return(list(values = lbd, vectors = x))
 }
 
-gevDer <- function(thetaa,
-                   thetab,
-                   aarray,
-                   barray,
-                   aintercept = 0,
-                   bintercept = 0) {
+gevLinGrad <- function(thetaa,
+                       thetab,
+                       aarray,
+                       barray,
+                       aintercept = 0,
+                       bintercept = 0) {
   pa <- length(thetaa) # number of parameters for a, s = 1,...,pa
   pb <- length(thetab) # number of parameters for b, s = 1,...,pb
   n <- nrow(aarray[, , 1]) # n is the order of the matrix, i=1,,,n
@@ -39,8 +40,8 @@ gevDer <- function(thetaa,
   }
   b <- matrix(bintercept, n, n)
   if (pb > 0) {
-  for (s in 1:pb) {
-    b <- b + thetab[s] * barray[, , s]
+    for (s in 1:pb) {
+      b <- b + thetab[s] * barray[, , s]
     }
   }
   e <- myGeigen(a, b)
@@ -48,7 +49,8 @@ gevDer <- function(thetaa,
   l <- e$values
   dl <- matrix(0, n, pa + pb)
   dx <- array(0, c(n, pa + pb, n))
-  for (i in 1:n) { # eigen loop, for each i dl_i is a p-vector and dx_i is an n * p matrix
+  for (i in 1:n) {
+    # eigen loop, for each i dl_i is a p-vector and dx_i is an n * p matrix
     xi <- x[, i]
     li <- l[i]
     mpl <- l - li
@@ -67,7 +69,12 @@ gevDer <- function(thetaa,
       dx[, s, i] <- -w %*% dfar %*% xi - 0.5 * sum(xi * (bsp %*% xi)) * xi
     }
   }
-  return(list(values = l, vectors = x, dvalues = dl, dvectors = dx))
+  return(list(
+    values = l,
+    vectors = x,
+    dvalues = dl,
+    dvectors = dx
+  ))
 }
 
 

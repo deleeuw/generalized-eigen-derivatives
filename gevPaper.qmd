@@ -208,18 +208,16 @@ We could, of course, again substitute the expressions for $\mathcal{D}_s\lambda_
 
 # Linear Combinations
 
-The case in which the parameters $\theta$ are coefficients of linear combinations of matrices is
-important in practice. Suppose we have $p+q$ matrices $A_s$ and $B_s$, such that
-$A_s=0$ if $p+1\leq s\leq p+q$ and $B_s=0$ if $1\leq s\leq p$. There are also "intercepts"
-$A_0$ and $B_0$ which may or may not be zero. Thus
-
+Suppose $A()$ is linear combinations of $p$ known symmetric matrices $A_s$ and $B()$ is a linear combination of
+$q$ known symmetric matrices $B_s$. It is convenient to pretend there are  $p+q$ matrices $A_s$ and $B_s$, such that $A_s=0$ if $p+1\leq s\leq p+q$ and $B_s=0$ if $1\leq s\leq p$. There may also be "intercepts"
+$A_0$ and $B_0$. Thus
 \begin{subequations}
 \begin{align}
 A(\theta)&=A_0+\sum_{s=1}^p\theta_sA_s,\\
 B(\theta)&=B_0+\sum_{s=p+1}^{p+q}\theta_sB_s.
 \end{align}
 \end{subequations}
-
+Now
 \begin{align}
 \mathcal{D}_sA&=\begin{cases}A_s&\text{ if }1\leq s\leq p,\\
 0&\text{ if }p+1\leq s\leq p+q,
@@ -242,7 +240,7 @@ and from \eqref{eq-singvec}
 \end{cases}
 \end{equation}
 
-We distinguish four cases. 
+For computing the second partials we distinguish four cases. 
 
 * If $1\leq s\leq p$ and $1\leq s\leq p$ then
 \begin{equation}
@@ -262,7 +260,9 @@ We distinguish four cases.
 -2\lambda_i^2x_i'B_sW_iB_tx_i+2\lambda_ix_i'B_sx_i\cdot x_i'B_tx_i
 \end{equation}
 
-## Partial Derivatives
+# Partial Derivatives
+
+As a special
 
 \begin{subequations}
 \begin{align}
@@ -313,6 +313,10 @@ and from
 \mathcal{D}_sx_i=-(A-\lambda_iI)^+(\mathcal{D}_sA)x_i.\label{eq-vecpersimmp}
 \end{equation}
 
+$$
+\mathcal{D}_{st}\lambda_i=-2x_i'(\mathcal{D}_sA)(A-\lambda_iI)^+(\mathcal{D}_tA)x_i+
+x_i'(D_{st}A)x_i.
+$$
 
 \sectionbreak
 
@@ -323,9 +327,9 @@ $X=A^{-1}GY\Lambda^{-1}$ then $G'E^{-1}GY=BY\Lambda^2$
 $$
 (\mathcal{D}G'E^{-1}G)=(\mathcal{D}G)'E^{-1}G+G'E^{-1}(\mathcal{D}G)-G'E^{-1}(\mathcal{D}E)E^{-1}G
 $$ $$
-\mathcal{D}\Lambda=tfrac12\text{diag}\{\Lambda^{-1}Y'(\mathcal{D}G'E^{-1}G)Y-\Lambda^{-1}Y'(\mathcal{D}B)Y\Lambda^2\}
+\mathcal{D}\Lambda=\tfrac12\text{diag}\{\Lambda^{-1}Y'(\mathcal{D}G'E^{-1}G)Y-\Lambda^{-1}Y'(\mathcal{D}B)Y\Lambda^2\}
 $$ $$
-\mathcal{D}\lambda_s=tfrac12 y_s'\{\lambda_s^{-1}(\mathcal{D}G'E^{-1}G)-\lambda_s(\mathcal{D}B)\}y_s
+\mathcal{D}\lambda_s=\tfrac12 y_s'\{\lambda_s^{-1}(\mathcal{D}G'E^{-1}G)-\lambda_s(\mathcal{D}B)\}y_s
 $$ \sectionbreak
 
 # References
