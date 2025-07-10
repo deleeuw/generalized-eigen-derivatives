@@ -50,7 +50,6 @@ gevLinGrad <- function(thetaa,
   dl <- matrix(0, n, pa + pb)
   dx <- array(0, c(n, pa + pb, n))
   for (i in 1:n) {
-    # eigen loop, for each i dl_i is a p-vector and dx_i is an n * p matrix
     xi <- x[, i]
     li <- l[i]
     mpl <- l - li

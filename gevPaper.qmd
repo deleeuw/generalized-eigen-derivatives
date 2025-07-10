@@ -38,7 +38,7 @@ papersize: letter
 graphics: true
 link-citations: true
 mainfont: Times New Roman
-abstract: We give formulas for first and second derivatives of generalized eigenvalues/eigenvectors and generalized singular values/singular vectors. In addition, implementations in R (@r_core_team_25) are provided. Formulas are checked against Jacobians and Hessians computed by numerical differentiation. Some applications to multivariate data analysis are discussed.\sectionbreak
+abstract: We give formulae for first and second derivatives of generalized eigenvalues/eigenvectors of symmetric matrices and generalized singular values/singular vectors of rectangular matrices when the matrices are linear or nonlinear functions of a vector of parameters. In addition, implementations in R (@r_core_team_25) are provided. formulae are checked against Jacobians and Hessians computed by numerical differentiation. Some applications to multivariate data analysis are discussed.\sectionbreak
 ---
 
 ```{r loadpackages, echo = FALSE}
@@ -63,7 +63,7 @@ matrixPrint <- function(x,
 }
 ```
 
-**Note:** This is a working manuscript which will be expanded/updated frequently. All suggestions for improvement are welcome. All Rmd, tex, html, pdf, R, and C files are in the public domain. Attribution will be appreciated, but is not required. The files can be found at <https://github.com/deleeuw/gevd>
+**Note:** This is a working manuscript which will be expanded/updated frequently. All suggestions for improvement are welcome. All Rmd, tex, html, pdf, R, and C files are in the public domain. Attribution will be appreciated, but is not required. The files can be found at <https://github.com/deleeuw/generalized-eigen-derivatives>.
 
 \sectionbreak
 
@@ -89,11 +89,17 @@ Y'HY&=I,\label{eq-gsvdef4}
 
 The equations \eqref{eq-gevdef1} and \eqref{eq-gevdef2} implicitly define $(X(),\Lambda())$ as a function of $(A,B)$. In the same way \eqref{eq-gsvdef1} to \eqref{eq-gsvdef4} implicitly define $(X(),Y(),\Lambda())$ as a function of $(F,G,H)$. It turns out that under suitable assumptions on the matrix arguments these implicit functions are actually differentiable, and this makes it interesting to compute their derivatives.
 
-There is a humongous and scattered literature on formulas for and computations of derivatives of eigenvalues and eigenvectors in linear algebra, numerical mathematics, engineering, multivariate statistics, and even in physics. Reviewing and collecting all relevant literature is an impossible task. We only give the basic mathematical references, which provide the foundations upon which our results will be built (@kato_84, @baumgartel_85).
+There is a humongous and scattered literature on formulae for and computations of derivatives of eigenvalues and eigenvectors in linear algebra, numerical mathematics, engineering, multivariate statistics, and even in physics. Reviewing and collecting all relevant literature is an impossible task. We only give the basic mathematical references, which provide the foundations upon which our results will be built (@kato_84, @baumgartel_85).
 
 GEV and GSV are at the basis of almost all of the computations in multivariate statistics. In multinormal small sample theory the derivatives are needed for the Jacobians in change-of-variable calculations to find the distribution of many statistics. The applications we have in mind, however, are in large-sample statistics, where the derivatives are needed in Delta Method computations of standard errors and confidence intervals.
 
 Again, the Delta Method literature is huge and diverse. Special cases have been around before there was a statistics discipline, ever since the beginning of error analysis in geodesy, physics, and astronomy (@gorroochurn_20). For the types of applications we have in mind all the relevant Delta Method details are given in @mann_wald_43 and @hsu_49.
+
+We have written code in R (@r_core_team_25) to implement our final formulae for the first and second derivatives. Code is available at <https://github.com/deleeuw/generalized-eigen-derivatives>. In addition we have also
+written R code, available in the same repository, to numerically verify the final formulae. This
+uses the functions jacobian() and hessian() from the excellent R package numDeriv (@gilbert_varadhan_19).
+Of course numerical verification, especially in the nonlinear case, is limited to a small number
+of examples, but if we get the same results as from our formulae we do gain some confidence.
 
 I should perhaps also mention a previous version of this paper (@deleeuw_R_07c), which has some errors and is not as complete as the current version.
 
@@ -101,11 +107,10 @@ I should perhaps also mention a previous version of this paper (@deleeuw_R_07c),
 
 # Basic Results
 
-Suppose $A()$ and $B()$ are differentiable symmetric matrix valued functions of order $n$ on an open subset $\Theta$ of $\mathbb{R}^p$, and suppose at $\theta\in\Theta$ the matrix $B(\theta)$ is positive definite and the generalized eigenvalues of $(A(\theta),B(\theta))$ are all different. Then the ordered eigenvalues $\Lambda()$ and the eigenvectors $X()$ are differentiable functions of the parameters in a neighborhood of $\theta$. We use subscripts $i,j,k,l=1,\cdots, n$ for the elements of $A,B,\Lambda,$ and $X$, and $s,t=1,\cdots,p$ for the parameters in $\theta$. The partial derivative of a function $A$ on 
+Suppose $A()$ and $B()$ are differentiable symmetric matrix valued functions of order $n$ on an open subset $\Theta$ of $\mathbb{R}^p$, and suppose at $\theta\in\Theta$ the matrix $B(\theta)$ is positive definite and the generalized eigenvalues of $(A(\theta),B(\theta))$ are all different. Then the ordered eigenvalues $\Lambda()$ and the eigenvectors $X()$ are differentiable functions of the parameters in a neighborhood of $\theta$. We use subscripts $i,j,k,l=1,\cdots, n$ for the elements of $A,B,\Lambda,$ and $X$, and $s,t=1,\cdots,p$ for the parameters in $\theta$. The partial derivative of a function $A()$ on 
 $\Theta$ with respect to $\theta_s$, evaluated at $\theta$, is $\mathcal{D}_sA(\theta)$. In
-order not to clutter our formulas the place where the derivative is evaluated is usually not
-explicitly specified. Note also that it is sometimes necessary to 
-use parenthesis to distinguish $(\mathcal{D}_s)Ax$ from $\mathcal{D}_s(Ax)$.
+order not to clutter our formulae the place where the derivative is evaluated is usually not
+explicitly specified. Note also that it is sometimes necessary to use parentheses to distinguish $(\mathcal{D}_s)Ax$ from $\mathcal{D}_s(Ax)$.
 
 ## First Partials
 
@@ -124,7 +129,7 @@ The matrix $\Lambda X'B(\mathcal{D}_sX)-X'B(\mathcal{D}_sX)\Lambda$ is anti-symm
 \end{equation} 
 or, for a single eigenvalue $\lambda_i$ with correspondiung eigenvector $x_i$, 
 \begin{equation}
-\mathcal{D}_s\lambda_i=x_i'(\mathcal{D}_sA-\lambda_s\mathcal{D}_sB)x_i.\label{eq-singval}
+\mathcal{D}_s\lambda_i=x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i.\label{eq-singval}
 \end{equation}
 
 Taking the off-diagonal\footnote{The off-diagonal $\text{off}(X)$ of a square matrix $X$ is $X$ with its diagonal replaced by zeroes.} on both sides of \eqref{eq-labfull} gives 
@@ -206,7 +211,21 @@ It follows that
 
 We could, of course, again substitute the expressions for $\mathcal{D}_s\lambda_i$ and $\mathcal{D}_sx_i$ from \eqref{eq-singval} and \eqref{eq-singvec} into \eqref{eq-hessgen}. But computationally it makes more sense to first compute the various intermedate quantities and then use them to put the complete expression together.
 
+## Examples
+
+### Single Parameter
+
+\begin{align}
+A(\theta)&=A_0+\theta A_1+\frac12\theta^2A_2+...+\frac{1}{p}\theta^pA_p\\
+B(\theta)&=B_0+\theta B_1+\frac12\theta^2B_2+...+\frac{1}{p}\theta^pB_p
+\end{align}
+
+
+### Real Psychometrics
+
 # Linear Combinations
+
+## Disjoint
 
 Suppose $A()$ is linear combinations of $p$ known symmetric matrices $A_s$ and $B()$ is a linear combination of
 $q$ known symmetric matrices $B_s$. It is convenient to pretend there are  $p+q$ matrices $A_s$ and $B_s$, such that $A_s=0$ if $p+1\leq s\leq p+q$ and $B_s=0$ if $1\leq s\leq p$. There may also be "intercepts"
@@ -227,6 +246,8 @@ B_s&\text{ if }p+1\leq s\leq p+q.
 \end{cases}
 \end{align}
 
+Partial derivatives simplify because always exactly one of the 
+pair $(\mathcal{D}_sA,\mathcal{D}_sB)$ is zero. 
 From \eqref{eq-singval}
 \begin{equation}
 \mathcal{D}_s\lambda_i=\begin{cases}x_i'A_sx_i&\text{ if }1\leq s\leq p,\\
@@ -240,7 +261,9 @@ and from \eqref{eq-singvec}
 \end{cases}
 \end{equation}
 
-For computing the second partials we distinguish four cases. 
+For computing the second partials we use the fact that the second
+partials $\mathcal{D}_{st}A$ and $\mathcal{D}_{st}B$ are zero. 
+We distinguish four cases. 
 
 * If $1\leq s\leq p$ and $1\leq s\leq p$ then
 \begin{equation}
@@ -259,6 +282,35 @@ For computing the second partials we distinguish four cases.
 \mathcal{D}_{st}\lambda_i=
 -2\lambda_i^2x_i'B_sW_iB_tx_i+2\lambda_ix_i'B_sx_i\cdot x_i'B_tx_i
 \end{equation}
+
+## Conjoint
+
+If $A()$ and $B()$ are function of the same parameter vector $\Theta$, then 
+there is no need to distinguish the separate cases of the disjoint
+section. So we have
+
+\begin{subequations}
+\begin{align}
+A(\theta)&=A_0+\sum_{s=1}^p\theta_s A_s,\\
+B(\theta)&=B_0+\sum_{s=1}^p\theta_s B_s.
+\end{align}
+\end{subequations}
+
+Equations \eqref{eq-singval} and \eqref{eq-singval} can just be copied, with
+the simplification that $\mathcal{D}_sA$ and $\mathcal{D}_sB$ do not depend on $\theta$ any more,
+and are just $A_s$ and $B_s$.
+
+\begin{equation}
+\mathcal{D}_s\lambda_i=x_i'(A_s-\lambda_iB_s)x_i.\label{eq-singvalcon}
+\end{equation}
+
+\begin{equation}
+\mathcal{D}_sx_i=-W_i(A_s-\lambda_iB_s)x_i-\tfrac12 x_iB_sx_i\cdot x_i.\label{eq-singveccon}
+\end{equation}
+
+\begin{multline}
+\mathcal{D}_{st}\lambda_i=-2x_i'(A_s-\lambda_iB_s)W_i (A_t-\lambda_iB_t)x_i\\-x_i'B_tx_i\cdot x_i'(A_s-\lambda_iB_s)x_i-x_i'B_sx_i\cdot x_s'(A_t-\lambda_iB_t)x_s.\label{eq-seclbdmatcon}
+\end{multline} 
 
 # Partial Derivatives
 
@@ -317,6 +369,8 @@ $$
 \mathcal{D}_{st}\lambda_i=-2x_i'(\mathcal{D}_sA)(A-\lambda_iI)^+(\mathcal{D}_tA)x_i+
 x_i'(D_{st}A)x_i.
 $$
+
+
 
 \sectionbreak
 
