@@ -183,7 +183,7 @@ x_i'(D_{st}A-\lambda_s\mathcal{D}_{st}B)x_i-x_i'(\mathcal{D}_sB)x_i\cdot\mathcal
 Substituting from \eqref{eq-singval} and \eqref{eq-singvec} gives
 \begin{multline}
 \mathcal{D}_{st}\lambda_i=-2x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)W_i (\mathcal{D}_tA-\lambda_i\mathcal{D}_tB)x_i+
-x_i'(D_{st}A-\lambda_i\mathcal{D}_{st}B)x_i\\-x_i'(\mathcal{D}_tB)x_i\cdot x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-x_i'(\mathcal{D_s}B)x_i\cdot x_s'(\mathcal{D}_tA-\lambda_i\mathcal{D}_tB)x_s.\label{eq-seclbdmat}
+x_i'(D_{st}A-\lambda_i\mathcal{D}_{st}B)x_i\\-x_i'(\mathcal{D}_tB)x_i\cdot x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-x_i'(\mathcal{D_s}B)x_i\cdot x_i'(\mathcal{D}_tA-\lambda_i\mathcal{D}_tB)x_i.\label{eq-seclbdmat}
 \end{multline} 
 Formula \eqref{eq-seclbdmat} shows that $\mathcal{D}_{st}\lambda_i=\mathcal{D}_{ts}\lambda_i$, just as it should be.
 

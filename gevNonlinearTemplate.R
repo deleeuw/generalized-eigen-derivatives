@@ -1,19 +1,17 @@
-dA <- function(theta) {
-  # This routine returns a list of p matrices of order n 
+dsA <- function(theta, s) {
+  # This routine return the matrix d_sA
 }
 
-dB <- function(theta) {
-  # This routine returns a list of p matrices of order n 
+dsB <- function(theta, s) {
+  # This routine return the matrix d_sB
 }
 
-ddA <- function(theta) {
-  # This routine returns a list of p(p+1)/2 matrices of order n
-  # in the order (1,1),(2,1),...(p,1),(2,2),...(p,2),...
+dstA <- function(theta, s, t) {
+  # This routine return the matrix d_{st}A
 }
 
-ddB <- function(theta) {
-  # This routine returns a list of p(p+1)/2 matrices of order n 
-  # in the order (1,1),(2,1),...(p,1),(2,2),...(p,2),...
+dstB <- function(theta, s, t) {
+  # This routine return the matrix d_{st}B
 }
 
 theA <- function(theta) {
