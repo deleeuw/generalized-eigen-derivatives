@@ -38,7 +38,7 @@ papersize: letter
 graphics: true
 link-citations: true
 mainfont: Times New Roman
-abstract: We give formulae for first and second derivatives of generalized eigenvalues/eigenvectors of symmetric matrices and generalized singular values/singular vectors of rectangular matrices when the matrices are linear or nonlinear functions of a vector of parameters. In addition, implementations in R (@r_core_team_25) are provided. formulae are checked against Jacobians and Hessians computed by numerical differentiation. Some applications to multivariate data analysis are discussed.\sectionbreak
+abstract: We give formulae for first and second derivatives of generalized eigenvalues/eigenvectors of symmetric matrices and generalized singular values/singular vectors of rectangular matrices when the matrices are linear or nonlinear functions of a vector of parameters. In addition, implementations in R (@r_core_team_25) are provided. Formulae are checked against Jacobians and Hessians computed by numerical differentiation. Some applications to multivariate data analysis are discussed.\sectionbreak
 ---
 
 ```{r loadpackages, echo = FALSE}
@@ -178,7 +178,7 @@ Equations \eqref{eq-singval} and \eqref{eq-singvec} will be used frequently in t
 To find second partial derivatives we start simple with the eigenvalues. Differentiate \eqref{eq-singval} with respect to $\theta_t$. This gives 
 \begin{equation}
 \mathcal{D}_{st}\lambda_i=2x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)\mathcal{D}_tx_i+
-x_i'(D_{st}A-\lambda_s\mathcal{D}_{st}B)x_i-x_i'(\mathcal{D}_sB)x_i\cdot\mathcal{D}_t\lambda_i.\label{eq-seclbd}
+x_i'(D_{st}A-\lambda_s\mathcal{D}_{st}B)x_i-x_i'(\mathcal{D}_sB)x_i\cdot\mathcal{D}_t\lambda_i.\label{eq-seclbd}.
 \end{equation} 
 Substituting from \eqref{eq-singval} and \eqref{eq-singvec} gives
 \begin{multline}
@@ -188,6 +188,7 @@ x_i'(D_{st}A-\lambda_i\mathcal{D}_{st}B)x_i\\-x_i'(\mathcal{D}_tB)x_i\cdot x_i'(
 Formula \eqref{eq-seclbdmat} shows that $\mathcal{D}_{st}\lambda_i=\mathcal{D}_{ts}\lambda_i$, just as it should be.
 
 The second partials of the generalized eigenvalues are, not surprisingly, more complicated. 
+
 Start with 
 $$
 \mathcal{D}_tW_i=X(\Lambda-\lambda_iI)^+(D_tX)'+(D_tX)(\Lambda-\lambda_iI)^+X'-XV_tX',
@@ -211,40 +212,61 @@ It follows that
 
 We could, of course, again substitute the expressions for $\mathcal{D}_s\lambda_i$ and $\mathcal{D}_sx_i$ from \eqref{eq-singval} and \eqref{eq-singvec} into \eqref{eq-hessgen}. But computationally it makes more sense to first compute the various intermedate quantities and then use them to put the complete expression together.
 
-## Examples
+# Software
 
-### Single Parameter
+In the repository <https://www.github.com/deleeuw/generalized-eigen-derivatives> there are R programs
+evaluating $A, B, \mathcal{D}\Lambda, \mathcal{D}X, \mathcal{D}^2\Lambda,$ and $\mathcal{D}^2X$
+at a given $\theta$. The function gevNonlinear() can be used for any non-linear model. There is
+a corresponding numDeriv check function gevNonlinearNum(), which takes the same argument $\theta$
+and gives the same output of $A, B, \mathcal{D}\Lambda, \mathcal{D}X,$ and $\mathcal{D}^2\Lambda$.
+
+Not $\mathcal{D}^2X$, though. Note that each $\mathcal{D}_{st}x_{ij}$ is a symmetric matrix of order $p$, and there are $n^2$ such matrices. That's a lot of numbers and a lot of computing. We do not want to put too much of a computational burden on gevNonlinear(), and thus we made the evaluation of formula ... for the second derivatives of the eigenvectors and its numerical checks into separate programs. This is also motivated by
+the consideration that in actual data analysis these second derivatuves are less frequently needed.
+
+
+Functions gevNonlinear() and gevNonlinearNum() have only the single argument $\theta$.
+In order to attain the ncessary level of generality they need to be run from a template which defines some global variables. Notably
+the template defines the R functions theA(), theB(), dsA(), dsB(), dstA(), and dstB(), together
+with the parameters and additional values these functions need. 
+
+
+# Examples
+
+## Single Parameter
+
 
 \begin{align}
 A(\theta)&=A_0+\theta A_1+\frac12\theta^2A_2+...+\frac{1}{p}\theta^pA_p\\
 B(\theta)&=B_0+\theta B_1+\frac12\theta^2B_2+...+\frac{1}{p}\theta^pB_p
 \end{align}
 
+The template is gevExampleOne.R in the github repository.
 
-### Real Psychometrics
 
-# Linear Combinations
+## Linear Combinations
 
-## Disjoint
-
-Suppose $A()$ is linear combinations of $p$ known symmetric matrices $A_s$ and $B()$ is a linear combination of
-$q$ known symmetric matrices $B_s$. It is convenient to pretend there are  $p+q$ matrices $A_s$ and $B_s$, such that $A_s=0$ if $p+1\leq s\leq p+q$ and $B_s=0$ if $1\leq s\leq p$. There may also be "intercepts"
+Suppose $A()$ is linear combinations of $p_A$ known symmetric matrices $A_s$ and $B()$ is a linear combination of
+$p_B$ known symmetric matrices $B_s$. It is convenient to pretend there are  $p=p_A+p_B$ matrices $A_s$ and $B_s$, such that $A_s=0$ if $p_A+1\leq s\leq p_A+p_B$ and $B_s=0$ if $1\leq s\leq p_A$. There may also be "intercepts"
 $A_0$ and $B_0$. Thus
 \begin{subequations}
 \begin{align}
 A(\theta)&=A_0+\sum_{s=1}^p\theta_sA_s,\\
-B(\theta)&=B_0+\sum_{s=p+1}^{p+q}\theta_sB_s.
+B(\theta)&=B_0+\sum_{s=1}^p\theta_sB_s,
 \end{align}
-\end{subequations}
-Now
+and
 \begin{align}
-\mathcal{D}_sA&=\begin{cases}A_s&\text{ if }1\leq s\leq p,\\
-0&\text{ if }p+1\leq s\leq p+q,
+\mathcal{D}_sA&=
+\begin{cases}
+A_s&\text{ if }1\leq s\leq p_A,\\
+0&\text{ if }p_A+1\leq s\leq p,
 \end{cases}\\
-\mathcal{D}_sB&=\begin{cases}0&\text{ if }1\leq s\leq p,\\
-B_s&\text{ if }p+1\leq s\leq p+q.
+\mathcal{D}_sB&=
+\begin{cases}
+0&\text{ if }1\leq s\leq p_A,\\
+B_s&\text{ if }p_A+1\leq s\leq p.
 \end{cases}
 \end{align}
+\end{subequations}
 
 Partial derivatives simplify because always exactly one of the 
 pair $(\mathcal{D}_sA,\mathcal{D}_sB)$ is zero. 
@@ -283,22 +305,9 @@ We distinguish four cases.
 -2\lambda_i^2x_i'B_sW_iB_tx_i+2\lambda_ix_i'B_sx_i\cdot x_i'B_tx_i
 \end{equation}
 
-## Conjoint
-
-If $A()$ and $B()$ are function of the same parameter vector $\Theta$, then 
-there is no need to distinguish the separate cases of the disjoint
-section. So we have
-
-\begin{subequations}
-\begin{align}
-A(\theta)&=A_0+\sum_{s=1}^p\theta_s A_s,\\
-B(\theta)&=B_0+\sum_{s=1}^p\theta_s B_s.
-\end{align}
-\end{subequations}
-
 Equations \eqref{eq-singval} and \eqref{eq-singval} can just be copied, with
 the simplification that $\mathcal{D}_sA$ and $\mathcal{D}_sB$ do not depend on $\theta$ any more,
-and are just $A_s$ and $B_s$.
+and are just $A_s$ and $B_s$. For ease of reference
 
 \begin{equation}
 \mathcal{D}_s\lambda_i=x_i'(A_s-\lambda_iB_s)x_i.\label{eq-singvalcon}
@@ -312,7 +321,9 @@ and are just $A_s$ and $B_s$.
 \mathcal{D}_{st}\lambda_i=-2x_i'(A_s-\lambda_iB_s)W_i (A_t-\lambda_iB_t)x_i\\-x_i'B_tx_i\cdot x_i'(A_s-\lambda_iB_s)x_i-x_i'B_sx_i\cdot x_s'(A_t-\lambda_iB_t)x_s.\label{eq-seclbdmatcon}
 \end{multline} 
 
-# Partial Derivatives
+# Special Results
+
+## Elementwise Partial Derivatives
 
 As a special
 
@@ -343,7 +354,7 @@ x_{is}^2&\text{ if }i = j.
 
 \sectionbreak
 
-# Simple Eigenvalue Decomposition
+## Simple Eigenvalue Decomposition
 
 A simple eigenvalue (SEV) problem is of the form 
 \begin{subequations}
@@ -374,7 +385,7 @@ $$
 
 \sectionbreak
 
-# Generalized Singular Value Decomposition
+## Generalized Singular Value Decomposition
 
 $X=A^{-1}GY\Lambda^{-1}$ then $G'E^{-1}GY=BY\Lambda^2$
 
@@ -385,5 +396,13 @@ $$ $$
 $$ $$
 \mathcal{D}\lambda_s=\tfrac12 y_s'\{\lambda_s^{-1}(\mathcal{D}G'E^{-1}G)-\lambda_s(\mathcal{D}B)\}y_s
 $$ \sectionbreak
+
+# Applications
+
+## Multiple Correspondence Analysis
+
+## Covariances and Correlations
+
+## Matrix Decomposition Factor Analysis
 
 # References

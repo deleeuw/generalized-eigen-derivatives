@@ -39,7 +39,7 @@ dsB <- function(theta, s = 1) {
 
 dstA <- function(theta, s = 1, t = 1) {
   daa <- aarray[, , 2]
-  for (r in 1:(p - 2)) {
+  for (r in 1:(d - 2)) {
     daa <- daa + (r + 1) * (theta^r) * aarray[, , r + 2]
   }
   return(daa)
@@ -47,7 +47,7 @@ dstA <- function(theta, s = 1, t = 1) {
 
 dstB <- function(theta, s = 1, t = 1) {
   dbb <- barray[, , 2]
-  for (r in 1:(p - 2)) {
+  for (r in 1:(d - 2)) {
     dbb <- dbb + (r + 1) * (theta^r) * barray[, , r + 2]
   }
   return(dbb)
