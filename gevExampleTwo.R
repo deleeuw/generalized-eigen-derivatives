@@ -28,11 +28,11 @@ dsB <- function(theta, s) {
   return(barray[, , s])
 }
 
-dstA <- function(theta, s) {
+dstA <- function(theta, s, t) {
   return(matrix(0, n, n))
 }
 
-dstB <- function(theta, s) {
+dstB <- function(theta, s, t) {
   return(matrix(0, n, n))
 }
 
