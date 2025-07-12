@@ -160,16 +160,19 @@ which can also be written as
 \begin{equation}
 \mathcal{D}_sx_i=-\sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-\tfrac12 x_i'(\mathcal{D}_sB)x_i)\cdot x_i
 \end{equation}
-It is convenient to have a matrix expression for this derivative. Define the matrices
+It is convenient to have a matrix expression for this derivative. Define, following @deleeuw_R_07c, the matrices
 \begin{equation}
-W_i:=
+(A-\lambda_i B)^-:=
 \sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}=
 X(\Lambda-\lambda_iI)^+X',\label{eq-geninv}
 \end{equation} 
-where $(\Lambda-\lambda_iI)^+$ is the Moore-Penrose inverse of $\Lambda-\lambda_iI$.
+where $(\Lambda-\lambda_iI)^+$ is the Moore-Penrose inverse of $\Lambda-\lambda_iI$. Matrix \label{eq-geninv}
+is like a generalized inverse, although it is the Moore-Penrose inverse of $A-\lambda_i B$ only if $B$ is
+identically equal to one.
+
 Using \eqref{eq-geninv} gives
 \begin{equation}
-\mathcal{D}_sx_i=-W_i(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-\tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot x_i.\label{eq-singvec}
+\mathcal{D}_sx_i=-(A-\lambda_i B)^-(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-\tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot x_i.\label{eq-singvec}
 \end{equation}
 Equations \eqref{eq-singval} and \eqref{eq-singvec} will be used frequently in this paper.
 
@@ -191,21 +194,16 @@ The second partials of the generalized eigenvalues are, not surprisingly, more c
 
 Start with 
 $$
-\mathcal{D}_tW_i=X(\Lambda-\lambda_iI)^+(D_tX)'+(D_tX)(\Lambda-\lambda_iI)^+X'-XV_tX',
+\mathcal{D}_t(A-\lambda_i B)^-=\sum_{j\neq i}\frac{(\lambda_j-\lambda_i)\{(\mathcal{D}_tx_j)x_j'+x_j(\mathcal{D}_tx_j)'\}-x_jx_j'(\mathcal{D}_t\lambda_j-\mathcal{D}_t\lambda_i)}{(\lambda_j-\lambda_i)^2},
 $$
-where for $i\neq j$
-$$
-\{V_t\}_{ij}:=\frac{\mathcal{D}_t\lambda_j-\mathcal{D}_t\lambda_i}{(\lambda_j-\lambda_i)^2},
-$$
-and $\{V_t\}_{ii}:=0$. 
 
 It follows that
 \begin{align}
-\mathcal{D}_{st}x_i=&-\mathcal{D}_tW_i(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i\notag\\
-&-W_i(\mathcal{D}_{st}A-\lambda_i\mathcal{D}_{st}B)x_i\notag\\
-&+\mathcal{D}_t\lambda_i\cdot W_i(\mathcal{D}_sB)x_i\notag\\
-&-W_i(\mathcal{D}_{s}A-\lambda_i\mathcal{D}_{s}B)\mathcal{D}_tx_i\notag\\
-&-(\mathcal{D}_tx_s)'(\mathcal{D}_sB)x_i\cdot x_i\notag\\
+\mathcal{D}_{st}x_i=&-\mathcal{D}_t(A-\lambda_i B)^-(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i\notag\\
+&-(A-\lambda_i B)^-(\mathcal{D}_{st}A-\lambda_i\mathcal{D}_{st}B)x_i\notag\\
+&+\mathcal{D}_t\lambda_i\cdot (A-\lambda_i B)^-(\mathcal{D}_sB)x_i\notag\\
+&-(A-\lambda_i B)^-(\mathcal{D}_{s}A-\lambda_i\mathcal{D}_{s}B)\mathcal{D}_tx_i\notag\\
+&-(\mathcal{D}_tx_i)'(\mathcal{D}_sB)x_i\cdot x_i\notag\\
 &-\tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot\mathcal{D}_tx_i\notag\\
 &-\tfrac12 x_i'(\mathcal{D}_{st}B)x_i\cdot x_i.\label{eq-hessgen}
 \end{align}

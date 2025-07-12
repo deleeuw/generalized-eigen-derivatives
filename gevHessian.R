@@ -34,7 +34,7 @@ gevHessian <- function(theta) {
       dx[, s, i] <- -wi %*% dfas %*% xi - 0.5 * sum(xi * (dsbs %*% xi)) * xi
     }
   }
-  ddx <- array(0, c(n, n, p, p))
+  ddx <- array(0, c(p, p, n, n))
   for (i in 1:n) {
     xi <- x[, i]
     li <- l[i]
@@ -55,19 +55,21 @@ gevHessian <- function(theta) {
           }
           dtxj <- dx[, t, j]
           dtwi <- dtwi + (outer(xj, dtxj) + outer(dtxj, xj)) / (lj - li)
-          dtwi <- dtwi - ((dl[j, t] -dl[i, t]) / ((lj - li)^2)) * outer(xj, xj)
+          dtwi <- dtwi - ((dl[j, t] - dl[i, t]) / ((lj - li)^2)) * outer(xj, xj)
         }
         dsat <- dsA(theta, t)
         dsbt <- dsB(theta, t)
         dfat <- dsat - li * dsbt
+        dxti <- dx[, t, i]
         accu <- 0
         accu <- accu - dtwi %*% dfas %*% xi
         accu <- accu - wi %*% (dstA(theta, s, t) - li * dstB(theta, s, t)) %*% xi
         accu <- accu + dl[i, t] * wi %*% dsbs %*% xi
-        accu <- accu - wi %*% dfas %*% dsbt %*% xi
-        accu <- accu - sum(dx[, t, i] * (dsbs %*% xi)) * xi
-        accu <- accu - 0.5 * sum(xi * (dsbs %*% xi)) * dx[, t, i]
+        accu <- accu - wi %*% dfas %*% dxti
+        accu <- accu - sum(dxti * (dsbs %*% xi)) * xi
+        accu <- accu - 0.5 * sum(xi * (dsbs %*% xi)) * dxti
         accu <- accu - 0.5 * sum(xi * (dstB(theta, s, t) %*% xi)) * xi
+        ddx[s, t, , i] <- accu
       }
     }
   }
@@ -81,19 +83,22 @@ gevHessian <- function(theta) {
 }
 
 gevHessianNum <- function(theta) {
-  theFunc <- function(theta, ss) {
+  theFunc <- function(theta, ii, jj) {
     a <- theA(theta)
     b <- theB(theta)
     h <- myGeigen(a, b)
-    return(h$values[ss])
+    return(h$vectors[ii, jj])
   }
-  dl <- jacobian(func = theFunc, x = theta, ss = 0)
-  n <- nrow(theA(theta))
-  dx <- array(0, c(n, p, n))
-  ddl <- array(0, c(p, p, n))
-  for (t in 1:n) {
-    dx[, , t] <- jacobian(func = theFunc, x = theta, ss = t)
-    ddl[, , t] <- hessian(func = theGunc, x = theta, ss = t)
+  ddx <- array(0, c(p, p, n, n))
+  for (i in 1:n) {
+    for (j in 1:n) {
+      ddx[, , i, j] <- hessian(
+        func = theFunc,
+        x = theta,
+        ii = i,
+        jj = j
+      )
+    }
   }
-  return(list(dl = dl, dx = dx, ddl = ddl))
+  return(ddx)
 }
