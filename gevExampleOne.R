@@ -15,7 +15,7 @@ n <- 4
 p <- 1
 d <- 3
 
-dsA <- function(theta, s = 1) {
+dA <- function(theta, s = 1) {
   if (is.null(aarray)) {
     return(0)
   }
@@ -26,7 +26,7 @@ dsA <- function(theta, s = 1) {
   return(das)
 }
 
-dsB <- function(theta, s = 1) {
+dB <- function(theta, s = 1) {
   if (is.null(barray)) {
     return(0)
   }
@@ -37,7 +37,7 @@ dsB <- function(theta, s = 1) {
   return(dbs)
 }
 
-dstA <- function(theta, s = 1, t = 1) {
+ddA <- function(theta, s = 1, t = 1) {
   daa <- aarray[, , 2]
   for (r in 1:(d - 2)) {
     daa <- daa + (r + 1) * (theta^r) * aarray[, , r + 2]
@@ -45,7 +45,7 @@ dstA <- function(theta, s = 1, t = 1) {
   return(daa)
 }
 
-dstB <- function(theta, s = 1, t = 1) {
+ddB <- function(theta, s = 1, t = 1) {
   dbb <- barray[, , 2]
   for (r in 1:(d - 2)) {
     dbb <- dbb + (r + 1) * (theta^r) * barray[, , r + 2]

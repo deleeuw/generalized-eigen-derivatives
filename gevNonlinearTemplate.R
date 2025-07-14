@@ -1,16 +1,16 @@
-dsA <- function(theta, s) {
+dA <- function(theta, s) {
   # This routine return the matrix d_sA
 }
 
-dsB <- function(theta, s) {
+dB <- function(theta, s) {
   # This routine return the matrix d_sB
 }
 
-dstA <- function(theta, s, t) {
+ddA <- function(theta, s, t) {
   # This routine return the matrix d_{st}A
 }
 
-dstB <- function(theta, s, t) {
+ddB <- function(theta, s, t) {
   # This routine return the matrix d_{st}B
 }
 

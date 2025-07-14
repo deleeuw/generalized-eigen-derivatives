@@ -20,6 +20,7 @@ gevHessian <- function(theta) {
   n <- length(l)
   dl <- matrix(0, n, p)
   dx <- array(0, c(n, p, n))
+  ddx <- array(0, c(p, p, n, n))
   for (i in 1:n) {
     xi <- x[, i]
     li <- l[i]
@@ -33,14 +34,6 @@ gevHessian <- function(theta) {
       dl[i, s] <- sum(xi * (dfas %*% xi))
       dx[, s, i] <- -wi %*% dfas %*% xi - 0.5 * sum(xi * (dsbs %*% xi)) * xi
     }
-  }
-  ddx <- array(0, c(p, p, n, n))
-  for (i in 1:n) {
-    xi <- x[, i]
-    li <- l[i]
-    mpl <- l - li
-    mpl <- diag(ifelse(mpl == 0, 0, 1 / mpl))
-    wi <- x %*% mpl %*% t(x)
     for (s in 1:p) {
       dsas <- dsA(theta, s)
       dsbs <- dsB(theta, s)
@@ -74,11 +67,11 @@ gevHessian <- function(theta) {
     }
   }
   return(list(
-    values = l,
-    vectors = x,
-    dvalues = dl,
-    dvectors = dx,
-    ddvectors = ddx
+    l = l,
+    x = x,
+    dl = dl,
+    dx = dx,
+    ddx = ddx
   ))
 }
 
@@ -95,6 +88,7 @@ gevHessianNum <- function(theta) {
       ddx[, , i, j] <- hessian(
         func = theFunc,
         x = theta,
+        method.args = list(eps = 1e-6, r = 6),
         ii = i,
         jj = j
       )

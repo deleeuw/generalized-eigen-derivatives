@@ -20,19 +20,19 @@ bintercept <- crossprod(matrix(rnorm(400), 100, 4)) / 100
 p <- 6
 n <- 4
 
-dsA <- function(theta, s) {
+dA <- function(theta, s) {
   return(aarray[, , s])
 }
 
-dsB <- function(theta, s) {
+dB <- function(theta, s) {
   return(barray[, , s])
 }
 
-dstA <- function(theta, s, t) {
+ddA <- function(theta, s, t) {
   return(matrix(0, n, n))
 }
 
-dstB <- function(theta, s, t) {
+ddB <- function(theta, s, t) {
   return(matrix(0, n, n))
 }
 
