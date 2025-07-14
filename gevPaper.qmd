@@ -160,7 +160,7 @@ Combining \eqref{eq-offh} and \eqref{eq-diagh} shows that for the eigenvector co
 \end{equation}
 which can also be written as
 \begin{equation}
-\mathcal{D}_sx_i=-\sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}(\mathcal{D}_sA-\lambda_i(\mathcal{D}_sB)x_i-\tfrac12 x_i'(\mathcal{D}_sB)x_i)\cdot x_i
+\mathcal{D}_sx_i=-\sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-\tfrac12 x_i'(\mathcal{D}_sB)x_i)\cdot x_i
 \end{equation}
 It is convenient to have a matrix expression for this derivative. Define, following @deleeuw_R_07c, the matrices
 \begin{equation}
@@ -168,9 +168,12 @@ It is convenient to have a matrix expression for this derivative. Define, follow
 \sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}=
 X(\Lambda-\lambda_iI)^+X',\label{eq-geninv}
 \end{equation} 
-where $(\Lambda-\lambda_iI)^+$ is the Moore-Penrose inverse of $\Lambda-\lambda_iI$. Matrix \label{eq-geninv}
-is like a generalized inverse, although it is the Moore-Penrose inverse of $A-\lambda_i B$ only if $B$ is
-identically equal to one.
+where $(\Lambda-\lambda_iI)^+$ is the Moore-Penrose inverse of $\Lambda-\lambda_iI$. Matrix \eqref{eq-geninv}
+is a weak inverse of $A-\lambda_i B$, in the sense that
+\begin{equation}
+(A-\lambda_i B)^-(A-\lambda_i B)(A-\lambda_i B)^-=(A-\lambda_i B)^-.\label{eq-2inverse}
+\end{equation}
+It is a Moore-Penrose inverse if and only if $B$ is identically equal to one (and thus $X'X=XX'=I$).
 
 Using \eqref{eq-geninv} gives
 \begin{equation}

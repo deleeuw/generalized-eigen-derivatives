@@ -52,14 +52,13 @@ gevNonlinear <- function(theta) {
         ddl[s, t, i] <- accu
         dtwi <- 0
         for (j in 1:n) {
-          xj <- x[, j]
-          lj <- l[j]
-          if (j == i) {
-            next
+          if (j != i) {
+            xj <- x[, j]
+            lj <- l[j]
+            dtxj <- dx[, t, j]
+            dtwi <- dtwi + (outer(xj, dtxj) + outer(dtxj, xj)) / (lj - li)
+            dtwi <- dtwi - ((dl[j, t] - dl[i, t]) / ((lj - li)^2)) * outer(xj, xj)
           }
-          dtxj <- dx[, t, j]
-          dtwi <- dtwi + (outer(xj, dtxj) + outer(dtxj, xj)) / (lj - li)
-          dtwi <- dtwi - ((dl[j, t] - dl[i, t]) / ((lj - li)^2)) * outer(xj, xj)
         }
         accu <- 0
         accu <- accu - dtwi %*% dsab %*% xi
