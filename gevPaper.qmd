@@ -109,9 +109,11 @@ I should perhaps also mention a previous version of this paper (@deleeuw_R_07c),
 
 # Basic Results
 
-Suppose $A()$ and $B()$ are differentiable symmetric matrix valued functions of order $n$ on an open subset $\Theta$ of $\mathbb{R}^p$, and suppose at $\theta\in\Theta$ the matrix $B(\theta)$ is positive definite and the generalized eigenvalues of $(A(\theta),B(\theta))$ are all different. Then the ordered eigenvalues $\Lambda()$ and the eigenvectors $X()$ are differentiable functions of the parameters in a neighborhood of $\theta$. We use subscripts $i,j,k,l=1,\cdots, n$ for the elements of $A,B,\Lambda,$ and $X$, and $s,t=1,\cdots,p$ for the parameters in $\theta$. The partial derivative of a function $A()$ on 
-$\Theta$ with respect to $\theta_s$, evaluated at $\theta$, is $\mathcal{D}_sA(\theta)$. In
-order not to clutter our formulae the place where the derivative is evaluated is usually not
+Suppose $A()$ and $B()$ are differentiable symmetric matrix valued functions of order $n$ on an open subset $\Theta$ of $\mathbb{R}^p$, and suppose at $\theta\in\Theta$ the matrix $B(\theta)$ is positive definite and the generalized eigenvalues of $(A(\theta),B(\theta))$ are all different. Then the ordered eigenvalues $\Lambda()$ and the eigenvectors $X()$ are differentiable functions of the parameters in a neighborhood of $\theta$. We use subscripts $i,j=1,\cdots, n$ for the rows and columns of $A$ and $B$, subscripts $\eta,\nu=1,\cdots,n$ for the eigenvalues and eigenvectors, and $s,t=1,\cdots,p$ for the parameters in $\theta$. Thus $x_{i\nu}$ is element $i$ of eigenvector $x_\nu$.
+
+The partial derivative of a function $A()$ on 
+$\Theta$ with respect to $\theta_s$, evaluated at $\theta$, is written as $\mathcal{D}_sA(\theta)$. In
+order not to clutter our formulae the parameter vector where the derivative is evaluated is usually not
 explicitly specified. Note also that it is sometimes necessary to use parentheses to distinguish $(\mathcal{D}_s)Ax$ from $\mathcal{D}_s(Ax)$.
 
 ## First Partials
@@ -129,9 +131,9 @@ The matrix $\Lambda X'B(\mathcal{D}_sX)-X'B(\mathcal{D}_sX)\Lambda$ is anti-symm
 \begin{equation}
 \mathcal{D}_s\Lambda=\text{diag}\{X'(\mathcal{D}_sA)X-X'(\mathcal{D}_sB)X\Lambda\},\label{eq-labsol}
 \end{equation} 
-or, for a single eigenvalue $\lambda_i$ with correspondiung eigenvector $x_i$, 
+or, for a single eigenvalue $\lambda_i$ with corresponding eigenvector $x_i$, 
 \begin{equation}
-\mathcal{D}_s\lambda_i=x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i.\label{eq-singval}
+\mathcal{D}_s\lambda_\nu=x_\nu'(\mathcal{D}_sA-\lambda_\nu\mathcal{D}_sB)x_\nu.\label{eq-singval}
 \end{equation}
 
 Taking the off-diagonal\footnote{The off-diagonal $\text{off}(X)$ of a square matrix $X$ is $X$ with its diagonal replaced by zeroes.} on both sides of \eqref{eq-labfull} gives 
@@ -156,11 +158,11 @@ h_{ii}=-\tfrac12 x_i'(\mathcal{D}_sB)x_i. \label{eq-diagh}
 \end{equation} 
 Combining \eqref{eq-offh} and \eqref{eq-diagh} shows that for the eigenvector corresponding with $\lambda_s$ we have\footnote{Symbol $\cdot$ is used for multiplication with a scalar if using it makes a formula more clear, similar to parentheses.} then 
 \begin{equation}
-\mathcal{D}_sx_i=-\sum_{j\neq i}\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}x_j-\tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot x_i.
+\mathcal{D}_sx_i=-\sum_{j\neq i}\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}x_j-\tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot x_i.\label{eq-secder1}
 \end{equation}
 which can also be written as
 \begin{equation}
-\mathcal{D}_sx_i=-\sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-\tfrac12 x_i'(\mathcal{D}_sB)x_i)\cdot x_i
+\mathcal{D}_sx_i=-\sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-\tfrac12 x_i'(\mathcal{D}_sB)x_i)\cdot x_i.\label{eq-secder2}
 \end{equation}
 It is convenient to have a matrix expression for this derivative. Define, following @deleeuw_R_07c, the matrices
 \begin{equation}
@@ -196,7 +198,29 @@ x_i'(D_{st}A-\lambda_i\mathcal{D}_{st}B)x_i\\-x_i'(\mathcal{D}_tB)x_i\cdot x_i'(
 Formula \eqref{eq-seclbdmat} shows that $\mathcal{D}_{st}\lambda_i=\mathcal{D}_{ts}\lambda_i$, just as it should be.
 
 The second partials of the generalized eigenvalues are, not surprisingly, more complicated. 
-We start with 
+We start with \eqref{eq-secder1} and differentiate with respect to $\theta_t$. We give some
+internediate calculations for this case, because they make it easier to check the final
+result.
+\begin{multline}
+\mathcal{D}_{st}x_i=-\sum_{j\neq i}\mathcal{D}_t\left\{\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}\right\}x_j\\
+-\sum_{j\neq i}\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}\mathcal{D}_tx_j
+-\tfrac12\mathcal{D}_t\{x_i'(\mathcal{D}_sB)x_i\cdot x_i\}.
+\end{multline}
+
+
+\begin{multline}
+\mathcal{D}_t\left\{\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}\right\}=\\
+\frac{\mathcal{D}_t\{x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i\}}{\lambda_i-\lambda_j}
+-\frac{(\mathcal{D}_t\lambda_j-\mathcal{D}_t\lambda_i)x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i}{(\lambda_j-\lambda_i)^2}
+\end{multline}
+\begin{multline}
+\mathcal{D}_t\{x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i\}=(\mathcal{D}_tx_j)'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i+x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)\mathcal{D}_tx_i\\+
+x_j'(\mathcal{D}_{st}A-\lambda_i\mathcal{D}_{st}B)x_i-\mathcal{D}_t\lambda_i\cdot x_j'(\mathcal{D}_sB)x_i
+\end{multline}
+\begin{multline}
+\mathcal{D}_t\{x_i'(\mathcal{D}_sB)x_i\cdot x_i\}=\\2(\mathcal{D}_tx_i)'(\mathcal{D}_sB)x_i\cdot x_i+x_i'(\mathcal{D}_{st}B)x_i\cdot x_i+x_i'(\mathcal{D}_tB)x_i\cdot\mathcal{D}_tx_i
+\end{multline}
+
 \begin{equation}
 \mathcal{D}_t(A-\lambda_i B)^-=\sum_{j\neq i}\frac{(\lambda_j-\lambda_i)\{(\mathcal{D}_tx_j)x_j'+x_j(\mathcal{D}_tx_j)'\}-x_jx_j'(\mathcal{D}_t\lambda_j-\mathcal{D}_t\lambda_i)}{(\lambda_j-\lambda_i)^2},\label{eq-dtwi}
 \end{equation}
@@ -225,24 +249,42 @@ is the vector $\theta$. In order to attain the necessary level of generality the
 
 The result is a list with
 
-* $A(\theta)$, an $n\times n$ matrix,
-* $B(\theta)$, an $n\times n$ matrix,
-* $\lambda(\theta)$, an $n$-element vector,
-* $X(\theta)$, an $n\times n$ matrix,
-* $\mathcal{D}\Lambda(\theta)$, an $n\times p$ matrix,
-* $\mathcal{D}X(\theta)$, an $n\times p\times n$ array,
-* $\mathcal{D}^2\Lambda(\theta)$, a $p\times p\times n$ array,
-* $\mathcal{D}^2X(\theta)$, a $p\times p\times n\times n$ array.
+* $A(\theta)$, an $n\times n$ matrix, typical element $a_{ij}(\theta)$,
+* $B(\theta)$, an $n\times n$ matrix, typical element $b_{ij}(\theta)$,
+* $\lambda(\theta)$, an $n$-element vector, typical element $\lambda_\nu(\theta)$,
+* $X(\theta)$, an $n\times n$ matrix, typical element $x_{i\nu}(\theta)$,
+* $\mathcal{D}\Lambda(\theta)$, an $n\times p$ matrix, element $(\nu, s)$ is $\mathcal{D}_s\lambda_\nu(\theta)$,
+* $\mathcal{D}X(\theta)$, an $n\times p\times n$ array, element $(i, s, \nu)$ is $\mathcal{D}_sx_{i\nu}(\theta)$,
+* $\mathcal{D}^2\Lambda(\theta)$, a $p\times p\times n$ array,element $(s, t, \nu)$
+is $\mathcal{D}_{st}\lambda_\nu(\theta)$,
+* $\mathcal{D}^2X(\theta)$, a $p\times p\times n\times n$ array, element 
+$(s, t, i, \nu)$ is $\mathcal{D}_{st}x_{i\nu}(\theta)$.
 
-There is a corresponding numDeriv check function gevNonlinearNum(), which has the same argument $\theta$
-and gives the same output as gevNonlinear().
+The names in the code for the eight matrices in the list are a, b, l, x, dl, dx, ddl, and ddx.
 
+There is a corresponding numDeriv check function gevNonlinearNum(), which has the same single argument $\theta$
+and gives the same output as gevNonlinear(). In addition there is gevMyLimit(), which is a quick and dirty
+numerical differentiation routine based on
+\begin{subequations}
+\begin{equation}
+\mathcal{D}f_s(\theta)=\lim_{\epsilon\rightarrow 0}\frac{f(\theta+\epsilon e_s)-f(\theta)}{\epsilon},\label{eq-lim1}
+\end{equation}
+and
+\begin{equation}
+\mathcal{D}f_{st}(\theta)=\lim_{\epsilon\rightarrow 0}\frac{f(\theta+\epsilon(e_s+e_t))-f(\theta+\epsilon e_s)-f(\theta+\epsilon e_t)+f(\theta)}{\epsilon^2}.\label{eq-lim2}
+\end{equation}
+\end{subequations}
+
+The function gevMyLimit() uses a single small value of $\epsilon$, by default $10^{-5}$. The function can be applied to any eigenvalue or eigenvector element and in a loop any of the matrices of first or second
+partials. By default $\epsilon$
+is $10^{-5}$. If $\epsilon$ is too small the approximation is overwhelmed by the rounding error that
+comes from squaring $\epsilon$ in the denominator of \eqref{eq-lim2}
 
 \sectionbreak
 
 # Examples
 
-This section gives two examples of templates that use random data. We do not give the results of the various
+This section gives two examples of templates that uses artificial random data. We do not give the results of the various
 derivative calculations, which for these examples are just a large amount of meaningless numbers. The software
 in the repository, together with the templates, can be used to calculate Jacobians and Hessians for various
 values of the parameter vector. I should perhaps mention that in both examples the results for the derivatives based on the formulas are the same as the results based on numerical differentiation.
