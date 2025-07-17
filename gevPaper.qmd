@@ -454,7 +454,7 @@ on $m$ categorical variables (also known as "factors"). Variable
 $j$ has $k_j$ possible values (also known as "levels"), and our observations are coded
 as unit vector of length $k_j$, concatenated to binary vectors (also known as "profiles")
 of length $K:=\sum k_j$. There are $p:=\prod k_j$ possible observations,
-and each of them occurs in the data with frequency $\pi_s$ (in most MCA applications
+and each of them occurs in the data with relative frequency $\pi_s$ (in most MCA applications
 $N<<M$ and thus many $\pi_s$ will be zero). Note that (ordinary) Correspondence
 Analysis (CA) is the special case with $m=2$.
 
@@ -543,12 +543,12 @@ matrixPrint(sqrt(diag(ac) / 592), digits = 4)
 
 In actual MCA applications the eigenvectors are usually scaled by multiplying them with the
 square root of the corresponding eigenvalue. This makes the computation of the
-derivatives of the scaled eigenvectors slightly more complicated.
+asymptotic distribution of the scaled eigenvectors slightly more complicated.
 
-The second derivatives are of course also compouted by gevNonlinear(). The Delta Method
-tells us they can be used to give estimates of the bias, using
+The Delta Method
+tells us second derivatives  can be used to give estimates of the bias, using
 $$
-N\cdot\text{BIAS}(\lambda_i)=\frac12\text{tr}\ \mathcal{D}^2\lambda_i(\Pi-\pi\pi')=\sum_{s=1}^p\pi_s\mathcal{D}_{ss}\lambda_i,
+N\cdot\text{BIAS}(\lambda_i)=\frac12\text{tr}\ \mathcal{D}^2\lambda_i(\Pi-\pi\pi')=\frac12\sum_{s=1}^p\pi_s\mathcal{D}_{ss}\lambda_i,
 $$
 because $\pi'(\mathcal{D}^2\lambda_i)\pi=0$.
 
@@ -560,10 +560,38 @@ for (r in 2:8) {
 }
 matrixPrint(bias, digits = 4)
 ```
-We see that the larger eigenvalues are overestimated and the smaller ones are underestimated.
+We see that the larger eigenvalues are overestimated and the smaller ones are underestimated, as expected.
 
 
 ## Covariances and Correlations
+
+The results for MCA derived in the previous section can be applied directly
+to the situation in which the possible data are selected from a finite number of numerical
+vectors. Because of the limits of measurement precision one could argue that all
+multivariate data are actually of this type. But of course for so-called
+"continuous" data the number of possible values, although finite, can be
+enormously large. One solution for the discrete-continuous dilemma is to 
+move from expectations that are weighted sums to expectations that are
+weighted by the empirical distribution function. We will go a different way.
+
+Note that
+
+$$
+A(\theta)=\sum_{s=1}^N \theta_sg_sg_s'
+$$
+$$
+\underline{\theta}_s=N^{-1}+N^{-\frac12}\underline{\omega}_s
+$$
+$$
+\underline{\omega}_s:=N^\frac12(\underline{\theta}_s-N^{-1})
+$$
+(Infinitesimal) Jackknife
+
+## Covariance Factor Analysis
+
+MINRES
+
+Swain
 
 ## Matrix Decomposition Factor Analysis
 
