@@ -567,8 +567,37 @@ We see that the larger eigenvalues are overestimated and the smaller ones are un
 
 ## Matrix Decomposition Factor Analysis
 
+In Matrix Decomposition Factor Analysis (MDFA) we have to maximize the sum of the
+largest singular values of a matrix $XT$ over $T$, which is equivalent to
+maximizing the sum of the square roots of the largest eigenvalues of 
+$T'X'XT$. The matrix $X$ is $n\times m$ and $T$ is $m\times p$, with $m<p$.
+Thus $A=T'X'XT$ is of order $p$ and of rank $r\leq m$. We suppose it is
+locally of constant rank $m$ and we maximize the sum of the sq1uare roots
+of its $m$ non-zero eigenvalues. The matrix $T$ is patterned, which means
+that some of its elments are restricted to be equal to zero.
 
-
+The pattern is defined by a basis of known matrices $T_s$ with the same
+pattern, so that
+$$
+T=\sum_{s=1}^p\theta_sT_s
+$$
+The problem is to maximize
+$$
+\sum_{j=1}^m\sqrt{\lambda_j(\theta_s\theta_tT_s'CT_t)}
+$$
+$$
+\mathcal{D}_sA=T'CT_s+T_s'CT
+$$
+$$
+\mathcal{D}_{st}A=T_s'CT_t+T_t'CT_s
+$$
+$$
+\sum_{j=1}^m\mathcal{D}_s\lambda_j^\frac12=\frac12\sum_{j=1}^m\lambda_j^{-\frac12}\mathcal{D}_s\lambda_j=
+\frac12\sum_{j=1}^m\lambda_j^{-\frac12}x_j'(\mathcal{D}_sA)x_j=\frac12\text{tr}\ A^{-\frac12}\mathcal{D}_sA=\text{tr}\ A^{-\frac12}T'CT_s
+$$
+$$
+\sum_{j=1}^m\mathcal{D}_{st}\lambda_j^\frac12=-\frac14\sum_{j=1}^m\lambda_j^{-\frac32}(\mathcal{D}_t\lambda_j)(\mathcal{D}_s\lambda_j)+\frac12\sum_{j=1}^m\lambda_j^{-\frac12}\mathcal{D}_{st}\lambda_j
+$$ 
 \sectionbreak
 
 # References
