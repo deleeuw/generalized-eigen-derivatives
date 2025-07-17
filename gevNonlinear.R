@@ -1,5 +1,21 @@
 library(numDeriv)
 
+matrixPrint <- function(x,
+                        digits = 6,
+                        width = 8,
+                        format = "f",
+                        flag = "+") {
+  print(noquote(
+    formatC(
+      x,
+      digits = digits,
+      width = width,
+      format = format,
+      flag = flag
+    )
+  ))
+}
+
 myGeigen <- function(a, b) {
   h <- eigen(solve(b, a))
   lbd <- h$values
@@ -7,7 +23,7 @@ myGeigen <- function(a, b) {
   xbx <- apply(x, 2, function(z)
     sum(z * (b %*% z)))
   x <- x %*% diag(1 / sqrt(xbx))
-  return(list(values = lbd, vectors = x))
+  return(list(values = Re(lbd), vectors = Re(x)))
 }
 
 gevNonlinear <- function(theta) {
@@ -48,7 +64,6 @@ gevNonlinear <- function(theta) {
     ddx = ddx
   ))
 }
-
 
 gevHessianValues <- function(theta, x, l) {
   ddl <- array(0, c(p, p, n))
@@ -183,17 +198,14 @@ gevNonlinearNum <- function(theta) {
       )
     }
   }
-  return(
-    list(
-      a = a,
-      b = b,
-      l = l,
-      x = x,
-      dl = dl,
-      dx = dx,
-      ddl = ddl,
-      ddx = ddx
-    )
-  )
+  return(list(
+    a = a,
+    b = b,
+    l = l,
+    x = x,
+    dl = dl,
+    dx = dx,
+    ddl = ddl,
+    ddx = ddx
+  ))
 }
-

@@ -13,7 +13,6 @@ aintercept <- crossprod(matrix(rnorm(400), 100, 4)) / 100
 bintercept <- crossprod(matrix(rnorm(400), 100, 4)) / 100
 n <- 4
 p <- 1
-d <- 3
 
 dA <- function(theta, s = 1) {
   if (is.null(aarray)) {

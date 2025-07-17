@@ -1,5 +1,5 @@
 ---
-title: Differentiating Generalized Eigenvalues/Vectors and Singular Values/Vectors 
+title: Differentiating Generalized Eigenvalues and Eigenvectors 
 author: 
     - name: Jan de Leeuw
       orcid: 0000-0003-1420-1797
@@ -78,22 +78,11 @@ X'BX&=I\label{eq-gevdef2}.
 \end{subequations} 
 We assume that $B$ is positive definite and that the eigenvalues are in decreasing\footnote{By "decreasing" we mean $\lambda_1\geq\lambda_2\geq\cdots\geq\lambda_n$.} order along the diagonal.
 
-A generalized singular value (GSV) problem is defined by a triple of matrices $(F,G,H)$. Here $F$ is $n\times m$, with $n\geq m$, $G$ is $n\times n$, and $H$ is $m\times m$. In GSV we solve the system 
-\begin{subequations}
-\begin{align}
-FY&=GX\Lambda,\label{eq-gsvdef1}\\
-F'X&=HY\Lambda,\label{eq-gsvdef2}\\
-X'GX&=I,\label{eq-gsvdef3}\\
-Y'HY&=I,\label{eq-gsvdef4}
-\end{align}
-\end{subequations}
-for the unknowns $X, Y,$ and $\Lambda$. The columns of $X$ are the left singular vectors, the columns of $Y$ the right singular vectors. Both $G$ and $H$ are assumed to be positive definite. The singular values in $\Lambda$ are non-negative, and in decreasing order along the diagonal.
-
-The equations \eqref{eq-gevdef1} and \eqref{eq-gevdef2} implicitly define $(X(),\Lambda())$ as a function of $(A,B)$. In the same way \eqref{eq-gsvdef1} to \eqref{eq-gsvdef4} implicitly define $(X(),Y(),\Lambda())$ as a function of $(F,G,H)$. It turns out that under suitable assumptions on the matrix arguments these implicit functions are actually differentiable, and this makes it interesting to compute their derivatives.
+The equations \eqref{eq-gevdef1} and \eqref{eq-gevdef2} implicitly define $(X(),\Lambda())$ as a function of $(A,B)$. It turns out that under suitable assumptions on the matrix arguments these implicit functions are actually differentiable, and this makes it interesting to compute their derivatives.
 
 There is a humongous and scattered literature on formulae for and computations of derivatives of eigenvalues and eigenvectors in linear algebra, numerical mathematics, engineering, multivariate statistics, and even in physics. Reviewing and collecting all relevant literature is an impossible task. We only give the basic mathematical references, which provide the foundations upon which our results will be built (@kato_84, @baumgartel_85).
 
-GEV and GSV are at the basis of almost all of the computations in multivariate statistics. In multinormal small sample theory the derivatives are needed for the Jacobians in change-of-variable calculations to find the distribution of many statistics. The applications we have in mind, however, are in large-sample statistics, where the derivatives are needed in Delta Method computations of standard errors and confidence intervals.
+GEV is at the basis of almost all of the computations in multivariate statistics. In multinormal small sample theory the derivatives are needed for the Jacobians in change-of-variable calculations to find the distribution of many statistics. The applications we have in mind, however, are in large-sample statistics, where the derivatives are needed in Delta Method computations of standard errors and confidence intervals.
 
 Again, the Delta Method literature is huge and diverse. Special cases have been around before there was a statistics discipline, ever since the beginning of error analysis in geodesy, physics, and astronomy (@gorroochurn_20). For the types of applications we have in mind all the relevant Delta Method details are given in @mann_wald_43 and @hsu_49.
 
@@ -109,9 +98,9 @@ I should perhaps also mention a previous version of this paper (@deleeuw_R_07c),
 
 # Basic Results
 
-Suppose $A()$ and $B()$ are differentiable symmetric matrix valued functions of order $n$ on an open subset $\Theta$ of $\mathbb{R}^p$, and suppose at $\theta\in\Theta$ the matrix $B(\theta)$ is positive definite and the generalized eigenvalues of $(A(\theta),B(\theta))$ are all different. Then the ordered eigenvalues $\Lambda()$ and the eigenvectors $X()$ are differentiable functions of the parameters in a neighborhood of $\theta$. We use subscripts $i,j=1,\cdots, n$ for the rows and columns of $A$ and $B$, subscripts $\eta,\nu=1,\cdots,n$ for the eigenvalues and eigenvectors, and $s,t=1,\cdots,p$ for the parameters in $\theta$. Thus $x_{i\nu}$ is element $i$ of eigenvector $x_\nu$.
+Suppose $A()$ and $B()$ are differentiable symmetric matrix valued functions of order $n$ on an open subset $\Theta$ of $\mathbb{R}^p$, and suppose at $\theta\in\Theta$ the matrix $B(\theta)$ is positive definite and the generalized eigenvalues of $(A(\theta),B(\theta))$ are all different. Then the ordered eigenvalues $\Lambda()$ and the eigenvectors $X()$ are analytic functions of the parameters in a neighborhood of $\theta$. 
 
-The partial derivative of a function $A()$ on 
+We use subscripts $i,j=1,\cdots, n$ for the rows and columns of $A$ and $B$, subscripts $\eta,\nu=1,\cdots,n$ for the eigenvalues and eigenvectors, and $s,t=1,\cdots,p$ for the parameters in $\theta$. Thus $x_{i\nu}$ is element $i$ of eigenvector $x_\nu$. The partial derivative of a function $A()$ on 
 $\Theta$ with respect to $\theta_s$, evaluated at $\theta$, is written as $\mathcal{D}_sA(\theta)$. In
 order not to clutter our formulae the parameter vector where the derivative is evaluated is usually not
 explicitly specified. Note also that it is sometimes necessary to use parentheses to distinguish $(\mathcal{D}_s)Ax$ from $\mathcal{D}_s(Ax)$.
@@ -199,44 +188,35 @@ Formula \eqref{eq-seclbdmat} shows that $\mathcal{D}_{st}\lambda_i=\mathcal{D}_{
 
 The second partials of the generalized eigenvalues are, not surprisingly, more complicated. 
 We start with \eqref{eq-secder1} and differentiate with respect to $\theta_t$. We give some
-internediate calculations for this case, because they make it easier to check the final
-result.
+intermediate calculations for this case, because they make it easier to check the final
+result. First
 \begin{multline}
 \mathcal{D}_{st}x_i=-\sum_{j\neq i}\mathcal{D}_t\left\{\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}\right\}x_j\\
 -\sum_{j\neq i}\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}\mathcal{D}_tx_j
--\tfrac12\mathcal{D}_t\{x_i'(\mathcal{D}_sB)x_i\cdot x_i\}.
+-\tfrac12\mathcal{D}_t\{x_i'(\mathcal{D}_sB)x_i\cdot x_i\}.\label{eq-inter1}
 \end{multline}
-
-
+The terms in the first summation in \eqref{eq-inter1} are
 \begin{multline}
 \mathcal{D}_t\left\{\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}\right\}=\\
 \frac{\mathcal{D}_t\{x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i\}}{\lambda_i-\lambda_j}
--\frac{(\mathcal{D}_t\lambda_j-\mathcal{D}_t\lambda_i)x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i}{(\lambda_j-\lambda_i)^2}
+-\frac{(\mathcal{D}_t\lambda_j-\mathcal{D}_t\lambda_i)x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i}{(\lambda_j-\lambda_i)^2},\label{eq-inter2}
 \end{multline}
+and the numerator in the first term of \eqref{eq-inter2} is
 \begin{multline}
 \mathcal{D}_t\{x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i\}=(\mathcal{D}_tx_j)'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i+x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)\mathcal{D}_tx_i\\+
-x_j'(\mathcal{D}_{st}A-\lambda_i\mathcal{D}_{st}B)x_i-\mathcal{D}_t\lambda_i\cdot x_j'(\mathcal{D}_sB)x_i
+x_j'(\mathcal{D}_{st}A-\lambda_i\mathcal{D}_{st}B)x_i-\mathcal{D}_t\lambda_i\cdot x_j'(\mathcal{D}_sB)x_i.
+\label{eq-inter3}
 \end{multline}
+Finally
 \begin{multline}
-\mathcal{D}_t\{x_i'(\mathcal{D}_sB)x_i\cdot x_i\}=\\2(\mathcal{D}_tx_i)'(\mathcal{D}_sB)x_i\cdot x_i+x_i'(\mathcal{D}_{st}B)x_i\cdot x_i+x_i'(\mathcal{D}_tB)x_i\cdot\mathcal{D}_tx_i
+\mathcal{D}_t\{x_i'(\mathcal{D}_sB)x_i\cdot x_i\}=\\2(\mathcal{D}_tx_i)'(\mathcal{D}_sB)x_i\cdot x_i+x_i'(\mathcal{D}_{st}B)x_i\cdot x_i+x_i'(\mathcal{D}_tB)x_i\cdot\mathcal{D}_tx_i.\label{eq-inter4}
 \end{multline}
-
-\begin{equation}
-\mathcal{D}_t(A-\lambda_i B)^-=\sum_{j\neq i}\frac{(\lambda_j-\lambda_i)\{(\mathcal{D}_tx_j)x_j'+x_j(\mathcal{D}_tx_j)'\}-x_jx_j'(\mathcal{D}_t\lambda_j-\mathcal{D}_t\lambda_i)}{(\lambda_j-\lambda_i)^2},\label{eq-dtwi}
-\end{equation}
-It follows from \eqref{eq-singvec} that
-\begin{align}
-\mathcal{D}_{st}x_i=&-\mathcal{D}_t(A-\lambda_i B)^-(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i\notag\\
-&-(A-\lambda_i B)^-(\mathcal{D}_{st}A-\lambda_i\mathcal{D}_{st}B)x_i\notag\\
-&+\mathcal{D}_t\lambda_i\cdot (A-\lambda_i B)^-(\mathcal{D}_sB)x_i\notag\\
-&-(A-\lambda_i B)^-(\mathcal{D}_{s}A-\lambda_i\mathcal{D}_{s}B)\mathcal{D}_tx_i\notag\\
-&-(\mathcal{D}_tx_i)'(\mathcal{D}_sB)x_i\cdot x_i\notag\\
-&-\tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot\mathcal{D}_tx_i\notag\\
-&-\tfrac12 x_i'(\mathcal{D}_{st}B)x_i\cdot x_i.\label{eq-hessgen}
-\end{align}
-
-We could, of course, again substitute the expressions for $\mathcal{D}_t\lambda_i$ and $\mathcal{D}_tx_i$ from \eqref{eq-singval} and \eqref{eq-singvec}, as well as $\mathcal{D}_t(A-\lambda_i B)^-$ from \eqref{eq-dtwi}, into \eqref{eq-hessgen}. This would produce a longer and more complicated formula. Computationally it makes more sense to first compute the various first derivatives and then use them to evaluate the complete expression
-\eqref{eq-hessgen}.
+In computing the final result we first evaluate \eqref{eq-inter3}, substitute the result in \eqref{eq-inter2},
+and then substitute that result, together with the result of \eqref{eq-inter4}, into \eqref{eq-inter1}.
+For this to work we need to have both $\mathcal{D}\Lambda$ and $\mathcal{D}X$ available. We could of course
+substitute the expressions of $\mathcal{D}\Lambda$ and $\mathcal{D}X$ to \eqref{eq-inter1}-\eqref{eq-inter4}
+but that would result in a very long and opaque formula. We will rely on our software to give us the
+numerical values for any specific value of $\theta$.
 
 \sectionbreak
 
@@ -245,7 +225,12 @@ We could, of course, again substitute the expressions for $\mathcal{D}_t\lambda_
 In the [github repository](https://www.github.com/deleeuw/generalized-eigen-derivatives) there are R programs
 evaluating $A, B, \mathcal{D}\Lambda, \mathcal{D}X, \mathcal{D}^2\Lambda,$ and $\mathcal{D}^2X$
 at a given $\theta$. The function gevNonlinear() can be used for any non-linear model. Its only argument
-is the vector $\theta$. In order to attain the necessary level of generality they need to be run from or after a template which defines global variables. Specifically the template defines the R functions theA(), theB(), dA(), dB(), ddA(), and ddB(), together with the parameters and additional values that these auxiliary functions need. 
+is the vector $\theta$. It computes the first partials and then calls the subroutines gevHessianValues()
+and gevHessianVectors() to compute the second partials. The gevHessianVectors() routine uses the
+stepwise method suggested at the end of the previous section. First compute all first derivatives, and then
+use their numerical values in equations \eqref{eq-inter1}-\eqref{eq-inter4}.
+
+In order to attain the necessary level of generality gevNonlinear() needs to be run from or after a template which defines global variables, specifically the R functions theA(), theB(), dA(), dB(), ddA(), and ddB(), together with the parameters and additional values that these auxiliary functions need. 
 
 The result is a list with
 
@@ -260,9 +245,10 @@ is $\mathcal{D}_{st}\lambda_\nu(\theta)$,
 * $\mathcal{D}^2X(\theta)$, a $p\times p\times n\times n$ array, element 
 $(s, t, i, \nu)$ is $\mathcal{D}_{st}x_{i\nu}(\theta)$.
 
-The names in the code for the eight matrices in the list are a, b, l, x, dl, dx, ddl, and ddx.
+The names in the code and in the results for the eight matrices in this list are a, b, l, x, dl, dx, ddl, and ddx. The print function prints $\mathcal{D}\Lambda$ as an $n\times p$ matrix and $\mathcal{D}X$ as a sequence of $n$ matrices of dimensions $n\times p$, one for each eigenvalue. $\mathcal{D}^2\Lambda$ is printed
+as $n$ symmetric matrices of order $p$, and $\mathcal{D}^2X$ as $\smash{n^2}$ symmetric matrices of order $p$, one for each element of $X$.
 
-There is a corresponding numDeriv check function gevNonlinearNum(), which has the same single argument $\theta$
+There is a corresponding numDeriv based check function gevNonlinearNum(), which has the same single argument $\theta$
 and gives the same output as gevNonlinear(). In addition there is gevMyLimit(), which is a quick and dirty
 numerical differentiation routine based on
 \begin{subequations}
@@ -274,17 +260,14 @@ and
 \mathcal{D}f_{st}(\theta)=\lim_{\epsilon\rightarrow 0}\frac{f(\theta+\epsilon(e_s+e_t))-f(\theta+\epsilon e_s)-f(\theta+\epsilon e_t)+f(\theta)}{\epsilon^2}.\label{eq-lim2}
 \end{equation}
 \end{subequations}
-
-The function gevMyLimit() uses a single small value of $\epsilon$, by default $10^{-5}$. The function can be applied to any eigenvalue or eigenvector element and in a loop any of the matrices of first or second
-partials. By default $\epsilon$
-is $10^{-5}$. If $\epsilon$ is too small the approximation is overwhelmed by the rounding error that
-comes from squaring $\epsilon$ in the denominator of \eqref{eq-lim2}
+The function gevMyLimit() uses a single small value of $\epsilon$, by default $10^{-5}$. The function can be applied to any eigenvalue or eigenvector element and in a loop can produce any of the matrices of first or second partials. By default $\epsilon$
+is $10^{-5}$. If $\epsilon$ is too small in gevMyLimit() the approximation is overwhelmed by the rounding error that comes from squaring $\epsilon$ in the denominator of \eqref{eq-lim2}.
 
 \sectionbreak
 
 # Examples
 
-This section gives two examples of templates that uses artificial random data. We do not give the results of the various
+This section gives two examples of templates that uses artificial random data. We do not give the numerical results of the various
 derivative calculations, which for these examples are just a large amount of meaningless numbers. The software
 in the repository, together with the templates, can be used to calculate Jacobians and Hessians for various
 values of the parameter vector. I should perhaps mention that in both examples the results for the derivatives based on the formulas are the same as the results based on numerical differentiation.
@@ -321,28 +304,24 @@ In this example the last three $A_s$ and the first three $B_s$ are indeed zero.
 
 # Special Results
 
-Our formulas and software can handle any parametric model, as long as the appropriate template
-is provided with routines for $A, B, \mathcal{D}A, \mathcal{D}B, \mathcal{D}^2A,$ and $\mathcal{D}^2B$.
+The function gevNonlinear() can handle any parametric model, as long as the appropriate template is provided with routines for $A, B, \mathcal{D}A, \mathcal{D}B, \mathcal{D}^2A,$ and $\mathcal{D}^2B$.
 Nevertheless in special cases more compact and elegant formulae and more efficient computations
-may exist. The question then becomes if it is worthwhile to retype the formulae and to 
+will undoubtedly exist. The question then becomes if it is worthwhile to retype the formulae and to 
 reprogram the R routines for these special cases.
-
 
 ## Linear Combinations
 
-The example in which $A()$ and $B()$ are linear combiunations of known matrices is important enough
-for its own batch of formulae for the derivatives. The basic simplication is of course that $\mathcal{D}_sA=A_s$
-and $\mathcal{D}_sB=B_s$, and that consequently the second partials $\mathcal{D}_{st}A$ and
-$\mathcal{D}_{st}B$ are all zero.
+The example in which $A()$ and $B()$ are linear combinations of known matrices is important enough
+to have its own batch of formulae for the derivatives. The basic simplication is of course that $\mathcal{D}_sA=A_s$ and $\mathcal{D}_sB=B_s$, and that consequently the second partials $\mathcal{D}_{st}A$ and $\mathcal{D}_{st}B$ are all zero.
 
 For the first derivatives we find
 \begin{align}
 \mathcal{D}_s\lambda_i&=x_i'(A_s-\lambda_iB_s)x_i,\label{eq-singvalcon}\\
-\mathcal{D}_sx_i&=-(A-\lambda_i B)^-(A_s-\lambda_iB_s)x_i-\tfrac12 x_iB_sx_i\cdot x_i.\label{eq-singveccon}
+\mathcal{D}_sx_i&=-(A-\lambda_i B)^-(A_s-\lambda_iB_s)x_i-\tfrac12 x_i'B_sx_i\cdot x_i.\label{eq-singveccon}
 \end{align}
 The second partials are
 \begin{multline}
-\mathcal{D}_{st}\lambda_i=-2x_i'(A_s-\lambda_iB_s)(A-\lambda_i B)^-(A_t-\lambda_iB_t)x_i\\-x_i'B_tx_i\cdot x_i'(A_s-\lambda_iB_s)x_i-x_i'B_sx_i\cdot x_s'(A_t-\lambda_iB_t)x_s,\label{eq-seclbdmatcon}
+\mathcal{D}_{st}\lambda_i=-2x_i'(A_s-\lambda_iB_s)(A-\lambda_i B)^-(A_t-\lambda_iB_t)x_i\\-x_i'B_tx_i\cdot x_i'(A_s-\lambda_iB_s)x_i-x_i'B_sx_i\cdot x_i'(A_t-\lambda_iB_t)x_i,\label{eq-seclbdmatcon}
 \end{multline} 
 and
 \begin{align}
@@ -355,8 +334,8 @@ and
 
 ## Elementwise Partial Derivatives
 
-As a special
-
+As a special case of the linear combinations we have the partial derivatives with respect to the elements 
+of $A$ and $B$. 
 \begin{subequations}
 \begin{align}
 A&=\mathop{\sum\sum}_{1\leq i\leq j}a_{ij}E_{ij},\\
@@ -369,12 +348,12 @@ Here $E_{ij}:=(e_ie_j'+e_je_i')$ for $i\neq j$ and $E_{ii}=e_ie_i'$ with $e_i$ a
 and, with some improvised but obvious notation, 
 \begin{subequations}
 \begin{align}
-\mathcal{D}_{ij}^A\lambda_s&=
+\mathcal{D}_{(i,j)}^A\lambda_s&=
 \begin{cases}
 2x_{is}x_{js}&\text{ if }i\neq j,\\
 x_{is}^2&\text{ if }i = j.
 \end{cases}\\
-\mathcal{D}_{ij}^B\lambda_s&=
+\mathcal{D}_{(i,j)}^B\lambda_s&=
 \begin{cases}
 -2\lambda_sx_{is}x_{js}&\text{ if }i\neq j\\,
 -\lambda_sx_{is}^2&\text{ if }i = j.
@@ -391,8 +370,7 @@ AX&=X\Lambda,\\
 X'X&=I.
 \end{align} 
 \end{subequations}
-Thus both $B=I$ and $\mathcal{D}B=0$. In SEV the matrix $W_i$ from \eqref{geninv} is actually the
-Moore-Penrose inverse of $A-\lambda_iI$.
+Thus $B=I$ and $\mathcal{D}B=0$. In SEV the matrix $(A-\lambda_iB)^-$ from \eqref{eq-geninv} is actually the Moore-Penrose inverse of $A-\lambda_iI$.
 
 From \eqref{eq-singval} 
 \begin{equation}
@@ -417,7 +395,6 @@ $$
 
 ## Generalized Singular Value Decomposition
 
-For ease of reference we repeat the equations defining the GSD.
 \begin{subequations}
 \begin{align}
 FY&=GX\Lambda,\label{eq-gsvdef1a}\\
@@ -465,7 +442,6 @@ which implies
 $$
 \mathcal{D}_sx_i=-\sum_{j\neq i}\frac{\lambda_ix_j'(\mathcal{D}_sF)y_i+\lambda_jx_i'(\mathcal{D}_sF)y_j-\lambda_i\lambda_jy_i'(\mathcal{D}_sH)y_j-\lambda_i^2x_i'(\mathcal{D}_sG)x_j}{\lambda_j-\lambda_i}x_j-\tfrac12 x_i'(\mathcal{D}_sG)x_i\cdot x_i
 $$
-$$
 
 \sectionbreak
 
@@ -473,23 +449,125 @@ $$
 
 ## Multiple Correspondence Analysis
 
+In Multiple Correspondence Analysis (MCA) we have $N$ observations
+on $m$ categorical variables (also known as "factors"). Variable
+$j$ has $k_j$ possible values (also known as "levels"), and our observations are coded
+as unit vector of length $k_j$, concatenated to binary vectors (also known as "profiles")
+of length $K:=\sum k_j$. There are $p:=\prod k_j$ possible observations,
+and each of them occurs in the data with frequency $\pi_s$ (in most MCA applications
+$N<<M$ and thus many $\pi_s$ will be zero). Note that (ordinary) Correspondence
+Analysis (CA) is the special case with $m=2$.
 
-(also known as levels). We code our observations using indicators
-
-In Muitple Correspondence Analysis (MCA) the data are profile frequencies.
-
-the Burt matrix $A$ is of the form
+The Burt matrix $A$ is of the form
 $$
-A(\theta)=\sum_{s=1}^p \theta_s g_s g_s'
+A(\pi)=\sum_{s=1}^p \pi_s g_s g_s'
 $$
 while $B$ is
 $$
-B(\theta)=m\sum_{s=1}^p \theta_s\ \text{diag}(g_s g_s').
+B(\pi)=m\sum_{s=1}^p \pi_s\ \text{diag}(g_s g_s').
 $$
+The first derivatives with respect to $\pi_s$ are given by \eqref{eq-singvalcon} and \eqref{eq-singveccon}, using $G_s:=m\text{diag}(g_sg_s')$. 
+\begin{align}
+\mathcal{D}_s\lambda_i&=(x_i'g_s)^2-\lambda_ix_i'G_sx_i,\label{eq-singvalconmca}\\
+\mathcal{D}_sx_i&=-(A-\lambda_i B)^-(g_sg_s'-\lambda_iG_s)x_i-\tfrac12 x_i'G_sx_i\cdot x_i.\label{eq-singvecconmca}
+\end{align}
+It follows that
+\begin{align}
+\sum_{s=1}^m\pi_s\mathcal{D}_s\lambda_i&=0,\\
+\sum_{s=1}^m\pi_s\mathcal{D}_sx_i&=-\frac12 x_i.
+\end{align}
+Also, from the Delta Method, the asymptotic covariance matrix under multinomial sampling is given by
+$$
+N\cdot \text{ACOV}(\lambda_i,\lambda_j)=\sum_{s=1}^p\pi_s(\mathcal{D}_s\lambda_i)(\mathcal{D}_s\lambda_j)
+$$
+$$
+N\cdot \text{ACOV}(x_i,x_j)=\sum_{s=1}^p\pi_s(\mathcal{D}_sx_i)(\mathcal{D}_sx_j)'-\frac14 x_ix_j'
+$$
+MCA is a popular technique, and thus it deserves a "real" example. We use the three-dimensional 
+contingency table HairEyeColor from the R datasets package, which is a part of base R (@r_core_team_25). 
+```{r readdata, echo = FALSE}
+library(datasets)
+data("HairEyeColor")
+HairEyeColor
+```
+The first variable is hair color (4 levels), the second is 2 is eye color (4 levels), and the third variable is sex (2 levels).
+There are 592 cross-classified individuals, students in an introductory statistics course at the University
+of Delaware. Thus $N=592$, $p=4\times 4\times 2=32$, $n=4+4+2=10$.
+
+It is abundantly clear that this example shoulds be analyzed with some special purpose software
+which does not require computing and storing the $M$ arrays $A_s$ and the $M$ arrays $B_s$, which are
+symmetric, integer, and very sparse. In this paper we want to show, however, that gevNonlinear() can do 
+it all. Thus we make a template gevExampleMCA.R, which can actually handle any three-dimensional table.
+After running the template, we apply gevNonlinear().
+
+```{r do comp, echo = FALSE, cache = TRUE}
+source("gevExampleMCA.R")
+h <- gevNonlinear(theta)
+```
+In MCA the dominant eigenvalue is always equal to one, and there are always $m-1$ eigenvalues equal to zero. These "trivial" dimensions are not a property of the data, but jusrt a consequence of the indicator coding.
+There are only $p-m$ non-trivial dimensions, which for our example is seven. For the dominant trivial
+dimension the derivatives are always zero, for the $m-1$ zero eigenvalues the derivatives are not
+even defined. We only give the results for the non-trivial dimensions.
+
+The eigenvalues are
+```{r evalhec, echo = FALSE}
+matrixPrint(h$l[2:8], digits = 3, width = 4)
+```
+and the eigenvectors are
+```{r evechec, echo = FALSE}
+matrixPrint(h$x[,2:8], digits = 3, width = 4)
+```
+The asymptotic covariance of the eigenvalues, multiplied by $N = 592$, is
+```{r acoveval}
+ac <- h$dl %*% diag(theta) %*% t(h$dl)
+matrixPrint(ac[2:8, 2:8], digits = 4)
+```
+and thus the standard errors of the eigenvalues are
+```{r}
+matrixPrint(sqrt(diag(ac)[2:8] / 592), digits = 4)
+```
+There are seven non-trivial eigenvectors, and thus 21 non-trivial asymptotic covariance
+matrices of order ten. We only print out the covariance matrix (times $N$) of the 
+first non-trivial eigenvector.
+
+```{r acovevec}
+hh <- h$dx[, , 2]
+ac <- hh %*% diag(theta) %*% t(hh)
+ac <- ac - outer(h$x[, 2], h$x[, 2]) / 4
+matrixPrint(ac, digits = 2, width = 3)
+```
+The standard errors of the elements of the dominant eigenvector are
+```{r}
+matrixPrint(sqrt(diag(ac) / 592), digits = 4)
+```
+
+In actual MCA applications the eigenvectors are usually scaled by multiplying them with the
+square root of the corresponding eigenvalue. This makes the computation of the
+derivatives of the scaled eigenvectors slightly more complicated.
+
+The second derivatives are of course also compouted by gevNonlinear(). The Delta Method
+tells us they can be used to give estimates of the bias, using
+$$
+N\cdot\text{BIAS}(\lambda_i)=\frac12\text{tr}\ \mathcal{D}^2\lambda_i(\Pi-\pi\pi')=\sum_{s=1}^p\pi_s\mathcal{D}_{ss}\lambda_i,
+$$
+because $\pi'(\mathcal{D}^2\lambda_i)\pi=0$.
+
+```{r}
+bias <- rep(0, 7)
+for (r in 2:8) {
+  dd <- h$ddl[, , r]
+  bias[r - 1] <- sum(diag(dd) * theta) / (2 * 592)
+}
+matrixPrint(bias, digits = 4)
+```
+We see that the larger eigenvalues are overestimated and the smaller ones are underestimated.
+
 
 ## Covariances and Correlations
 
 ## Matrix Decomposition Factor Analysis
+
+
 
 \sectionbreak
 
