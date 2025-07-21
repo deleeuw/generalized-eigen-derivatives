@@ -587,11 +587,44 @@ $$
 $$
 (Infinitesimal) Jackknife
 
-## Covariance Factor Analysis
+## Covariance Factor Analysis (CFA)
 
-MINRES
+### Least Squares
 
-Swain
+In the Least Squares Factor Analysis (LSFA) of a covariance matrix $C$ of order $n$ we minimize
+$$
+\sigma(U,D)=\text{tr}\ (C-UU'-D)^2
+$$
+over the $n\times p$ matrices $U$ and the diagonal matrices $D$ of order $n$. An LSFA is called
+proper if in addtion we require $0\lesssim D\lesssim C$ (in the Loewner sense).
+
+If $C\gtrsim D$ then
+$$
+\sigma_\star(D)=\min_U\sigma(U,D)=\sum_{i=p+1}^n\lambda_i^2(C-D).
+$$
+$\mathcal{D}_iA=-e_ie_i'$
+$$
+\mathcal{D}_i\sigma_\star=-2\sum_{\nu=p+1}^n\lambda_\nu^{\ }x_{i\nu}^2
+$$
+
+$$
+\mathcal{D}_{ij}\sigma_\star=2\sum_{\nu=p+1}^nx_{i\nu}^2x_{j\nu}^2-4\sum_{\nu=p+1}^n\sum_{\eta\neq\nu}^n\frac{\lambda_\nu}{\lambda_\eta-\lambda_\nu}x_{i\nu}x_{j\nu}x_{i\eta}x_{j\eta}
+$$
+
+### The Swain Family
+
+$$
+\sum_{i=1}^n f(\lambda_i)
+$$
+with $\lambda$ the eigenvalues of $S^{-\frac12}\Sigma S^{-\frac12}$
+
+\begin{align}
+&f(1)=f'(1)=0\\
+&f''(1)=1\\
+for 0<\theta<1 &f'(\theta)<0\\
+for \theta>1 &f'(\theta)>0
+\end{align}
+
 
 ## Matrix Decomposition Factor Analysis
 
