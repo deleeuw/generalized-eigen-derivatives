@@ -145,12 +145,3 @@ swainNumDerivatives <- function(theta, cmat, ff, p) {
   h <- hessian(theFunc, theta)
   return(list(g = g, h = h))
 }
-
-swainNLM <- function(theta, cmat, ff, p) {
-  res <- swainFunction(theta, cmat, ff, p)
-  attr(res, "gradient") <- swainGradient(theta, cmat, ff, p)
-  attr(res, "hessian") <- swainHessian(theta, cmat, ff, p)
-  return(res)
-}
-
-#

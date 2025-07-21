@@ -562,32 +562,27 @@ matrixPrint(bias, digits = 4)
 ```
 We see that the larger eigenvalues are overestimated and the smaller ones are underestimated, as expected.
 
-
-## Covariances and Correlations
-
-The results for MCA derived in the previous section can be applied directly
-to the situation in which the possible data are selected from a finite number of numerical
-vectors. Because of the limits of measurement precision one could argue that all
-multivariate data are actually of this type. But of course for so-called
+The results for MCA can also be applied directly
+to the situation in which the possible data a finite number of numerical
+vectors which occurs with different relative frequencies. Because of the limits of measurement precision one could argue that all multivariate data are actually of this type. But of course for so-called
 "continuous" data the number of possible values, although finite, can be
 enormously large. One solution for the discrete-continuous dilemma is to 
 move from expectations that are weighted sums to expectations that are
-weighted by the empirical distribution function. We will go a different way.
-
-Note that
-
-$$
-A(\theta)=\sum_{s=1}^N \theta_sg_sg_s'
-$$
-$$
-\underline{\theta}_s=N^{-1}+N^{-\frac12}\underline{\omega}_s
-$$
-$$
-\underline{\omega}_s:=N^\frac12(\underline{\theta}_s-N^{-1})
-$$
-(Infinitesimal) Jackknife
+weighted by the empirical distribution function. Our formulae for the
+derivatives can also be applied to get standard errors, confidence
+intervals, and bias corrections for the eigen decomposition of covariances 
+and correlations using the infinitesimal versions of the bootstrap or the 
+jackknife.
 
 ## Covariance Factor Analysis (CFA)
+
+In Covariance Factor Analysis (CFA) we approximate a covariance or correlation
+matrix by the sum of a diagonal matrix and a matrix of small rank. There
+are many different ways in which the degree of approximation can be 
+measured, and for a given loss function there are many different proposed
+algorithms to minimize it. We will use our first and second derivatives
+to provide a basis for minimization by
+Newton's method of some of these loss functions.
 
 ### Least Squares
 
@@ -596,7 +591,7 @@ $$
 \sigma(U,D)=\text{tr}\ (C-UU'-D)^2
 $$
 over the $n\times p$ matrices $U$ and the diagonal matrices $D$ of order $n$. An LSFA is called
-proper if in addtion we require $0\lesssim D\lesssim C$ (in the Loewner sense).
+proper if in addition we require $0\lesssim D\lesssim C$ (in the Loewner sense).
 
 If $C\gtrsim D$ then
 $$
@@ -611,20 +606,75 @@ $$
 \mathcal{D}_{ij}\sigma_\star=2\sum_{\nu=p+1}^nx_{i\nu}^2x_{j\nu}^2-4\sum_{\nu=p+1}^n\sum_{\eta\neq\nu}^n\frac{\lambda_\nu}{\lambda_\eta-\lambda_\nu}x_{i\nu}x_{j\nu}x_{i\eta}x_{j\eta}
 $$
 
+The file lsfa.R in the github repository has functions to compute the first and second derivatives,
+with a numDeriv checker.
+
 ### The Swain Family
 
-$$
-\sum_{i=1}^n f(\lambda_i)
-$$
-with $\lambda$ the eigenvalues of $S^{-\frac12}\Sigma S^{-\frac12}$
+In an important paper @swain_75 derived a class of factor analytic procedures which produce estimates 
+asymptotically equivalent to the classical Lawley-Joreskog maximum likelihood estimates. Swain also
+wrote down the necessary first and second order derivatives that can be used in implementing
+Newton's method, thus generalizing the work of @jennrich_robinson_69, @derflinger_69, and @clarke_70 for the
+maximum likelihood method.
 
+Suppose $f$ is a twice-differentiable univariate function defined on the positive real axis with the properties
 \begin{align}
-&f(1)=f'(1)=0\\
-&f''(1)=1\\
-for 0<\theta<1 &f'(\theta)<0\\
-for \theta>1 &f'(\theta)>0
+f(1)&=\mathcal{D}f(1)=0,\\
+\mathcal{D}^2f''(1)&=1,\\
+\mathcal{D}f(\theta)&<0\text{ for }0<\theta<1,\\
+\mathcal{D}f(\theta)&>0\text{ for }\theta>1.
 \end{align}
+Note that this implies that $f$ is unimodal and has a single minimum equal to zero at one. Also
+$$
+\lim_{x\rightarrow 1}\frac{f(x)}{\frac12(x-1)^2}=1
+$$
+Swain proposes to minimize
+\begin{equation}
+\sigma(D):=\sum_{\nu=p+1}^n f(\lambda_\nu(A)),
+\end{equation}
+with $\lambda$ the eigenvalues of $A:=S^{-\frac12}DS^{-\frac12}$.
 
+As Swain points out, both maximum likelhood estimation and generalized least squares estimation
+(@joreskog_goldberger_72) are special cases. For maximum likelihodd
+$$
+f_1(\theta)=1/\theta+\log\theta-1
+$$
+and for GLS
+$$
+f_2(\theta)=\frac12(\theta-1)^2
+$$
+But the .. also covers other cases, such as
+$$
+f_3(\theta)=\frac12(\log\theta)^2.
+$$
+$$
+f_4(\theta)=f_2(1/\theta)=\frac12\frac{(\theta-1)^2}{\theta^2}.
+$$
+In addition if $f$ satisfies ... then so does 
+
+
+From $A=S^{-\frac12}DS^{-\frac12}$ we have $\mathcal{D}_iA=S^{-\frac12}e_ie_i'S^{-\frac12}$. To apply the formulas from section \ref{sec-sev} it is convenient
+to define the matrix $Y:=S^{-\frac12}X$ with elements $y_{i\nu}$. It follows that
+\begin{subequations}
+\begin{equation}
+\mathcal{D}_i\lambda_\nu=(x_\nu'S^{-\frac12}e_i)^2=y_{i\nu}^2.
+\end{equation}
+and
+\begin{equation}
+\mathcal{D}_ix_\nu=-\sum_{\eta\neq\nu}\frac{1}{\lambda_\eta-\lambda_\nu}x_\eta x_\eta'(S^{-\frac12}e_ie_i'S^{-\frac12})x_\nu=-\sum_{\eta\neq\nu}\frac{1}{\lambda_\eta-\lambda_\nu} y_{i\nu}y_{i\eta}\cdot x_\eta
+\end{equation}
+\end{subequations}
+Consequently
+\begin{equation}
+\mathcal{D}_i\sigma=\sum_{\nu=p+1}^n\mathcal{D}f(\lambda_\nu)\mathcal{D}_i\lambda_\nu=\sum_{\nu=p+1}^n\mathcal{D}f(\lambda_\nu)y_{i\nu}^2.
+\end{equation}
+Differentiate once again
+\begin{equation}
+\mathcal{D}_{ij}\sigma=\sum_{\nu=p+1}^n\mathcal{D}^2f(\lambda_\nu)y_{j\nu}^2y_{i\nu}^2-2\sum_{\nu=p+1}^n\sum_{\eta\neq\nu}\mathcal{D}f(\lambda_\nu)\{\frac{1}{\lambda_\eta-\lambda_\nu} y_{i\nu}y_{i\eta}y_{j\nu}y_{j\eta}\}
+\end{equation}
+
+The github repository has a file swain.R  which has functions to compute the first and second derivatives
+for the loss functions ..... There is also a numDeriv checker. The functions are programmed in such a way that they can easily be extended to other loss functions satisfying ...
 
 ## Matrix Decomposition Factor Analysis
 
@@ -635,7 +685,7 @@ $T'X'XT$. The matrix $X$ is $n\times m$ and $T$ is $m\times p$, with $m<p$.
 Thus $A=T'X'XT$ is of order $p$ and of rank $r\leq m$. We suppose it is
 locally of constant rank $m$ and we maximize the sum of the sq1uare roots
 of its $m$ non-zero eigenvalues. The matrix $T$ is patterned, which means
-that some of its elments are restricted to be equal to zero.
+that some of its elements are restricted to be equal to zero.
 
 The pattern is defined by a basis of known matrices $T_s$ with the same
 pattern, so that
