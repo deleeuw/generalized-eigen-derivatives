@@ -593,6 +593,8 @@ $$
 over the $n\times p$ matrices $U$ and the diagonal matrices $D$ of order $n$. An LSFA is called
 proper if in addition we require $0\lesssim D\lesssim C$ (in the Loewner sense).
 
+@thomson_34, @harman_jones_66, Zegers Ten Berge
+
 If $C\gtrsim D$ then
 $$
 \sigma_\star(D)=\min_U\sigma(U,D)=\sum_{i=p+1}^n\lambda_i^2(C-D).
@@ -605,6 +607,7 @@ $$
 $$
 \mathcal{D}_{ij}\sigma_\star=2\sum_{\nu=p+1}^nx_{i\nu}^2x_{j\nu}^2-4\sum_{\nu=p+1}^n\sum_{\eta\neq\nu}^n\frac{\lambda_\nu}{\lambda_\eta-\lambda_\nu}x_{i\nu}x_{j\nu}x_{i\eta}x_{j\eta}
 $$
+Derflinger joreskog van thillo
 
 The file lsfa.R in the github repository has functions to compute the first and second derivatives,
 with a numDeriv checker.
@@ -618,40 +621,46 @@ Newton's method, thus generalizing the work of @jennrich_robinson_69, @derflinge
 maximum likelihood method.
 
 Suppose $f$ is a twice-differentiable univariate function defined on the positive real axis with the properties
+\begin{subequations}
 \begin{align}
-f(1)&=\mathcal{D}f(1)=0,\\
-\mathcal{D}^2f''(1)&=1,\\
-\mathcal{D}f(\theta)&<0\text{ for }0<\theta<1,\\
-\mathcal{D}f(\theta)&>0\text{ for }\theta>1.
+f(1)&=\mathcal{D}f(1)=0,\label{eq-f1}\\
+\mathcal{D}^2f''(1)&=1,\label{eq-f2}\\
+\mathcal{D}f(\theta)&<0\text{ for }0<\theta<1,\label{eq-f3}\\
+\mathcal{D}f(\theta)&>0\text{ for }\theta>1.\label{eq-f4}
 \end{align}
-Note that this implies that $f$ is unimodal and has a single minimum equal to zero at one. Also
-$$
+\end{subequations}
+Note that this implies that $f$ is unimodal and has a single minimum equal to zero at one. Also, by l'Hôpital.
+\begin{equation}
 \lim_{x\rightarrow 1}\frac{f(x)}{\frac12(x-1)^2}=1
-$$
+\end{equation}
+
 Swain proposes to minimize
 \begin{equation}
 \sigma(D):=\sum_{\nu=p+1}^n f(\lambda_\nu(A)),
 \end{equation}
 with $\lambda$ the eigenvalues of $A:=S^{-\frac12}DS^{-\frac12}$.
-
-As Swain points out, both maximum likelhood estimation and generalized least squares estimation
-(@joreskog_goldberger_72) are special cases. For maximum likelihodd
-$$
-f_1(\theta)=1/\theta+\log\theta-1
-$$
-and for GLS
-$$
-f_2(\theta)=\frac12(\theta-1)^2
-$$
-But the .. also covers other cases, such as
-$$
-f_3(\theta)=\frac12(\log\theta)^2.
-$$
-$$
-f_4(\theta)=f_2(1/\theta)=\frac12\frac{(\theta-1)^2}{\theta^2}.
-$$
-In addition if $f$ satisfies ... then so does 
-
+Both maximum likelhood estimation, generalized least squares estimation
+(@joreskog_goldberger_72), and the "geodesic distance" (@james_73) are special cases. 
+For maximum likelihood
+\begin{subequations}
+\begin{equation}
+f_1(\theta):=1/\theta+\log\theta-1
+\end{equation}
+and for GLS with loss $\frac12\text{tr}\ S^{-1}(\Sigma-S)S^{-1}(\Sigma-S)$ we have
+\begin{equation}
+f_2(\theta):=\frac12(\theta-1)^2
+\end{equation}
+But \eqref{eq-f1}-\eqref{eq-f4} also covers other cases, such as the "geodetic distance" between covariance matrices, which has
+\begin{equation}
+f_3(\theta):=\frac12(\log\theta)^2,
+\end{equation}
+and the GLS variant with loss $\frac12\text{tr}\ \Sigma^{-1}(\Sigma-S)\Sigma^{-1}(\Sigma-S)$ 
+\begin{equation}
+f_4(\theta):=\frac12\frac{(\theta-1)^2}{\theta^2}.
+\end{equation}
+\end{subequations}
+In addition if $f(\theta)$ satisfies \eqref{eq-f1}-\eqref{eq-f4} for all $\theta$ then so does 
+$f(\theta^{-1})$. In fact $f_4(\theta)=f_2(\theta^{-1})$.
 
 From $A=S^{-\frac12}DS^{-\frac12}$ we have $\mathcal{D}_iA=S^{-\frac12}e_ie_i'S^{-\frac12}$. To apply the formulas from section \ref{sec-sev} it is convenient
 to define the matrix $Y:=S^{-\frac12}X$ with elements $y_{i\nu}$. It follows that
