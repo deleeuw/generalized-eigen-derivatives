@@ -153,7 +153,7 @@ which can also be written as
 \begin{equation}
 \mathcal{D}_sx_i=-\sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-\tfrac12 x_i'(\mathcal{D}_sB)x_i)\cdot x_i.\label{eq-secder2}
 \end{equation}
-It is convenient to have a matrix expression for this derivative. Define, following @deleeuw_R_07c, the matrices
+It is notationally convenient to have a matrix expression for this derivative. Define, following @deleeuw_R_07c, the matrices
 \begin{equation}
 (A-\lambda_i B)^-:=
 \sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}=
@@ -176,40 +176,40 @@ Equations \eqref{eq-singval} and \eqref{eq-singvec} will be used frequently in t
 
 To find second partial derivatives we start simple with the eigenvalues. Differentiate \eqref{eq-singval} with respect to $\theta_t$. This gives 
 \begin{equation}
-\mathcal{D}_{st}\lambda_i=2x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)\mathcal{D}_tx_i+
-x_i'(D_{st}A-\lambda_s\mathcal{D}_{st}B)x_i-x_i'(\mathcal{D}_sB)x_i\cdot\mathcal{D}_t\lambda_i.\label{eq-seclbd}
+\mathcal{D}_{st}\lambda_\nu =2x_\nu '(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)\mathcal{D}_tx_\nu +
+x_\nu '(D_{st}A-\lambda_s\mathcal{D}_{st}B)x_\nu -x_\nu '(\mathcal{D}_sB)x_\nu \cdot\mathcal{D}_t\lambda_\nu .\label{eq-seclbd}
 \end{equation} 
 Substituting from \eqref{eq-singval} and \eqref{eq-singvec} gives
 \begin{multline}
-\mathcal{D}_{st}\lambda_i=-2x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)W_i (\mathcal{D}_tA-\lambda_i\mathcal{D}_tB)x_i+
-x_i'(D_{st}A-\lambda_i\mathcal{D}_{st}B)x_i\\-x_i'(\mathcal{D}_tB)x_i\cdot x_i'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-x_i'(\mathcal{D_s}B)x_i\cdot x_i'(\mathcal{D}_tA-\lambda_i\mathcal{D}_tB)x_i.\label{eq-seclbdmat}
+\mathcal{D}_{st}\lambda_\nu =-2x_\nu '(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)W_\nu  (\mathcal{D}_tA-\lambda_\nu \mathcal{D}_tB)x_\nu +
+x_\nu '(D_{st}A-\lambda_\nu \mathcal{D}_{st}B)x_\nu \\-x_\nu '(\mathcal{D}_tB)x_\nu \cdot x_\nu '(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)x_\nu -x_\nu '(\mathcal{D_s}B)x_\nu \cdot x_\nu '(\mathcal{D}_tA-\lambda_\nu \mathcal{D}_tB)x_\nu .\label{eq-seclbdmat}
 \end{multline} 
-Formula \eqref{eq-seclbdmat} shows that $\mathcal{D}_{st}\lambda_i=\mathcal{D}_{ts}\lambda_i$, just as it should be.
+Formula \eqref{eq-seclbdmat} shows that $\mathcal{D}_{st}\lambda_\nu=\mathcal{D}_{ts}\lambda_\nu$, just as it should be.
 
 The second partials of the generalized eigenvalues are, not surprisingly, more complicated. 
 We start with \eqref{eq-secder1} and differentiate with respect to $\theta_t$. We give some
 intermediate calculations for this case, because they make it easier to check the final
 result. First
 \begin{multline}
-\mathcal{D}_{st}x_i=-\sum_{j\neq i}\mathcal{D}_t\left\{\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}\right\}x_j\\
--\sum_{j\neq i}\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}\mathcal{D}_tx_j
--\tfrac12\mathcal{D}_t\{x_i'(\mathcal{D}_sB)x_i\cdot x_i\}.\label{eq-inter1}
+\mathcal{D}_{st}x_\nu =-\sum_{j\neq i}\mathcal{D}_t\left\{\frac{x_j'\{\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB\}x_\nu }{\lambda_\eta-\lambda_\nu }\right\}x_\eta\\
+-\sum_{j\neq i}\frac{x_\eta'\{\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB\}x_\nu }{\lambda_\eta-\lambda_\nu }\mathcal{D}_tx_\eta
+-\tfrac12\mathcal{D}_t\{x_\nu '(\mathcal{D}_sB)x_\nu \cdot x_\nu \}.\label{eq-inter1}
 \end{multline}
 The terms in the first summation in \eqref{eq-inter1} are
 \begin{multline}
-\mathcal{D}_t\left\{\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}\right\}=\\
-\frac{\mathcal{D}_t\{x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i\}}{\lambda_i-\lambda_j}
--\frac{(\mathcal{D}_t\lambda_j-\mathcal{D}_t\lambda_i)x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i}{(\lambda_j-\lambda_i)^2},\label{eq-inter2}
+\mathcal{D}_t\left\{\frac{x_\eta'\{\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB\}x_\nu }{\lambda_\eta-\lambda_\nu }\right\}=\\
+\frac{\mathcal{D}_t\{x_\eta'(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)x_\nu \}}{\lambda_\nu -\lambda_\eta}
+-\frac{(\mathcal{D}_t\lambda_\eta-\mathcal{D}_t\lambda_\nu )x_\eta'(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)x_\nu }{(\lambda_\eta-\lambda_\nu )^2},\label{eq-inter2}
 \end{multline}
 and the numerator in the first term of \eqref{eq-inter2} is
 \begin{multline}
-\mathcal{D}_t\{x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i\}=(\mathcal{D}_tx_j)'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i+x_j'(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)\mathcal{D}_tx_i\\+
-x_j'(\mathcal{D}_{st}A-\lambda_i\mathcal{D}_{st}B)x_i-\mathcal{D}_t\lambda_i\cdot x_j'(\mathcal{D}_sB)x_i.
+\mathcal{D}_t\{x_\eta'(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)x_\nu \}=(\mathcal{D}_tx_\eta)'(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)x_\nu +x_\eta'(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)\mathcal{D}_tx_\nu \\+
+x_\eta'(\mathcal{D}_{st}A-\lambda_\nu \mathcal{D}_{st}B)x_\nu -\mathcal{D}_t\lambda_\nu \cdot x_\eta'(\mathcal{D}_sB)x_\nu .
 \label{eq-inter3}
 \end{multline}
 Finally
 \begin{multline}
-\mathcal{D}_t\{x_i'(\mathcal{D}_sB)x_i\cdot x_i\}=\\2(\mathcal{D}_tx_i)'(\mathcal{D}_sB)x_i\cdot x_i+x_i'(\mathcal{D}_{st}B)x_i\cdot x_i+x_i'(\mathcal{D}_tB)x_i\cdot\mathcal{D}_tx_i.\label{eq-inter4}
+\mathcal{D}_t\{x_\nu '(\mathcal{D}_sB)x_\nu \cdot x_\nu \}=\\2(\mathcal{D}_tx_\nu )'(\mathcal{D}_sB)x_\nu \cdot x_\nu +x_\nu '(\mathcal{D}_{st}B)x_\nu \cdot x_\nu +x_\nu '(\mathcal{D}_tB)x_\nu \cdot\mathcal{D}_tx_\nu .\label{eq-inter4}
 \end{multline}
 In computing the final result we first evaluate \eqref{eq-inter3}, substitute the result in \eqref{eq-inter2},
 and then substitute that result, together with the result of \eqref{eq-inter4}, into \eqref{eq-inter1}.
@@ -265,14 +265,14 @@ is $10^{-5}$. If $\epsilon$ is too small in gevMyLimit() the approximation is ov
 
 \sectionbreak
 
-# Examples
+# Template Examples
 
 This section gives two examples of templates that uses artificial random data. We do not give the numerical results of the various
 derivative calculations, which for these examples are just a large amount of meaningless numbers. The software
 in the repository, together with the templates, can be used to calculate Jacobians and Hessians for various
-values of the parameter vector. I should perhaps mention that in both examples the results for the derivatives based on the formulas are the same as the results based on numerical differentiation.
+values of the parameter vector. I should mention that in both examples the results for the derivatives based on the formulas are the same as the results based on numerical differentiation.
 
-## Single Parameter
+## Single Parameter \label{sec-single}
 
 In our first example we define
 \begin{align}
@@ -282,7 +282,7 @@ B(\theta)&=B_0+\theta B_1+\frac12\theta^2B_2+...+\frac{1}{p}\theta^pB_p
 The template for a special case with $n=4$ and $p=3$ is gevExampleOne.R in 
 the [github repository](https://www.github.com/deleeuw/generalized-eigen-derivatives).
 
-## Linear Combinations
+## Linear Combinations \label{sec-linear}
 
 Suppose $A()$ is linear combinations of $p$ known symmetric matrices $A_s$ and $B()$ is a linear combination of
 $p$ known symmetric matrices $B_s$. There may also be "intercepts" $A_0$ and $B_0$. Thus
@@ -305,9 +305,10 @@ In this example the last three $A_s$ and the first three $B_s$ are indeed zero.
 # Special Results
 
 The function gevNonlinear() can handle any parametric model, as long as the appropriate template is provided with routines for $A, B, \mathcal{D}A, \mathcal{D}B, \mathcal{D}^2A,$ and $\mathcal{D}^2B$.
-Nevertheless in special cases more compact and elegant formulae and more efficient computations
-will undoubtedly exist. The question then becomes if it is worthwhile to retype the formulae and to 
-reprogram the R routines for these special cases.
+In special cases more compact and elegant formulae and more efficient computations
+will exist. The question then becomes if it is worthwhile to derive and retype the formulae and to 
+reprogram the R routines for these special cases. In this section we discuss some important special cases
+and give some of the corresponding formulae.
 
 ## Linear Combinations
 
@@ -316,25 +317,23 @@ to have its own batch of formulae for the derivatives. The basic simplication is
 
 For the first derivatives we find
 \begin{align}
-\mathcal{D}_s\lambda_i&=x_i'(A_s-\lambda_iB_s)x_i,\label{eq-singvalcon}\\
-\mathcal{D}_sx_i&=-(A-\lambda_i B)^-(A_s-\lambda_iB_s)x_i-\tfrac12 x_i'B_sx_i\cdot x_i.\label{eq-singveccon}
+\mathcal{D}_s\lambda_\nu &=x_\nu '(A_s-\lambda_\nu B_s)x_\nu ,\label{eq-singvalcon}\\
+\mathcal{D}_sx_\nu &=-(A-\lambda_\nu  B)^-(A_s-\lambda_\nu B_s)x_\nu -\tfrac12 x_\nu 'B_sx_\nu \cdot x_\nu .\label{eq-singveccon}
 \end{align}
 The second partials are
 \begin{multline}
-\mathcal{D}_{st}\lambda_i=-2x_i'(A_s-\lambda_iB_s)(A-\lambda_i B)^-(A_t-\lambda_iB_t)x_i\\-x_i'B_tx_i\cdot x_i'(A_s-\lambda_iB_s)x_i-x_i'B_sx_i\cdot x_i'(A_t-\lambda_iB_t)x_i,\label{eq-seclbdmatcon}
+\mathcal{D}_{st}\lambda_\nu =-2x_\nu '(A_s-\lambda_\nu B_s)(A-\lambda_\nu  B)^-(A_t-\lambda_\nu B_t)x_\nu \\-x_\nu 'B_tx_\nu \cdot x_\nu '(A_s-\lambda_\nu B_s)x_\nu -x_\nu 'B_sx_\nu \cdot x_\nu '(A_t-\lambda_\nu B_t)x_\nu ,\label{eq-seclbdmatcon}
 \end{multline} 
 and
 \begin{align}
-\mathcal{D}_{st}x_i=&-\mathcal{D}_t(A-\lambda_i B)^-(A_s-\lambda_iB_s)x_i\notag\\
-&+\mathcal{D}_t\lambda_i\cdot (A-\lambda_i B)^-B_sx_i\notag\\
-&-(A-\lambda_i B)^-(A_s-\lambda_iB_s)\mathcal{D}_tx_i\notag\\
-&-(\mathcal{D}_tx_i)'B_sx_i\cdot x_i\notag\\
-&-\tfrac12 x_i'B_sx_i\cdot\mathcal{D}_tx_i.\label{eq-hessgen}
+\mathcal{D}_{st}x_\nu =&-\mathcal{D}_t(A-\lambda_\nu  B)^-(A_s-\lambda_\nu B_s)x_\nu \notag\\
+&+\mathcal{D}_t\lambda_\nu \cdot (A-\lambda_\nu  B)^-B_sx_\nu \notag\\
+&-(A-\lambda_\nu  B)^-(A_s-\lambda_\nu B_s)\mathcal{D}_tx_\nu \notag\\
+&-(\mathcal{D}_tx_\nu )'B_sx_\nu \cdot x_\nu \notag\\
+&-\tfrac12 x_\nu 'B_sx_\nu \cdot\mathcal{D}_tx_\nu .\label{eq-hessgen}
 \end{align}
 
-## Elementwise Partial Derivatives
-
-As a special case of the linear combinations we have the partial derivatives with respect to the elements 
+As a special case of the linear combinations special case we have the partial derivatives with respect to the elements 
 of $A$ and $B$. 
 \begin{subequations}
 \begin{align}
@@ -370,23 +369,24 @@ AX&=X\Lambda,\\
 X'X&=I.
 \end{align} 
 \end{subequations}
-Thus $B=I$ and $\mathcal{D}B=0$. In SEV the matrix $(A-\lambda_iB)^-$ from \eqref{eq-geninv} is actually the Moore-Penrose inverse of $A-\lambda_iI$.
+Thus $B=I$ and $\mathcal{D}B=0$. In SEV the matrix $(A-\lambda_\nu B)^-$ from \eqref{eq-geninv} is actually the Moore-Penrose inverse of $A-\lambda_\nu I$.
 
 From \eqref{eq-singval} 
 \begin{equation}
-\mathcal{D}_s\lambda_i=x_i'(\mathcal{D}_sA)x_i.\label{eq-sevalsim}
+\mathcal{D}_s\lambda_\nu=x_\nu'(\mathcal{D}_sA)x_\nu.\label{eq-sevalsim}
 \end{equation} 
 and from 
 \eqref{eq-singvec} 
 \begin{equation}
-\mathcal{D}_sx_i=-(A-\lambda_iI)^+(\mathcal{D}_sA)x_i.\label{eq-vecpersimmp}
+\mathcal{D}_sx_\nu=-(A-\lambda_\nu I)^+(\mathcal{D}_sA)x_nu.\label{eq-vecpersimmp}
 \end{equation}
 
-$$
-\mathcal{D}_{st}\lambda_i=-2x_i'(\mathcal{D}_sA)(A-\lambda_iI)^+(\mathcal{D}_tA)x_i+
-x_i'(D_{st}A)x_i.
-$$
-
+From \eqref{eq-seclbdmat}
+\begin{equation}
+\mathcal{D}_{st}\lambda_\nu=-2x_i'(\mathcal{D}_sA)(A-\lambda_\nu I)^+(\mathcal{D}_tA)x_\nu+
+x_i'(D_{st}A)x_i,\label{eq-hessvalsimple}
+\end{equation}
+and from \eqref{eq-inter1}
 \begin{align}
 \mathcal{D}_{st}x_i=&-\mathcal{D}_t(A-\lambda_i I)^+(\mathcal{D}_sA)x_i\notag\\
 &-(A-\lambda_i I)^+(\mathcal{D}_{st}A)x_i\notag\\
@@ -395,6 +395,9 @@ $$
 
 ## Generalized Singular Value Decomposition
 
+Suppose $F$ is a rectangular $n\times m$ matrix, and $G$ and $H$ are two positive definite matrices
+of orders $n$ and $m$. Without loss if generality we assume $m\leq n$.
+The Generalized Singular Value Decomposition (GSVD) is finding a solution to the system
 \begin{subequations}
 \begin{align}
 FY&=GX\Lambda,\label{eq-gsvdef1a}\\
@@ -403,45 +406,105 @@ X'GX&=I,\label{eq-gsvdef3a}\\
 Y'HY&=I,\label{eq-gsvdef4a}
 \end{align}
 \end{subequations}
+Here $Y$ and $\Lambda$ are square of order $m$, with $\Lambda$ diagonal and non-negative. The left singular vectors are $n\times m$, and there is an $n\times(n-m)$ matrix $X_\perp$ that satisfies $F'X_\perp=0$,
+with $X_\perp'GX=0$ and $X_\perp'GX_\perp=I$.
 
-All three matrices $F$, $G$, and $H$
-are assumed to be functions of the parameters $\theta$. Instead of tackling the GSV problem directly, we
-reduce it to an equivalent GEV problem.
-
-From \eqref{eq-gsvdef1a} $X=G^{-1}FY\Lambda^{-1}$ and consequently $Y$ and $\Lambda$ 
-solve the GEV problem.
+The GSVD system \eqref{eq-gsvdef1a}-\eqref{eq-gsvdef4a} is closely related to the GEVD system
 \begin{equation}
-F'G^{-1}FY=HY\Lambda^2.
+\begin{bmatrix}
+0&F\\F'&0
+\end{bmatrix}
+\begin{bmatrix}
+U\\V
+\end{bmatrix}
+=
+\begin{bmatrix}
+G&0\\
+0&H
+\end{bmatrix}
+\begin{bmatrix}
+U\\V
+\end{bmatrix}
+\Psi,\label{eq-gsvdgevd}
 \end{equation}
-Now if $A=F'G^{-1}F$ and $B=H$ we have 
-$$
-\mathcal{D}_sA=\mathcal{D}_s(F'G^{-1}F)=(\mathcal{D}_sF)'G^{-1}F+F'G^{-1}(\mathcal{D}_sF)-F'G^{-1}(\mathcal{D}_sG)G^{-1}F
-$$ 
-and $\mathcal{D}_sB=\mathcal{D}_sH$. Consequently from \eqref{eq-singval}
-$$
-\mathcal{D}_s\lambda_i^2=y_i'\{(\mathcal{D}_sF)'G^{-1}F+F'G^{-1}(\mathcal{D}_sF)-F'G^{-1}(\mathcal{D}_sG)G^{-1}F-\lambda_i^2\mathcal{D}_sH\}y_i
-$$
-This can be simplified by using $G^{-1}Fy_i=\lambda_ix_i$ and $\mathcal{D}_s\lambda_i^2=2\lambda_i\mathcal{D}_s\lambda_i$, so that
-$$
-\mathcal{D}_s\lambda_i=x_i'(\mathcal{D}_sF)y_i-\frac12\lambda_i\{x_i'(\mathcal{D}_sG)x_i+y_i'(\mathcal{D}_sH)y_i\}
-$$
+with normalization $U'GU+V'HV=I$. 
 
-$$
-\mathcal{D}_sy_i=-\sum_{j\neq i}\frac{\lambda_i^{\ } x_i'(\mathcal{D}_sF)y_j+\lambda_j^{\ }x_j'(\mathcal{D}_sF)y_i-\lambda_i\lambda_jx_i'(\mathcal{D}_sG)x_j-\lambda_i^2y_i'(\mathcal{D}_sH)y_j}{\lambda_j^2-\lambda_i^2}y_j-\tfrac12 y_i'(\mathcal{D}_sH)y_i\cdot y_i.
-$$ 
+System \eqref{eq-gsvdgevd} has $n+m$ solutions. There are $m$ solutions
+with $U=\tfrac12\sqrt{2}\ X, V=\tfrac12\sqrt{2}\ Y$ and $\Psi=\Lambda$. There
+are another $m$ solutions
+with $U=\tfrac12\sqrt{2}\ X, V=-\tfrac12\sqrt{2}\ Y$ and $\Psi=-\Lambda$.
+And finally there are $n-m$ solutions with $U=X_\perp, V=0$, and
+$\Lambda=0$. Clearly the first $m$ solutions are the interesting ones,
+and they give the $m$ solutions of the GSVD decomposition.
 
-In the same way from \eqref{eq-gsvdef2a} $Y=H^{-1}F'X\Lambda^{-1}$, and thus
+Thus, in stead of tackling the GSVD in \eqref{eq-gsvdef1a}-\eqref{eq-gsvdef4a}
+directly, we apply our results for the derivatives of the GEVD to the
+system \eqref{eq-gsvdgevd}. All three matrices $F,G,$ and $H$ are assumed
+to be functions of the parameters $\theta$ and we will only consider the
+first $m$ generalized eigenvalues (assuming that $F$ has rank $r=m$, otherwise 
+only the first $r$).
+
+To bring the notation in line with our previous results we rewrite the
+equations in the GEVD system \eqref{eq-gsvdgevd} as 
 \begin{equation}
-FH^{-1}F'X=GX\Lambda^2.
+A\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix}=\lambda_\nu B\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix},
 \end{equation}
-For this GEV 
-$$
-\mathcal{D}_sA=\mathcal{D}_s(FH^{-1}F')=(\mathcal{D}_sF)H^{-1}F'+FH^{-1}(\mathcal{D}_sF)'-FH^{-1}(\mathcal{D}_sH)H^{-1}F'
-$$
-which implies
-$$
-\mathcal{D}_sx_i=-\sum_{j\neq i}\frac{\lambda_ix_j'(\mathcal{D}_sF)y_i+\lambda_jx_i'(\mathcal{D}_sF)y_j-\lambda_i\lambda_jy_i'(\mathcal{D}_sH)y_j-\lambda_i^2x_i'(\mathcal{D}_sG)x_j}{\lambda_j-\lambda_i}x_j-\tfrac12 x_i'(\mathcal{D}_sG)x_i\cdot x_i
-$$
+with
+\begin{equation}
+A=\begin{bmatrix}
+0&F\\F'&0
+\end{bmatrix}
+\end{equation}
+and
+\begin{equation}
+B=\begin{bmatrix}
+G&0\\
+0&H
+\end{bmatrix}
+\label{eq-gsvdgevd2}
+\end{equation}
+
+The first derivatives are
+\begin{equation}
+\mathcal{D}_s\lambda_\nu=x_\nu'(\mathcal{D}_sF)y_\nu-\lambda_\nu (x_\nu'(\mathcal{D}_sG)x_\nu+y_\nu'(\mathcal{D}_sH)y_\nu),\label{eq-gsvdderlab}
+\end{equation}
+and
+\begin{multline}
+\mathcal{D}_s\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix}=-(A-\lambda_\nu B)
+^-
+\begin{bmatrix}
+(\mathcal{D}_sF)y_\nu-\lambda_\nu(\mathcal{D}_sG)x_\nu\\
+(\mathcal{D}_sF')x_\nu-\lambda_\nu(\mathcal{D}_sH)y_\nu\end{bmatrix}\\
+-\tfrac12 
+(x_\nu'(\mathcal{D}_sG)x_\nu+y_\nu'(\mathcal{D}_sH)y_\nu)\cdot\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix}.
+\label{eq-gsvdder1}
+\end{multline}
+Note that
+\begin{equation}
+(A-\lambda_\nu B)^-=\sum_{\eta\neq\nu}^{n+m}\frac{1}{\lambda_\eta-\lambda_\nu}\begin{bmatrix}x_\eta x_\eta'&x_\eta y_\eta'\\y_\eta x_\eta'&y_\eta y_\eta'\end{bmatrix}\label{eq-expgen}
+\end{equation}
+with the summation over all $n+m$ eigenvalues, including the $n-m$ that are equal to zero (for which
+$y_\eta$ is also zero).
+
+It is clearly helpful to define
+\begin{subequations}
+\begin{align}
+T_s&:=X'(\mathcal{D}_sF)Y,\label{eq-helpa}\\
+U_s&:=X'(\mathcal{D}_sG)X,\label{eq-helpb}\\
+V_s&:=Y'(\mathcal{D}_sH)Y.\label{eq-helpc}
+\end{align}
+\end{subequations}
+With definitions \eqref{eq-helpa}-\eqref{eq-helpc} the eigenvalue derivatives \eqref{eq-gsvdderlab} become
+\begin{equation}
+\mathcal{D}_s\lambda_\nu=t^s_{\nu\nu}-\lambda_\nu (u^s_{\nu\nu}+v^s_{\nu\nu}).
+\end{equation}
+Substitute \eqref{eq-expgen} into \eqref{eq-gsvdder1}, and use the definitions \eqref{eq-helpa}-\eqref{eq-helpc} for the eigenvector derivatives.
+\begin{align}
+\mathcal{D}_sx_\nu&=-\sum_{\eta\neq\nu}^{n+m}\frac{1}{\lambda_\eta-\lambda_\nu}(t^s_{\eta\nu}+t^s_{\nu\eta}-\lambda_\nu(u^s_{\eta\nu}+v^s_{\nu\eta}))x_\eta-\tfrac12 
+(u^s_{\nu\nu}+v^s_{\nu\nu})x_\nu\\
+\mathcal{D}_sy_\nu&=-\sum_{\eta\neq\nu}^{n+m}\frac{1}{\lambda_\eta-\lambda_\nu}(t^s_{\eta\nu}+t^s_{\nu\eta}-\lambda_\nu(u^s_{\eta\nu}+v^s_{\nu\eta}))y_\eta-\tfrac12 
+(u^s_{\nu\nu}+v^s_{\nu\nu})y_\nu
+\end{align}
 
 \sectionbreak
 
@@ -581,46 +644,39 @@ matrix by the sum of a diagonal matrix and a matrix of small rank. There
 are many different ways in which the degree of approximation can be 
 measured, and for a given loss function there are many different proposed
 algorithms to minimize it. We will use our first and second derivatives
-to provide a basis for minimization by
-Newton's method of some of these loss functions.
+to provide a basis for minimization by Newton's method of some of these loss functions.
 
-### Least Squares
+### Unweighted Least Squares \label{sec-uls}
 
-In the Least Squares Factor Analysis (LSFA) of a covariance matrix $C$ of order $n$ we minimize
-$$
-\sigma(U,D)=\text{tr}\ (C-UU'-D)^2
-$$
-over the $n\times p$ matrices $U$ and the diagonal matrices $D$ of order $n$. An LSFA is called
-proper if in addition we require $0\lesssim D\lesssim C$ (in the Loewner sense).
+In Least Squares Factor Analysis (LSFA) of a covariance matrix $C$ of order $n$ we minimize
+\begin{equation}
+\sigma(D)=\sum_{i=p+1}^n\lambda_i^2(C-D)\label{eq-ulsloss}
+\end{equation}
+over diagonal matrices $D$. In a proper LSFA we require $D\geq 0$ and $C-D$ positive semi-definite, but these
+constraints need not bother us here because we are only interested in the first and second derivatives. The 
+formulas we derive have been given earlier by @derflinger_69 and @joreskog_vanthillo_71. 
 
-@thomson_34, @harman_jones_66, Zegers Ten Berge
-
-If $C\gtrsim D$ then
-$$
-\sigma_\star(D)=\min_U\sigma(U,D)=\sum_{i=p+1}^n\lambda_i^2(C-D).
-$$
-$\mathcal{D}_iA=-e_ie_i'$
-$$
-\mathcal{D}_i\sigma_\star=-2\sum_{\nu=p+1}^n\lambda_\nu^{\ }x_{i\nu}^2
-$$
-
-$$
-\mathcal{D}_{ij}\sigma_\star=2\sum_{\nu=p+1}^nx_{i\nu}^2x_{j\nu}^2-4\sum_{\nu=p+1}^n\sum_{\eta\neq\nu}^n\frac{\lambda_\nu}{\lambda_\eta-\lambda_\nu}x_{i\nu}x_{j\nu}x_{i\eta}x_{j\eta}
-$$
-Derflinger joreskog van thillo
+Because $A=C-D$ we have $\mathcal{D}_iA=-e_ie_i'$. It follows directly from \eqref{eq-singval} that
+\begin{equation}
+\mathcal{D}_i\sigma=-2\sum_{\nu=p+1}^n\lambda_\nu^{\ }x_{i\nu}^2.\label{eq-duls}
+\end{equation}
+From \eqref{eq-seclbdmat}, taking into account that $B=I$, and thus $D_iB=D_{ij}B=0$, 
+\begin{equation}
+\mathcal{D}_{ij}\sigma_\star=2\sum_{\nu=p+1}^nx_{i\nu}^2x_{j\nu}^2-4\sum_{\nu=p+1}^n\sum_{\eta\neq\nu}^n\frac{\lambda_\nu}{\lambda_\eta-\lambda_\nu}x_{i\nu}x_{j\nu}x_{i\eta}x_{j\eta}.\label{eq-dduls}
+\end{equation}
 
 The file lsfa.R in the github repository has functions to compute the first and second derivatives,
-with a numDeriv checker.
+with the usual numDeriv checker.
 
 ### The Swain Family
 
 In an important paper @swain_75 derived a class of factor analytic procedures which produce estimates 
-asymptotically equivalent to the classical Lawley-Joreskog maximum likelihood estimates. Swain also
+that are asymptotically equivalent to the classical Lawley-Joreskog maximum likelihood estimates. Swain also
 wrote down the necessary first and second order derivatives that can be used in implementing
 Newton's method, thus generalizing the work of @jennrich_robinson_69, @derflinger_69, and @clarke_70 for the
 maximum likelihood method.
 
-Suppose $f$ is a twice-differentiable univariate function defined on the positive real axis with the properties
+Suppose $\mathcal{F}$ is the set of twice-differentiable univariate functions defined on the positive real axis with the properties
 \begin{subequations}
 \begin{align}
 f(1)&=\mathcal{D}f(1)=0,\label{eq-f1}\\
@@ -629,38 +685,46 @@ f(1)&=\mathcal{D}f(1)=0,\label{eq-f1}\\
 \mathcal{D}f(\theta)&>0\text{ for }\theta>1.\label{eq-f4}
 \end{align}
 \end{subequations}
-Note that this implies that $f$ is unimodal and has a single minimum equal to zero at one. Also, by l'Hôpital.
+Note that this implies that each $f\in\mathcal{F}$ is unimodal and has a single minimum equal to zero at one. Also, by l'Hôpital,
 \begin{equation}
-\lim_{x\rightarrow 1}\frac{f(x)}{\frac12(x-1)^2}=1
+\lim_{x\rightarrow 1}\frac{f(x)}{\frac12(x-1)^2}=1.
 \end{equation}
+The signature of a real-valued function $f$ at $x$ is -1 if $f(x)<0$, $+1$ if $f(x)>0$,
+and $0$ if $f(x)=0$. It follows from \eqref{eq-f1}-\eqref{eq-f4} that if $f,g\in\mathcal{F}$
+then the signatures of $\mathcal{D}f$ and $\mathcal{D}g$ are the same. 
 
 Swain proposes to minimize
 \begin{equation}
 \sigma(D):=\sum_{\nu=p+1}^n f(\lambda_\nu(A)),
 \end{equation}
-with $\lambda$ the eigenvalues of $A:=S^{-\frac12}DS^{-\frac12}$.
-Both maximum likelhood estimation, generalized least squares estimation
-(@joreskog_goldberger_72), and the "geodesic distance" (@james_73) are special cases. 
-For maximum likelihood
+with $\lambda$ the eigenvalues of $A:=S^{-\frac12}DS^{-\frac12}$. These are also the eigenvalues of
+the asymmetric matrix $S^{-1}D$, and the generalized eigenvalues of the pair $(D,S)$.
+
+Maximum likelihood estimation, generalized least squares estimation
+(@joreskog_goldberger_72), and the "geodesic distance" between covariance matrices (@james_73) are special cases. For maximum likelihood
 \begin{subequations}
 \begin{equation}
-f_1(\theta):=1/\theta+\log\theta-1
+f_1(\theta):=1/\theta+\log\theta-1,
 \end{equation}
-and for GLS with loss $\frac12\text{tr}\ S^{-1}(\Sigma-S)S^{-1}(\Sigma-S)$ we have
+for GLS with loss $\frac12\text{tr}\ S^{-1}(\Sigma-S)S^{-1}(\Sigma-S)$ we have
 \begin{equation}
-f_2(\theta):=\frac12(\theta-1)^2
+f_2(\theta):=\frac12(\theta-1)^2,
 \end{equation}
-But \eqref{eq-f1}-\eqref{eq-f4} also covers other cases, such as the "geodetic distance" between covariance matrices, which has
+and for the "geodetic distance" 
 \begin{equation}
-f_3(\theta):=\frac12(\log\theta)^2,
+f_3(\theta):=\frac12(\log\theta)^2.
 \end{equation}
-and the GLS variant with loss $\frac12\text{tr}\ \Sigma^{-1}(\Sigma-S)\Sigma^{-1}(\Sigma-S)$ 
+But \eqref{eq-f1}-\eqref{eq-f4} also covers other cases
+such as the  GLS variant with loss $\frac12\text{tr}\ \Sigma^{-1}(\Sigma-S)\Sigma^{-1}(\Sigma-S)$ 
 \begin{equation}
 f_4(\theta):=\frac12\frac{(\theta-1)^2}{\theta^2}.
 \end{equation}
 \end{subequations}
 In addition if $f(\theta)$ satisfies \eqref{eq-f1}-\eqref{eq-f4} for all $\theta$ then so does 
-$f(\theta^{-1})$. In fact $f_4(\theta)=f_2(\theta^{-1})$.
+$f(\theta^{-1})$. In fact $f_4(\theta)=f_2(\theta^{-1})$. Also $f_3(theta)=f_3(\theta^{-1})$.
+Note that the unweighted 
+least squares method from the previous section \ref{sec-uls} is not in the Swain family, but the GLS methods are, and they have the advantage of being scale-free.
+
 
 From $A=S^{-\frac12}DS^{-\frac12}$ we have $\mathcal{D}_iA=S^{-\frac12}e_ie_i'S^{-\frac12}$. To apply the formulas from section \ref{sec-sev} it is convenient
 to define the matrix $Y:=S^{-\frac12}X$ with elements $y_{i\nu}$. It follows that
@@ -683,7 +747,8 @@ Differentiate once again
 \end{equation}
 
 The github repository has a file swain.R  which has functions to compute the first and second derivatives
-for the loss functions ..... There is also a numDeriv checker. The functions are programmed in such a way that they can easily be extended to other loss functions satisfying ...
+for the more common choices of $f\in\mathcal{F}$. There is also a numDeriv checker. The functions are programmed in such a way that they can easily be extended to other loss functions with $f$ satisfying 
+\eqref{eq-f1}-\eqref{eq-f4}.
 
 ## Matrix Decomposition Factor Analysis
 
@@ -692,32 +757,43 @@ largest singular values of a matrix $XT$ over $T$, which is equivalent to
 maximizing the sum of the square roots of the largest eigenvalues of 
 $T'X'XT$. The matrix $X$ is $n\times m$ and $T$ is $m\times p$, with $m<p$.
 Thus $A=T'X'XT$ is of order $p$ and of rank $r\leq m$. We suppose it is
-locally of constant rank $m$ and we maximize the sum of the sq1uare roots
+locally of constant rank $m$ and we maximize the sum of the square roots
 of its $m$ non-zero eigenvalues. The matrix $T$ is patterned, which means
-that some of its elements are restricted to be equal to zero.
+that some of its elements are restricted to be equal to zero. In factor analysis
+we typically have $T=\begin{bmatrix}U&D\end{bmatrix}$, with an $n\times(p-n)$
+matrix $U$ and a diagonal matrix $D$. Thus the pattern is that the off-diagonal
+elements of $D$ are zero. 
 
-The pattern is defined by a basis of known matrices $T_s$ with the same
-pattern, so that
+Let us first consider the general case, in which $T$ is any twice differentiable function of a number of parameters.
+If $A=T'CT$, with $C=X'X$ a constant matrix, then $\mathcal{D}_sA=(\mathcal{D}_sT)'CT+T'C(\mathcal{D}_sT)$.
+Thus
+\begin{equation}
+\mathcal{D}_s\lambda_\nu=2x_\nu'T'C(\mathcal{D}_sT)x_\nu,
+\end{equation}
+and
+\begin{equation}
+\mathcal{D}_s\sum_{\nu=1}^m\lambda_\nu^\frac12(A)=\sum_{\nu=1}^m\lambda_\nu^{-\frac12}x_\nu'T'C(\mathcal{D}_sT)x_\nu=\text{tr}\ (T'CT)^{-\frac12}T'C(\mathcal{D}_sT),
+\end{equation}
+where $(T'CT)^{-\frac12}$ is the square root of the Moore-Penrose inverse.
+
+
+Next
+\begin{equation}
+\mathcal{D}_{st}\sum_{\nu=1}^m\lambda_\nu^\frac12(A)=-\frac14\sum_{\nu=1}^m\lambda_\nu^{-\frac32}(\mathcal{D}_s\lambda_\nu)(\mathcal{D}_t\lambda_\nu)+\frac12\sum_{\nu=1}^m\lambda_\nu^{-\frac12}(\mathcal{D}_{st}\lambda_\nu),
+\end{equation}
+where
+\begin{equation}
+\mathcal{D}_{st}\lambda_\nu=4x_\nu'T'C(\mathcal{D}_sT)\mathcal{D}_tx_\nu+2x_\nu'(\mathcal{D}_tT)'C(\mathcal{D}_sT)x_\nu+2x_\nu'T'C(\mathcal{D}_{st}T)x_\nu,
+\end{equation}
+and
+\begin{equation}
+\mathcal{D}_sx_\nu=-(A-\lambda_\nu I)^+\{(\mathcal{D}_sT)'CT+T'C(\mathcal{D}_sT)\}x_\nu.
+\end{equation}
+
+In the linear case, in which $T$ is a linear combination of indicators $e_je_\alpha'$, we find
 $$
-T=\sum_{s=1}^p\theta_sT_s
+\mathcal{D}\sigma=CT(T'CT)^{-\frac12}.
 $$
-The problem is to maximize
-$$
-\sum_{j=1}^m\sqrt{\lambda_j(\theta_s\theta_tT_s'CT_t)}
-$$
-$$
-\mathcal{D}_sA=T'CT_s+T_s'CT
-$$
-$$
-\mathcal{D}_{st}A=T_s'CT_t+T_t'CT_s
-$$
-$$
-\sum_{j=1}^m\mathcal{D}_s\lambda_j^\frac12=\frac12\sum_{j=1}^m\lambda_j^{-\frac12}\mathcal{D}_s\lambda_j=
-\frac12\sum_{j=1}^m\lambda_j^{-\frac12}x_j'(\mathcal{D}_sA)x_j=\frac12\text{tr}\ A^{-\frac12}\mathcal{D}_sA=\text{tr}\ A^{-\frac12}T'CT_s
-$$
-$$
-\sum_{j=1}^m\mathcal{D}_{st}\lambda_j^\frac12=-\frac14\sum_{j=1}^m\lambda_j^{-\frac32}(\mathcal{D}_t\lambda_j)(\mathcal{D}_s\lambda_j)+\frac12\sum_{j=1}^m\lambda_j^{-\frac12}\mathcal{D}_{st}\lambda_j
-$$ 
-\sectionbreak
+In the linear indicator special case the second derivatives $\mathcal{D}_{st}T$ are zero.
 
 # References
