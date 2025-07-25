@@ -409,7 +409,7 @@ Y'HY&=I,\label{eq-gsvdef4a}
 Here $Y$ and $\Lambda$ are square of order $m$, with $\Lambda$ diagonal and non-negative. The left singular vectors are $n\times m$, and there is an $n\times(n-m)$ matrix $X_\perp$ that satisfies $F'X_\perp=0$,
 with $X_\perp'GX=0$ and $X_\perp'GX_\perp=I$.
 
-The GSVD system \eqref{eq-gsvdef1a}-\eqref{eq-gsvdef4a} is closely related to the GEVD system
+The GSVD system \eqref{eq-gsvdef1a}-\eqref{eq-gsvdef4a} is (very) closely related to the GEVD system
 \begin{equation}
 \begin{bmatrix}
 0&F\\F'&0
@@ -437,7 +437,7 @@ And finally there are $n-m$ solutions with $U=X_\perp, V=0$, and
 $\Lambda=0$. Clearly the first $m$ solutions are the interesting ones,
 and they give the $m$ solutions of the GSVD decomposition.
 
-Thus, in stead of tackling the GSVD in \eqref{eq-gsvdef1a}-\eqref{eq-gsvdef4a}
+Thus, in stead of tackling the GSVD from \eqref{eq-gsvdef1a}-\eqref{eq-gsvdef4a}
 directly, we apply our results for the derivatives of the GEVD to the
 system \eqref{eq-gsvdgevd}. All three matrices $F,G,$ and $H$ are assumed
 to be functions of the parameters $\theta$ and we will only consider the
