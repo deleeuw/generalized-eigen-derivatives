@@ -1,4 +1,4 @@
-source("gevNonlinear.R")
+source("gevdNonlinear.R")
 library(datasets)
 freq <- HairEyeColor
 
@@ -53,7 +53,7 @@ ddB <- function(theta, s, t) {
 
 theA <- function(theta) {
   a <- aintercept
-  for ( s in 1:p) {
+  for (s in 1:p) {
     a <- a + theta[s] * aarray[, , s]
   }
   return(a)

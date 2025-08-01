@@ -69,14 +69,15 @@ matrixPrint <- function(x,
 
 # Introduction
 
-The generalized eigenvalue (GEV) problem for a pair $(A,B)$ of square symmetric matrices of order $n$ is to find a matrix $X$ of eigenvectors and a diagonal matrix $\Lambda$ of eigenvalues such that 
+The generalized eigenvalue (GEV) problem for a pair $(A,B)$ of square symmetric matrices of order $n$ is to find the solution $(X,\Lambda)$ of the system
 \begin{subequations}
 \begin{align}
 AX&=BX\Lambda,\label{eq-gevdef1}\\
 X'BX&=I\label{eq-gevdef2}.
 \end{align} 
 \end{subequations} 
-We assume that $B$ is positive definite and that the eigenvalues are in decreasing\footnote{By "decreasing" we mean $\lambda_1\geq\lambda_2\geq\cdots\geq\lambda_n$.} order along the diagonal.
+We assume that $B$ is positive definite. 
+The matrix $X$ of eigenvectors and the diagonal matrix $\Lambda$ of eigenvalues are both square of order $n$. 
 
 The equations \eqref{eq-gevdef1} and \eqref{eq-gevdef2} implicitly define $(X(),\Lambda())$ as a function of $(A,B)$. It turns out that under suitable assumptions on the matrix arguments these implicit functions are actually differentiable, and this makes it interesting to compute their derivatives.
 
@@ -98,12 +99,12 @@ I should perhaps also mention a previous version of this paper (@deleeuw_R_07c),
 
 # Basic Results
 
-Suppose $A()$ and $B()$ are differentiable symmetric matrix valued functions of order $n$ on an open subset $\Theta$ of $\mathbb{R}^p$, and suppose at $\theta\in\Theta$ the matrix $B(\theta)$ is positive definite and the generalized eigenvalues of $(A(\theta),B(\theta))$ are all different. Then the ordered eigenvalues $\Lambda()$ and the eigenvectors $X()$ are analytic functions of the parameters in a neighborhood of $\theta$. 
+Suppose $A()$ and $B()$ are differentiable symmetric matrix valued functions of order $n$ on an open subset $\Theta$ of $\mathbb{R}^p$, and suppose at $\theta_0\in\Theta$ the matrix $B(\theta_0)$ is positive definite and the generalized eigenvalues of $(A(\theta_0),B(\theta_0))$ are all different. Then the ordered eigenvalues $\Lambda()$ and the eigenvectors $X()$ are analytic functions of the parameters in a neighborhood of $\theta_0$.
 
 We use subscripts $i,j=1,\cdots, n$ for the rows and columns of $A$ and $B$, subscripts $\eta,\nu=1,\cdots,n$ for the eigenvalues and eigenvectors, and $s,t=1,\cdots,p$ for the parameters in $\theta$. Thus $x_{i\nu}$ is element $i$ of eigenvector $x_\nu$. The partial derivative of a function $A()$ on 
-$\Theta$ with respect to $\theta_s$, evaluated at $\theta$, is written as $\mathcal{D}_sA(\theta)$. In
+$\Theta$ with respect to $\theta_s$, evaluated at $\theta_0$, is written as $\mathcal{D}_sA(\theta_0)$. In
 order not to clutter our formulae the parameter vector where the derivative is evaluated is usually not
-explicitly specified. Note also that it is sometimes necessary to use parentheses to distinguish $(\mathcal{D}_s)Ax$ from $\mathcal{D}_s(Ax)$.
+explicitly specified. Note also that it is sometimes necessary to use parentheses to distinguish $(\mathcal{D}_sA)x$ from $\mathcal{D}_s(Ax)$.
 
 ## First Partials
 
@@ -120,7 +121,7 @@ The matrix $\Lambda X'B(\mathcal{D}_sX)-X'B(\mathcal{D}_sX)\Lambda$ is anti-symm
 \begin{equation}
 \mathcal{D}_s\Lambda=\text{diag}\{X'(\mathcal{D}_sA)X-X'(\mathcal{D}_sB)X\Lambda\},\label{eq-labsol}
 \end{equation} 
-or, for a single eigenvalue $\lambda_i$ with corresponding eigenvector $x_i$, 
+or, for a single eigenvalue $\lambda_\nu$ with corresponding eigenvector $x_\nu$, 
 \begin{equation}
 \mathcal{D}_s\lambda_\nu=x_\nu'(\mathcal{D}_sA-\lambda_\nu\mathcal{D}_sB)x_\nu.\label{eq-singval}
 \end{equation}
@@ -135,7 +136,7 @@ $X$ is non-singular, and thus there is a unique square $H_s$ such that $\mathcal
 \end{equation} 
 Switch to subscript notation and solve for $H_s$. For $s\neq t$ 
 \begin{equation}
-\{H_s\}_{ij}=-\frac{x_i'\{\mathcal{D}_sA-\lambda_s\mathcal{D}_sB\}x_j}{\lambda_i-\lambda_j}.\label{eq-offh}
+\{H_s\}_{\nu\eta}=-\frac{x_\nu'\{\mathcal{D}_sA-\lambda_s\mathcal{D}_sB\}x_\eta}{\lambda_\nu-\lambda_\eta}.\label{eq-offh}
 \end{equation} 
 This does not give a value for the diagonal of $H$. Differentiating \eqref{eq-gevdef2} gives 
 \begin{equation}
@@ -143,45 +144,51 @@ X'B(\mathcal{D}_sX)+(\mathcal{D}_sX)'BX+X'\mathcal{D}_sBX=0.\label{eq-fromtwo}
 \end{equation} 
 Using $\mathcal{D}_sX=XH_s$ and taking the diagonal of \eqref{eq-fromtwo} gives 
 \begin{equation}
-h_{ii}=-\tfrac12 x_i'(\mathcal{D}_sB)x_i. \label{eq-diagh}
+h_{\nu\nu}=-\tfrac12 x_\nu'(\mathcal{D}_sB)x_\nu. \label{eq-diagh}
 \end{equation} 
-Combining \eqref{eq-offh} and \eqref{eq-diagh} shows that for the eigenvector corresponding with $\lambda_s$ we have\footnote{Symbol $\cdot$ is used for multiplication with a scalar if using it makes a formula more clear, similar to parentheses.} then 
+Combining \eqref{eq-offh} and \eqref{eq-diagh} shows that for the eigenvector corresponding with $\lambda_\nu$ we have
 \begin{equation}
-\mathcal{D}_sx_i=-\sum_{j\neq i}\frac{x_j'\{\mathcal{D}_sA-\lambda_i\mathcal{D}_sB\}x_i}{\lambda_j-\lambda_i}x_j-\tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot x_i.\label{eq-secder1}
+\mathcal{D}_sx_\nu=-\sum_{j\\eta\neq \nu}\frac{x_\eta'\{\mathcal{D}_sA-\lambda_\nu\mathcal{D}_sB\}x_\nu}{\lambda_\eta-\lambda_\nu}x_\eta-\tfrac12 x_\nu'(\mathcal{D}_sB)x_\nu\cdot x_\nu,\label{eq-secder1}
 \end{equation}
 which can also be written as
 \begin{equation}
-\mathcal{D}_sx_i=-\sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-\tfrac12 x_i'(\mathcal{D}_sB)x_i)\cdot x_i.\label{eq-secder2}
+\mathcal{D}_sx_\nu=-\sum_{\eta\neq \nu}\left\{\frac{x_\eta x_\eta'}{\lambda_\eta-\lambda_\nu}\right\}(\mathcal{D}_sA-\lambda_\nu\mathcal{D}_sB)x_\nu-\tfrac12 (x_\nu'(\mathcal{D}_sB)x_\nu)x_\nu.\label{eq-secder2}
 \end{equation}
-It is notationally convenient to have a matrix expression for this derivative. Define, following @deleeuw_R_07c, the matrices
+
+It is notationally convenient to have a matrix expression for this derivative. Define the matrices
 \begin{equation}
-(A-\lambda_i B)^-:=
-\sum_{j\neq i}\left\{\frac{x_jx_j'}{\lambda_j-\lambda_i}\right\}=
-X(\Lambda-\lambda_iI)^+X',\label{eq-geninv}
+(A-\lambda_\nu B)^-:=
+\sum_{\eta\neq\nu}\left\{\frac{x_\eta x_\eta'}{\lambda_\eta-\lambda_\nu}\right\}=
+X(\Lambda-\lambda_\nu I)^+X',\label{eq-geninv}
 \end{equation} 
-where $(\Lambda-\lambda_iI)^+$ is the Moore-Penrose inverse of $\Lambda-\lambda_iI$. Matrix \eqref{eq-geninv}
-is a weak inverse of $A-\lambda_i B$, in the sense that
-\begin{equation}
-(A-\lambda_i B)^-(A-\lambda_i B)(A-\lambda_i B)^-=(A-\lambda_i B)^-.\label{eq-2inverse}
-\end{equation}
-It is a Moore-Penrose inverse if and only if $B$ is identically equal to one (and thus $X'X=XX'=I$).
+where $(\Lambda-\lambda_\nu I)^+$ is the Moore-Penrose inverse of $\Lambda-\lambda_\nu I$. Matrix \eqref{eq-geninv}
+is a reflexive g-inverse of $A-\lambda_\nu B$ (@rao_mitra_71, section 2.5). Of the four Penrose conditions only the first two are satisfied. To verify this we use definition \eqref{eq-geninv} and $A-\lambda_\nu B=X^{-T}(\Lambda-\lambda_\nu I)X^{-1}$. We find
+\begin{subequations}
+\begin{align}
+(A-\lambda_\nu B)(A-\lambda_\nu B)^-(A-\lambda_\nu B)&=A-\lambda_\nu B,\\
+(A-\lambda_\nu B)^-(A-\lambda_\nu B)(A-\lambda_\nu B)^-&=(A-\lambda_\nu B)^-,\\
+(A-\lambda_\nu B)(A-\lambda_\nu B)^-&=X^{-T}(I-e_\nu e_\nu')X',\\
+(A-\lambda_\nu B)^-(A-\lambda_\nu B)&=X(I-e_\nu e_\nu')X^{-1}.
+\end{align}
+\end{subequations}
+We see that $(A-\lambda_\nu B)^-$ is a Moore-Penrose inverse of $A-\lambda_\nu B$ if and only if $B$ is identically equal to one (and thus $X'X=XX'=I$).
 
 Using \eqref{eq-geninv} gives
 \begin{equation}
-\mathcal{D}_sx_i=-(A-\lambda_i B)^-(\mathcal{D}_sA-\lambda_i\mathcal{D}_sB)x_i-\tfrac12 x_i'(\mathcal{D}_sB)x_i\cdot x_i.\label{eq-singvec}
+\mathcal{D}_sx_\nu=-(A-\lambda_\nu B)^-(\mathcal{D}_sA-\lambda_\nu\mathcal{D}_sB)x_\nu-\tfrac12 (x_\nu'(\mathcal{D}_sB)x_\nu)x_\nu.\label{eq-singvec}
 \end{equation}
-Equations \eqref{eq-singval} and \eqref{eq-singvec} will be used frequently in this paper.
+The equations \eqref{eq-singval} and \eqref{eq-singvec} will be used frequently throughout this paper.
 
 ## Second Partials
 
-To find second partial derivatives we start simple with the eigenvalues. Differentiate \eqref{eq-singval} with respect to $\theta_t$. This gives 
+To find second partials of the eigenvalues we differentiate \eqref{eq-singval} with respect to $\theta_t$. This gives 
 \begin{equation}
 \mathcal{D}_{st}\lambda_\nu =2x_\nu '(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)\mathcal{D}_tx_\nu +
 x_\nu '(D_{st}A-\lambda_s\mathcal{D}_{st}B)x_\nu -x_\nu '(\mathcal{D}_sB)x_\nu \cdot\mathcal{D}_t\lambda_\nu .\label{eq-seclbd}
 \end{equation} 
 Substituting from \eqref{eq-singval} and \eqref{eq-singvec} gives
 \begin{multline}
-\mathcal{D}_{st}\lambda_\nu =-2x_\nu '(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)W_\nu  (\mathcal{D}_tA-\lambda_\nu \mathcal{D}_tB)x_\nu +
+\mathcal{D}_{st}\lambda_\nu =-2x_\nu '(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)(A-\lambda_\nu B)^- (\mathcal{D}_tA-\lambda_\nu \mathcal{D}_tB)x_\nu +
 x_\nu '(D_{st}A-\lambda_\nu \mathcal{D}_{st}B)x_\nu \\-x_\nu '(\mathcal{D}_tB)x_\nu \cdot x_\nu '(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)x_\nu -x_\nu '(\mathcal{D_s}B)x_\nu \cdot x_\nu '(\mathcal{D}_tA-\lambda_\nu \mathcal{D}_tB)x_\nu .\label{eq-seclbdmat}
 \end{multline} 
 Formula \eqref{eq-seclbdmat} shows that $\mathcal{D}_{st}\lambda_\nu=\mathcal{D}_{ts}\lambda_\nu$, just as it should be.
@@ -191,8 +198,8 @@ We start with \eqref{eq-secder1} and differentiate with respect to $\theta_t$. W
 intermediate calculations for this case, because they make it easier to check the final
 result. First
 \begin{multline}
-\mathcal{D}_{st}x_\nu =-\sum_{j\neq i}\mathcal{D}_t\left\{\frac{x_j'\{\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB\}x_\nu }{\lambda_\eta-\lambda_\nu }\right\}x_\eta\\
--\sum_{j\neq i}\frac{x_\eta'\{\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB\}x_\nu }{\lambda_\eta-\lambda_\nu }\mathcal{D}_tx_\eta
+\mathcal{D}_{st}x_\nu =-\sum_{\eta\neq\nu}\mathcal{D}_t\left\{\frac{x_j'\{\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB\}x_\nu }{\lambda_\eta-\lambda_\nu }\right\}x_\eta\\
+-\sum_{\eta\neq\nu}\frac{x_\eta'\{\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB\}x_\nu }{\lambda_\eta-\lambda_\nu }\mathcal{D}_tx_\eta
 -\tfrac12\mathcal{D}_t\{x_\nu '(\mathcal{D}_sB)x_\nu \cdot x_\nu \}.\label{eq-inter1}
 \end{multline}
 The terms in the first summation in \eqref{eq-inter1} are
@@ -214,8 +221,8 @@ Finally
 In computing the final result we first evaluate \eqref{eq-inter3}, substitute the result in \eqref{eq-inter2},
 and then substitute that result, together with the result of \eqref{eq-inter4}, into \eqref{eq-inter1}.
 For this to work we need to have both $\mathcal{D}\Lambda$ and $\mathcal{D}X$ available. We could of course
-substitute the expressions of $\mathcal{D}\Lambda$ and $\mathcal{D}X$ to \eqref{eq-inter1}-\eqref{eq-inter4}
-but that would result in a very long and opaque formula. We will rely on our software to give us the
+substitute the expressions of $\mathcal{D}\Lambda$ and $\mathcal{D}X$ into \eqref{eq-inter1}-\eqref{eq-inter4}
+but that would result in very long and opaque formulae. We will rely on our software to give us the
 numerical values for any specific value of $\theta$.
 
 \sectionbreak
@@ -248,20 +255,7 @@ $(s, t, i, \nu)$ is $\mathcal{D}_{st}x_{i\nu}(\theta)$.
 The names in the code and in the results for the eight matrices in this list are a, b, l, x, dl, dx, ddl, and ddx. The print function prints $\mathcal{D}\Lambda$ as an $n\times p$ matrix and $\mathcal{D}X$ as a sequence of $n$ matrices of dimensions $n\times p$, one for each eigenvalue. $\mathcal{D}^2\Lambda$ is printed
 as $n$ symmetric matrices of order $p$, and $\mathcal{D}^2X$ as $\smash{n^2}$ symmetric matrices of order $p$, one for each element of $X$.
 
-There is a corresponding numDeriv based check function gevNonlinearNum(), which has the same single argument $\theta$
-and gives the same output as gevNonlinear(). In addition there is gevMyLimit(), which is a quick and dirty
-numerical differentiation routine based on
-\begin{subequations}
-\begin{equation}
-\mathcal{D}f_s(\theta)=\lim_{\epsilon\rightarrow 0}\frac{f(\theta+\epsilon e_s)-f(\theta)}{\epsilon},\label{eq-lim1}
-\end{equation}
-and
-\begin{equation}
-\mathcal{D}f_{st}(\theta)=\lim_{\epsilon\rightarrow 0}\frac{f(\theta+\epsilon(e_s+e_t))-f(\theta+\epsilon e_s)-f(\theta+\epsilon e_t)+f(\theta)}{\epsilon^2}.\label{eq-lim2}
-\end{equation}
-\end{subequations}
-The function gevMyLimit() uses a single small value of $\epsilon$, by default $10^{-5}$. The function can be applied to any eigenvalue or eigenvector element and in a loop can produce any of the matrices of first or second partials. By default $\epsilon$
-is $10^{-5}$. If $\epsilon$ is too small in gevMyLimit() the approximation is overwhelmed by the rounding error that comes from squaring $\epsilon$ in the denominator of \eqref{eq-lim2}.
+There is a corresponding numDeriv based check function gevNonlinearNum(), which has the same single argument $\theta$ and gives the same output as gevNonlinear(). 
 
 \sectionbreak
 
@@ -279,12 +273,12 @@ In our first example we define
 A(\theta)&=A_0+\theta A_1+\frac12\theta^2A_2+...+\frac{1}{p}\theta^pA_p\\
 B(\theta)&=B_0+\theta B_1+\frac12\theta^2B_2+...+\frac{1}{p}\theta^pB_p
 \end{align}
-The template for a special case with $n=4$ and $p=3$ is gevExampleOne.R in 
+The template for a special case with $n=4$ and $p=3$ is gevdExampleOne.R in 
 the [github repository](https://www.github.com/deleeuw/generalized-eigen-derivatives).
 
 ## Linear Combinations \label{sec-linear}
 
-Suppose $A()$ is linear combinations of $p$ known symmetric matrices $A_s$ and $B()$ is a linear combination of
+Suppose $A()$ is a linear combination of $p$ known symmetric matrices $A_s$ and $B()$ is a linear combination of
 $p$ known symmetric matrices $B_s$. There may also be "intercepts" $A_0$ and $B_0$. Thus
 \begin{subequations}
 \begin{align}
@@ -295,7 +289,7 @@ B(\theta)&=B_0+\sum_{s=1}^p\theta_sB_s.
 It may seem somewhat limiting that the same parameter vector $\theta$ is used for both $A()$ and $B()$. But
 we can decide to make the last $q$ matrices $A_s$ and the first $p-q$ matrices $B_s$ equal to zero. This means, in effect, that $A()$ and $B()$ depend on different parameter vectors.
 
-The template for a special case with $n=4$ and $p=6$ is gevExampleTwo.R in 
+The template for a special case with $n=4$ and $p=6$ is gevdExampleTwo.R in 
 the [github repository](https://www.github.com/deleeuw/generalized-eigen-derivatives).
 In this example the last three $A_s$ and the first three $B_s$ are indeed zero.
 
@@ -308,33 +302,15 @@ The function gevNonlinear() can handle any parametric model, as long as the appr
 In special cases more compact and elegant formulae and more efficient computations
 will exist. The question then becomes if it is worthwhile to derive and retype the formulae and to 
 reprogram the R routines for these special cases. In this section we discuss some important special cases
-and give some of the corresponding formulae.
+and indicate what should be included in the templates.
 
 ## Linear Combinations
 
 The example in which $A()$ and $B()$ are linear combinations of known matrices is important enough
 to have its own batch of formulae for the derivatives. The basic simplication is of course that $\mathcal{D}_sA=A_s$ and $\mathcal{D}_sB=B_s$, and that consequently the second partials $\mathcal{D}_{st}A$ and $\mathcal{D}_{st}B$ are all zero.
 
-For the first derivatives we find
-\begin{align}
-\mathcal{D}_s\lambda_\nu &=x_\nu '(A_s-\lambda_\nu B_s)x_\nu ,\label{eq-singvalcon}\\
-\mathcal{D}_sx_\nu &=-(A-\lambda_\nu  B)^-(A_s-\lambda_\nu B_s)x_\nu -\tfrac12 x_\nu 'B_sx_\nu \cdot x_\nu .\label{eq-singveccon}
-\end{align}
-The second partials are
-\begin{multline}
-\mathcal{D}_{st}\lambda_\nu =-2x_\nu '(A_s-\lambda_\nu B_s)(A-\lambda_\nu  B)^-(A_t-\lambda_\nu B_t)x_\nu \\-x_\nu 'B_tx_\nu \cdot x_\nu '(A_s-\lambda_\nu B_s)x_\nu -x_\nu 'B_sx_\nu \cdot x_\nu '(A_t-\lambda_\nu B_t)x_\nu ,\label{eq-seclbdmatcon}
-\end{multline} 
-and
-\begin{align}
-\mathcal{D}_{st}x_\nu =&-\mathcal{D}_t(A-\lambda_\nu  B)^-(A_s-\lambda_\nu B_s)x_\nu \notag\\
-&+\mathcal{D}_t\lambda_\nu \cdot (A-\lambda_\nu  B)^-B_sx_\nu \notag\\
-&-(A-\lambda_\nu  B)^-(A_s-\lambda_\nu B_s)\mathcal{D}_tx_\nu \notag\\
-&-(\mathcal{D}_tx_\nu )'B_sx_\nu \cdot x_\nu \notag\\
-&-\tfrac12 x_\nu 'B_sx_\nu \cdot\mathcal{D}_tx_\nu .\label{eq-hessgen}
-\end{align}
 
-As a special case of the linear combinations special case we have the partial derivatives with respect to the elements 
-of $A$ and $B$. 
+As a special case of thus linear combinations special case we have the partial derivatives with respect to the elements  of $A$ and $B$. 
 \begin{subequations}
 \begin{align}
 A&=\mathop{\sum\sum}_{1\leq i\leq j}a_{ij}E_{ij},\\
@@ -344,32 +320,17 @@ B&=\mathop{\sum\sum}_{1\leq i\leq j}b_{ij}E_{ij}.
 Here $E_{ij}:=(e_ie_j'+e_je_i')$ for $i\neq j$ and $E_{ii}=e_ie_i'$ with $e_i$ and $e_j$ unit vectors\footnote{A unit vector $e_i$ has zeroes everywhere, except for element $i$, which is one.}. Thus \begin{equation}
 \mathcal{D}_{(i,j)}A=\mathcal{D}_{(i,j)}B=E_{ij}.
 \end{equation} 
-and, with some improvised but obvious notation, 
-\begin{subequations}
-\begin{align}
-\mathcal{D}_{(i,j)}^A\lambda_s&=
-\begin{cases}
-2x_{is}x_{js}&\text{ if }i\neq j,\\
-x_{is}^2&\text{ if }i = j.
-\end{cases}\\
-\mathcal{D}_{(i,j)}^B\lambda_s&=
-\begin{cases}
--2\lambda_sx_{is}x_{js}&\text{ if }i\neq j\\,
--\lambda_sx_{is}^2&\text{ if }i = j.
-\end{cases}
-\end{align}
-\end{subequations}
 
 ## Simple Eigenvalue Decomposition
 
-A simple eigenvalue (SEV) problem is of the form 
+An Eigenvalue Decomposition (EVD) problem is of the form 
 \begin{subequations}
 \begin{align}
 AX&=X\Lambda,\\
 X'X&=I.
 \end{align} 
 \end{subequations}
-Thus $B=I$ and $\mathcal{D}B=0$. In SEV the matrix $(A-\lambda_\nu B)^-$ from \eqref{eq-geninv} is actually the Moore-Penrose inverse of $A-\lambda_\nu I$.
+Thus $B=I$ and $\mathcal{D}B=0$. In EVD the matrix $(A-\lambda_\nu B)^-$ from \eqref{eq-geninv} is actually the Moore-Penrose inverse of $A-\lambda_\nu I$.
 
 From \eqref{eq-singval} 
 \begin{equation}
@@ -378,19 +339,19 @@ From \eqref{eq-singval}
 and from 
 \eqref{eq-singvec} 
 \begin{equation}
-\mathcal{D}_sx_\nu=-(A-\lambda_\nu I)^+(\mathcal{D}_sA)x_nu.\label{eq-vecpersimmp}
+\mathcal{D}_sx_\nu=-(A-\lambda_\nu I)^+(\mathcal{D}_sA)x_\nu.\label{eq-vecpersimmp}
 \end{equation}
 
 From \eqref{eq-seclbdmat}
 \begin{equation}
-\mathcal{D}_{st}\lambda_\nu=-2x_i'(\mathcal{D}_sA)(A-\lambda_\nu I)^+(\mathcal{D}_tA)x_\nu+
-x_i'(D_{st}A)x_i,\label{eq-hessvalsimple}
+\mathcal{D}_{st}\lambda_\nu=-2x_\nu'(\mathcal{D}_sA)(A-\lambda_\nu I)^+(\mathcal{D}_tA)x_\nu+
+x_\nu '(D_{st}A)x_\nu ,\label{eq-hessvalsimple}
 \end{equation}
 and from \eqref{eq-inter1}
 \begin{align}
-\mathcal{D}_{st}x_i=&-\mathcal{D}_t(A-\lambda_i I)^+(\mathcal{D}_sA)x_i\notag\\
-&-(A-\lambda_i I)^+(\mathcal{D}_{st}A)x_i\notag\\
-&-(A-\lambda_i I)^+(\mathcal{D}_{s}A)\mathcal{D}_tx_i.\label{eq-hessgensimple}
+\mathcal{D}_{st}x_\nu =&-\mathcal{D}_t(A-\lambda_\nu  I)^+(\mathcal{D}_sA)x_\nu \notag\\
+&-(A-\lambda_\nu  I)^+(\mathcal{D}_{st}A)x_\nu \notag\\
+&-(A-\lambda_\nu  I)^+(\mathcal{D}_{s}A)\mathcal{D}_tx_\nu .\label{eq-hessgensimple}
 \end{align}
 
 ## Generalized Singular Value Decomposition
@@ -506,6 +467,9 @@ Substitute \eqref{eq-expgen} into \eqref{eq-gsvdder1}, and use the definitions \
 (u^s_{\nu\nu}+v^s_{\nu\nu})y_\nu
 \end{align}
 
+In the Simple Singular Value Decomposition (SSVD) we have both $G=I$ and $H=I$, and the corresponding derivatives are consequently zero, as are the matrices $U_s$ and $V_s$. This simplifies matters 
+considerably
+
 \sectionbreak
 
 # Applications
@@ -531,20 +495,20 @@ B(\pi)=m\sum_{s=1}^p \pi_s\ \text{diag}(g_s g_s').
 $$
 The first derivatives with respect to $\pi_s$ are given by \eqref{eq-singvalcon} and \eqref{eq-singveccon}, using $G_s:=m\text{diag}(g_sg_s')$. 
 \begin{align}
-\mathcal{D}_s\lambda_i&=(x_i'g_s)^2-\lambda_ix_i'G_sx_i,\label{eq-singvalconmca}\\
-\mathcal{D}_sx_i&=-(A-\lambda_i B)^-(g_sg_s'-\lambda_iG_s)x_i-\tfrac12 x_i'G_sx_i\cdot x_i.\label{eq-singvecconmca}
+\mathcal{D}_s\lambda_\nu &=(x_\nu 'g_s)^2-\lambda_\nu x_\nu 'G_sx_\nu ,\label{eq-singvalconmca}\\
+\mathcal{D}_sx_\nu &=-(A-\lambda_\nu  B)^-(g_sg_s'-\lambda_\nu G_s)x_\nu -\tfrac12 x_\nu 'G_sx_\nu \cdot x_\nu .\label{eq-singvecconmca}
 \end{align}
 It follows that
 \begin{align}
-\sum_{s=1}^m\pi_s\mathcal{D}_s\lambda_i&=0,\\
-\sum_{s=1}^m\pi_s\mathcal{D}_sx_i&=-\frac12 x_i.
+\sum_{s=1}^m\pi_s\mathcal{D}_s\lambda_\nu &=0,\\
+\sum_{s=1}^m\pi_s\mathcal{D}_sx_\nu &=-\frac12 x_\nu .
 \end{align}
 Also, from the Delta Method, the asymptotic covariance matrix under multinomial sampling is given by
 $$
-N\cdot \text{ACOV}(\lambda_i,\lambda_j)=\sum_{s=1}^p\pi_s(\mathcal{D}_s\lambda_i)(\mathcal{D}_s\lambda_j)
+N\cdot \text{ACOV}(\lambda_\nu ,\lambda_\eta)=\sum_{s=1}^p\pi_s(\mathcal{D}_s\lambda_\nu )(\mathcal{D}_s\lambda_\eta)
 $$
 $$
-N\cdot \text{ACOV}(x_i,x_j)=\sum_{s=1}^p\pi_s(\mathcal{D}_sx_i)(\mathcal{D}_sx_j)'-\frac14 x_ix_j'
+N\cdot \text{ACOV}(x_i,x_j)=\sum_{s=1}^p\pi_s(\mathcal{D}_sx_\nu )(\mathcal{D}_sx_j)'-\frac14 x_\nu x_j'
 $$
 MCA is a popular technique, and thus it deserves a "real" example. We use the three-dimensional 
 contingency table HairEyeColor from the R datasets package, which is a part of base R (@r_core_team_25). 
@@ -560,11 +524,11 @@ of Delaware. Thus $N=592$, $p=4\times 4\times 2=32$, $n=4+4+2=10$.
 It is abundantly clear that this example shoulds be analyzed with some special purpose software
 which does not require computing and storing the $M$ arrays $A_s$ and the $M$ arrays $B_s$, which are
 symmetric, integer, and very sparse. In this paper we want to show, however, that gevNonlinear() can do 
-it all. Thus we make a template gevExampleMCA.R, which can actually handle any three-dimensional table.
+it all. Thus we make a template gevdExampleMCA.R, which can actually handle any three-dimensional table.
 After running the template, we apply gevNonlinear().
 
 ```{r do comp, echo = FALSE, cache = TRUE}
-source("gevExampleMCA.R")
+source("gevdExampleMCA.R")
 h <- gevNonlinear(theta)
 ```
 In MCA the dominant eigenvalue is always equal to one, and there are always $m-1$ eigenvalues equal to zero. These "trivial" dimensions are not a property of the data, but jusrt a consequence of the indicator coding.
@@ -611,9 +575,9 @@ asymptotic distribution of the scaled eigenvectors slightly more complicated.
 The Delta Method
 tells us second derivatives  can be used to give estimates of the bias, using
 $$
-N\cdot\text{BIAS}(\lambda_i)=\frac12\text{tr}\ \mathcal{D}^2\lambda_i(\Pi-\pi\pi')=\frac12\sum_{s=1}^p\pi_s\mathcal{D}_{ss}\lambda_i,
+N\cdot\text{BIAS}(\lambda_\nu )=\frac12\text{tr}\ \mathcal{D}^2\lambda_\nu (\Pi-\pi\pi')=\frac12\sum_{s=1}^p\pi_s\mathcal{D}_{ss}\lambda_\nu ,
 $$
-because $\pi'(\mathcal{D}^2\lambda_i)\pi=0$.
+because $\pi'(\mathcal{D}^2\lambda_\nu )\pi=0$.
 
 ```{r}
 bias <- rep(0, 7)
@@ -650,13 +614,13 @@ to provide a basis for minimization by Newton's method of some of these loss fun
 
 In Least Squares Factor Analysis (LSFA) of a covariance matrix $C$ of order $n$ we minimize
 \begin{equation}
-\sigma(D)=\sum_{i=p+1}^n\lambda_i^2(C-D)\label{eq-ulsloss}
+\sigma(D)=\sum_{i=p+1}^n\lambda_\nu^2(C-D)\label{eq-ulsloss}
 \end{equation}
 over diagonal matrices $D$. In a proper LSFA we require $D\geq 0$ and $C-D$ positive semi-definite, but these
 constraints need not bother us here because we are only interested in the first and second derivatives. The 
 formulas we derive have been given earlier by @derflinger_69 and @joreskog_vanthillo_71. 
 
-Because $A=C-D$ we have $\mathcal{D}_iA=-e_ie_i'$. It follows directly from \eqref{eq-singval} that
+Because $A=C-D$ we have $\mathcal{D}_i A=-e_ie_i'$. It follows directly from \eqref{eq-singval} that
 \begin{equation}
 \mathcal{D}_i\sigma=-2\sum_{\nu=p+1}^n\lambda_\nu^{\ }x_{i\nu}^2.\label{eq-duls}
 \end{equation}
@@ -791,9 +755,9 @@ and
 \end{equation}
 
 In the linear case, in which $T$ is a linear combination of indicators $e_je_\alpha'$, we find
-$$
+\begin{equation}
 \mathcal{D}\sigma=CT(T'CT)^{-\frac12}.
-$$
+\end{equation}
 In the linear indicator special case the second derivatives $\mathcal{D}_{st}T$ are zero.
 
 # References

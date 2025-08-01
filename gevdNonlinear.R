@@ -26,7 +26,7 @@ myGeigen <- function(a, b) {
   return(list(values = Re(lbd), vectors = Re(x)))
 }
 
-gevNonlinear <- function(theta) {
+gevdNonlinear <- function(theta) {
   p <- length(theta)
   a <- theA(theta)
   b <- theB(theta)
@@ -37,22 +37,22 @@ gevNonlinear <- function(theta) {
   dl <- matrix(0, n, p)
   dx <- array(0, c(n, p, n))
   ddl <- array(0, c(p, p, n))
-  for (i in 1:n) {
-    xi <- x[, i]
-    li <- l[i]
-    mpl <- l - li
+  for (nu in 1:n) {
+    xnu <- x[, nu]
+    lnu <- l[nu]
+    mpl <- l - lnu
     mpl <- diag(ifelse(mpl == 0, 0, 1 / mpl))
-    wi <- x %*% mpl %*% t(x)
+    wnu <- x %*% mpl %*% t(x)
     for (s in 1:p) {
       dsa <- dA(theta, s)
       dsb <- dB(theta, s)
-      dsab <- dsa - li * dsb
-      dl[i, s] <- sum(xi * (dsab %*% xi))
-      dx[, s, i] <- -wi %*% dsab %*% xi - 0.5 * sum(xi * (dsb %*% xi)) * xi
+      dsab <- dsa - lnu * dsb
+      dl[nu, s] <- sum(xnu * (dsab %*% xnu))
+      dx[, s, nu] <- -wnu %*% dsab %*% xnu - 0.5 * sum(xnu * (dsb %*% xnu)) * xnu
     }
   }
-  ddl <- gevHessianValues(theta, x, l)
-  ddx <- gevHessianVectors(theta, x, l, dx, dl)
+  ddl <- gevdHessianValues(theta, x, l)
+  ddx <- gevdHessianVectors(theta, x, l, dx, dl)
   return(list(
     a = a,
     b = b,
@@ -65,91 +65,93 @@ gevNonlinear <- function(theta) {
   ))
 }
 
-gevHessianValues <- function(theta, x, l) {
+gevdHessianValues <- function(theta, x, l) {
   ddl <- array(0, c(p, p, n))
-  for (i in 1:n) {
-    xi <- x[, i]
-    li <- l[i]
-    mpl <- l - li
+  for (nu in 1:n) {
+    xnu <- x[, nu]
+    lnu <- l[nu]
+    mpl <- l - lnu
     mpl <- diag(ifelse(mpl == 0, 0, 1 / mpl))
-    wi <- x %*% mpl %*% t(x)
+    wnu <- x %*% mpl %*% t(x)
     for (s in 1:p) {
       dsa <- dA(theta, s)
       dsb <- dB(theta, s)
-      dsab <- dsa - li * dsb
+      dsab <- dsa - lnu * dsb
       for (t in 1:p) {
         dta <- dA(theta, t)
         dtb <- dB(theta, t)
-        dtab <- dta - li * dtb
-        ddtp <- ddA(theta, s, t) - li * ddB(theta, s, t)
-        accu <- -2 * sum(xi * (dsab %*% wi %*% dtab %*% xi))
-        accu <- accu + sum(xi * (ddtp %*% xi))
-        accu <- accu - sum(xi * (dtb %*% xi)) * sum(xi * (dsab %*% xi))
-        accu <- accu - sum(xi * (dsb %*% xi)) * sum(xi * (dtab %*% xi))
-        ddl[s, t, i] <- accu
+        dtab <- dta - lnu * dtb
+        ddtp <- ddA(theta, s, t) - lnu * ddB(theta, s, t)
+        accu <- -2 * sum(xnu * (dsab %*% wnu %*% dtab %*% xnu))
+        accu <- accu + sum(xnu * (ddtp %*% xnu))
+        accu <- accu - sum(xnu * (dtb %*% xnu)) * sum(xnu * (dsab %*% xnu))
+        accu <- accu - sum(xnu * (dsb %*% xnu)) * sum(xnu * (dtab %*% xnu))
+        ddl[s, t, nu] <- accu
       }
     }
   }
   return(ddl)
 }
 
-gevHessianVectors <- function(theta, x, l, dx, dl) {
+gevdHessianVectors <- function(theta, x, l, dx, dl) {
   ddx <- array(0, c(p, p, n, n))
-  for (i in 1:n) {
-    xi <- x[, i]
-    li <- l[i]
+  for (nu in 1:n) {
+    xnu <- x[, nu]
+    lnu <- l[nu]
     for (s in 1:p) {
       dsa <- dA(theta, s)
       dsb <- dB(theta, s)
-      dsab <- dsa - li * dsb
+      dsab <- dsa - lnu * dsb
       for (t in 1:p) {
         dta <- dA(theta, t)
         dtb <- dB(theta, t)
-        dtab <- dta - li * dtb
+        dtab <- dta - lnu * dtb
         dstb <- ddB(theta, s, t)
-        ddtp <- ddA(theta, s, t) - li * dstb
-        dtxi <- dx[, t, i]
-        dtli <- dl[i, t]
+        ddtp <- ddA(theta, s, t) - lnu * dstb
+        dtxi <- dx[, t, nu]
+        dtli <- dl[nu, t]
         accu <- 0
-        accu <- accu + sum(xi * (dsb %*% xi)) * dtxi / 2
-        accu <- accu + sum(xi * (dstb %*% xi)) * xi / 2
-        accu <- accu + sum(xi * (dsb %*% dtxi)) * xi
-        for (j in 1:n) {
-          if (j == i) {
+        accu <- accu + sum(xnu * (dsb %*% xnu)) * dtxi / 2
+        accu <- accu + sum(xnu * (dstb %*% xnu)) * xnu / 2
+        accu <- accu + sum(xnu * (dsb %*% dtxi)) * xnu
+        for (eta in 1:n) {
+          if (eta == nu) {
             next
           }
-          xj <- x[, j]
-          dtlj <- dl[j, t]
-          lj <- l[j]
-          dlij <- lj - li
-          dtxj <- dx[, t, j]
-          djab <- sum(xj * (dsab %*% xi))
+          xeta <- x[, eta]
+          dtlj <- dl[eta, t]
+          leta <- l[eta]
+          dlij <- leta - lnu
+          dtxj <- dx[, t, eta]
+          djab <- sum(xeta * (dsab %*% xnu))
           accj <- 0
-          accj <- accj + sum(dtxj * (dsab %*% xi))
-          accj <- accj + sum(xj * (dsab %*% dtxi))
-          accj <- accj + sum(xj * (ddtp %*% xi))
-          accj <- accj - dtli * sum(xj * (dsb %*% xi))
-          accu <- accu + (accj / dlij) * xj
-          accu <- accu - ((dtlj - dtli) / (dlij^2)) * djab * xj
+          accj <- accj + sum(dtxj * (dsab %*% xnu))
+          accj <- accj + sum(xeta * (dsab %*% dtxi))
+          accj <- accj + sum(xeta * (ddtp %*% xnu))
+          accj <- accj - dtli * sum(xeta * (dsb %*% xnu))
+          accu <- accu + (accj / dlij) * xeta
+          accu <- accu - ((dtlj - dtli) / (dlij^2)) * djab * xeta
           accu <- accu + (djab / dlij) * dtxj
         }
-        ddx[s, t, , i] <- -accu
+        ddx[s, t, , nu] <- -accu
       }
     }
   }
   return(ddx)
 }
 
-gevNonlinearNum <- function(theta) {
+gevdNonlinearNum <- function(theta) {
+  theEunc <- function(theta) {
+    a <- theA(theta)
+    b <- theB(theta)
+    h <- myGeigen(a, b)
+    return(h$values)
+  }
   theFunc <- function(theta, ss) {
     a <- theA(theta)
     b <- theB(theta)
     h <- myGeigen(a, b)
-    if (ss == 0) {
-      return(h$values)
-    } else {
-      return(h$vectors[, ss])
-    }
+    return(h$vectors[, ss])
   }
   theGunc <- function(theta, ss) {
     a <- theA(theta)
@@ -168,32 +170,32 @@ gevNonlinearNum <- function(theta) {
   h <- myGeigen(a, b)
   l <- h$values
   x <- h$vectors
-  dl <- jacobian(func = theFunc, x = theta, ss = 0)
+  dl <- jacobian(func = theEunc, x = theta, method.args = list(r = 6))
   n <- nrow(theA(theta))
   dx <- array(0, c(n, p, n))
   ddl <- array(0, c(p, p, n))
   ddx <- array(0, c(p, p, n, n))
-  for (t in 1:n) {
-    dx[, , t] <- jacobian(
+  for (nu in 1:n) {
+    dx[, , nu] <- jacobian(
       func = theFunc,
       x = theta,
-      method.args = list(eps = 1e-6, r = 6),
-      ss = t
+      method.args = list(r = 6),
+      ss = nu
     )
-    ddl[, , t] <- hessian(
+    ddl[, , nu] <- hessian(
       func = theGunc,
       x = theta,
-      method.args = list(eps = 1e-6, r = 6),
-      ss = t
+      method.args = list(r = 6),
+      ss = nu
     )
   }
   for (i in 1:n) {
-    for (t in 1:n) {
-      ddx[, , i, t] <- hessian(
+    for (nu in 1:n) {
+      ddx[, , i, nu] <- hessian(
         func = theHunc,
         x = theta,
-        method.args = list(eps = 1e-6, r = 6),
-        ss = t,
+        method.args = list(r = 6),
+        ss = nu,
         ii = i
       )
     }

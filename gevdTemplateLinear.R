@@ -1,4 +1,4 @@
-source("gevNonlinear.R")
+source("gevdNonlinear.R")
 
 set.seed(12345)
 aarray <- array(0, c(4, 4, 6))
