@@ -19,6 +19,9 @@ aintercept <- crossprod(matrix(rnorm(400), 100, 4)) / 100
 bintercept <- crossprod(matrix(rnorm(400), 100, 4)) / 100
 p <- 6
 n <- 4
+hessianl <- TRUE
+hessianx <- TRUE
+theta <- rep(1, 6)
 
 dA <- function(theta, s) {
   return(aarray[, , s])

@@ -15,6 +15,7 @@ p <- 1
 n <- 4
 ma <- 3
 mb <- 3
+theta <- 1
 
 theA <- function(theta) {
   a <- aintercept
