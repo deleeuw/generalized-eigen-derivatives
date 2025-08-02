@@ -16,6 +16,8 @@ n <- 4
 ma <- 3
 mb <- 3
 theta <- 1
+hessianl <- TRUE
+hessianx <- TRUE
 
 theA <- function(theta) {
   a <- aintercept

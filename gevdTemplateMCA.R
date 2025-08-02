@@ -8,6 +8,8 @@ kcat <- dim(freq)
 m <- length(kcat)
 p <- prod(kcat)
 n <- sum(kcat)
+hessianl <- TRUE
+hessianx <- TRUE
 
 aarray <- array(0, c(n, n, p))
 barray <- array(0, c(n, n, p))

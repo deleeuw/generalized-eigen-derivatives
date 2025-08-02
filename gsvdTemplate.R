@@ -1,55 +1,66 @@
 source("gevdNonlinear.R")
 
-data(glass, package = "anacor")
-theta <- as.vector(as.matrix(glass))
-nr <- 7
-nc <- 7
-n <- nc + nr
-p <- nc * nr
+set.seed(12345)
+theta <- c(.1, .2, .3, .4, .5, .5)
+nr <- 4
+nc <- 3
+n <- 7
+p <- 6
 hessianl <- TRUE
 hessianx <- TRUE
 
-indi <- function(s, n) {
-  j <- ceiling(s / n)
-  i <- s - n * (j - 1)
-  return(c(i, j))
-}
-
-ei <- function(i, n) {
-  return(ifelse(i == 1:n, 1, 0))
-}
 
 theF <- function(theta) {
-  return(matrix(theta, nr, nc))
+  return(outer(theta[1:4], 1:3, "^"))
 }
 
 theG <- function(theta) {
-  f <- matrix(theta, nr, nr)
-  return(diag(rowSums(f)))
+  g <- theta[5] * diag(nr) + theta[5]
+  return(g)
 }
 
 theH <- function(theta) {
-  f <- matrix(theta, nc, nc)
-  return(diag(colSums(f)))
+  h <- theta[6] * diag(nc) + theta[6]
+  return(h)
 }
 
 dF <- function(theta, s) {
   df <- matrix(0, nr, nc)
-  ij <- indi(s, nr)
-  df[ij[1], ij[2]] <- 1
-  return(df)
+  if (s > 4) {
+    return(df)
+  } else {
+    df[s, ] <- c(1, 2 * theta[s], 3 * theta[s]^2)
+    return(df)
+  }
 }
 
 dG <- function(theta, s) {
-  return(diag(rowSums(dF(theta, s))))
+  dg <- matrix(0, nr, nr)
+  if (s != 5) {
+    return(dg)
+  } else {
+    return(1 - diag(nr))
+  }
 }
 
 dH <- function(theta, s) {
-  return(diag(colSums(dF(theta, s))))
+  dh <- matrix(0, nc, nc)
+  if (s != 6) {
+    return(dh)
+  } else {
+    return(1 - diag(nc))
+  }
 }
 
 ddF <- function(theta, s, t) {
-  return(matrix(0, nr, nc))
+  ddf <- matrix(0, nr, nc)
+  if ((s != t) || (s > 4) || (t > 4)) {
+    return(ddf)
+  }
+  else {
+    ddf[s, ] <- c(0, 2 , 6 * theta[s])
+    return(ddf)
+  }
 }
 
 ddG <- function(theta, s, t) {
