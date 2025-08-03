@@ -69,7 +69,7 @@ matrixPrint <- function(x,
 
 # Introduction
 
-The generalized eigenvalue (GEV) problem for a pair $(A,B)$ of square symmetric matrices of order $n$ is to find the solution $(X,\Lambda)$ of the system
+The generalized eigenvalue decomposition (GEVD) problem for a pair $(A,B)$ of square symmetric matrices of order $n$ is to find the solution $(X,\Lambda)$ of the system
 \begin{subequations}
 \begin{align}
 AX&=BX\Lambda,\label{eq-gevdef1}\\
@@ -78,14 +78,18 @@ X'BX&=I\label{eq-gevdef2}.
 \end{subequations} 
 We assume that $B$ is positive definite. 
 The matrix $X$ of eigenvectors and the diagonal matrix $\Lambda$ of eigenvalues are both square of order $n$. 
+As an aside we mention that the generalized eigenvalues of \eqref{eq-gevdef1} and \eqref{eq-gevdef2} are
+also the eigenvalues of the asymmetric matrix $B^{-1}A$ and of the symmetric matrix $\smash{B^{-1/2}AB^{-1/2}}$.
+
+GEV is at the basis of a great many computations in multivariate statistics. In multinormal small sample theory the derivatives are needed for the Jacobians in change-of-variable calculations to find the distribution of many interesting statistics (olkin). The applications we have in mind, however, are in large-sample statistics, where the derivatives are used in Delta Method computations of bias estimates, standard errors, and confidence intervals.
 
 The equations \eqref{eq-gevdef1} and \eqref{eq-gevdef2} implicitly define $(X(),\Lambda())$ as a function of $(A,B)$. It turns out that under suitable assumptions on the matrix arguments these implicit functions are actually differentiable, and this makes it interesting to compute their derivatives.
 
 There is a humongous and scattered literature on formulae for and computations of derivatives of eigenvalues and eigenvectors in linear algebra, numerical mathematics, engineering, multivariate statistics, and even in physics. Reviewing and collecting all relevant literature is an impossible task. We only give the basic mathematical references, which provide the foundations upon which our results will be built (@kato_84, @baumgartel_85).
 
-GEV is at the basis of almost all of the computations in multivariate statistics. In multinormal small sample theory the derivatives are needed for the Jacobians in change-of-variable calculations to find the distribution of many statistics. The applications we have in mind, however, are in large-sample statistics, where the derivatives are needed in Delta Method computations of standard errors and confidence intervals.
 
-Again, the Delta Method literature is huge and diverse. Special cases have been around before there was a statistics discipline, ever since the beginning of error analysis in geodesy, physics, and astronomy (@gorroochurn_20). For the types of applications we have in mind all the relevant Delta Method details are given in @mann_wald_43 and @hsu_49.
+
+
 
 We have written code in R (@r_core_team_25) to implement our final formulae for the first and second derivatives. Code is available at <https://github.com/deleeuw/generalized-eigen-derivatives>. In addition we have also
 written R code, available in the same repository, to numerically verify the final formulae. This
@@ -179,14 +183,52 @@ Using \eqref{eq-geninv} gives
 \end{equation}
 The equations \eqref{eq-singval} and \eqref{eq-singvec} will be used frequently throughout this paper.
 
+For eigenvalues \eqref{eq-singval} shows that computing $\mathcal{D}_s\lambda_\nu$ only requires
+us to know $\lambda_\nu$ and $x_\nu$, not the other eigenvalues and eigenvectors. Equation \eqref{eq-singvec} suggests the same thing is true for $\mathcal{D}_sx_\nu$, but this is only apparent, because we need
+all generalized eigenvalues and eigenvectors to compute $(A-\lambda_\nu B)^-$. If we only need
+the derivatives of, say, the first few eigenvectors from a very large system this can be computationally quite
+expensive.
+
+There is an alternative way of computing $\mathcal{D}_sx_\nu$ which does not require a full GEVD.
+We know that $\mathcal{D}_sx_\nu$ is a solution of the linear equations
+\begin{equation}
+(A-\lambda_\nu B)\mathcal{D}_sx_\nu=-(\mathcal{D}_sA-\lambda_\nu\mathcal{D}_sB)x_\nu+(\mathcal{D}_s\lambda_\nu)Bx_v. \label{eq-withy}
+\end{equation}
+Because $\lambda_\nu$ is a simple eigenvalue, the matrix $A-\lambda_\nu B$ is of rank $n-1$, with a null space
+consisting of all vectors proportional to $x_\nu$. Write $y_\nu$ for the right hand side of \eqref{eq-withy}. The system is solvable because $x_\nu'y_\nu=0$ by \eqref{eq-singval}, and its general solution is
+\begin{equation}
+\mathcal{D}_sx_\nu=(A-\lambda_\nu B)^-y_\nu+\theta x_\nu,\label{eq-withtheta}
+\end{equation}
+with $(A-\lambda_\nu B)^-$ any generalized inverse of $A-\lambda_\nu B$ and with $\theta$ arbitrary. 
+
+Since we must have
+\begin{equation}
+x_\nu'B(\mathcal{D}_sx_\nu)=-\tfrac12 x_\nu'(\mathcal{D}_sB)x_\nu\label{eq-norme}
+\end{equation}
+from \eqref{eq-fromtwo}, we see that
+\begin{equation}
+\theta=-\tfrac12 x_\nu'(\mathcal{D}_sB)x_\nu-x_\nu'B(A-\lambda_\nu B)^-y_\nu.\label{eq-thesolve}
+\end{equation}
+The value of $\theta$ depends on the choice of the generalized inverse. For our
+previous choice of the reflexive inverse from \eqref{eq-geninv} we actually have 
+$x_\nu'B(A-\lambda_\nu B)^-=x_\nu'X^{-T}X^{-1}X(\Lambda-\lambda_\nu I)^+X'y_\nu=e_\nu'(\Lambda-\lambda_\nu I)^+X'y=0$,
+and thus $\theta=-\tfrac12 x_\nu'(\mathcal{D}_sB)x_\nu$, but for other generalized inverses this may not be true. One possible other choice is the Moore-Penrose inverse, which we can compute with
+\begin{equation}
+(A-\lambda_\nu B)^+=(A-\lambda_\nu B+\tilde x_\nu \tilde x_\nu')^{-1}-\tilde x_\nu \tilde x_\nu',\label{eq-mpdef}
+\end{equation}
+with $\tilde x_\nu$ defined as $x_\nu$ normalized to length one. Using \eqref{eq-mpdef} means that to compute $\mathcal{D}_sx_\nu$ we do not need the complete GEVD of $(A,B)$ but instead the inverse of the symmetric matrix
+$A-\lambda_\nu B+\tilde x_\nu \tilde x_\nu'$. Yet another generalized inverse uses one of the non-singular
+principal submatrices $A-\lambda_\nu B$ of order $n-1$. If $x_{i\nu}\neq 0$ then the submatrix leaving out
+row and column $i$ is non-singular, so it makes sense to choose $i$ with the largest $|x_{i\nu}|$. The computation now requires us to invert a matrix of order $n-1$. Using this last choice of generalized inverse is known in the engineering  literature as Nelson's method for computing derivatives of eigenvectors, after @nelson_76.
+
 ## Second Partials
 
-To find second partials of the eigenvalues we differentiate \eqref{eq-singval} with respect to $\theta_t$. This gives 
+To find second partials of the eigenvalues we differentiate \eqref{eq-singval} with respect to $\theta_t$. This gives
 \begin{equation}
 \mathcal{D}_{st}\lambda_\nu =2x_\nu '(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)\mathcal{D}_tx_\nu +
 x_\nu '(D_{st}A-\lambda_\nu\mathcal{D}_{st}B)x_\nu -x_\nu '(\mathcal{D}_sB)x_\nu \cdot\mathcal{D}_t\lambda_\nu .\label{eq-seclbd}
 \end{equation} 
-Substituting from \eqref{eq-singval} and \eqref{eq-singvec} gives
+Substituting from \eqref{eq-singval} and \eqref{eq-singvec} gives, using the reflexive inverse from \eqref{eq-geninv},
 \begin{multline}
 \mathcal{D}_{st}\lambda_\nu =-2x_\nu '(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)(A-\lambda_\nu B)^- (\mathcal{D}_tA-\lambda_\nu \mathcal{D}_tB)x_\nu +
 x_\nu '(D_{st}A-\lambda_\nu \mathcal{D}_{st}B)x_\nu \\-x_\nu '(\mathcal{D}_tB)x_\nu \cdot x_\nu '(\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB)x_\nu -x_\nu '(\mathcal{D_s}B)x_\nu \cdot x_\nu '(\mathcal{D}_tA-\lambda_\nu \mathcal{D}_tB)x_\nu .\label{eq-seclbdmat}
@@ -195,8 +237,7 @@ Formula \eqref{eq-seclbdmat} shows that $\mathcal{D}_{st}\lambda_\nu=\mathcal{D}
 
 The second partials of the generalized eigenvalues are, not surprisingly, more complicated. 
 We start with \eqref{eq-secder1} and differentiate with respect to $\theta_t$. We give some
-intermediate calculations for this case, because they make it easier to check the final
-result. The intermediate quantities are also used in our software. First
+intermediate calculations for this case, because they are also used in our software. First
 \begin{multline}
 \mathcal{D}_{st}x_\nu =-\sum_{\substack{\eta=1\\\eta\neq\nu}}^n\mathcal{D}_t\left\{\frac{x_j'\{\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB\}x_\nu }{\lambda_\eta-\lambda_\nu }\right\}x_\eta\\
 -\sum_{\substack{\eta=1\\\eta\neq\nu}}^n\frac{x_\eta'\{\mathcal{D}_sA-\lambda_\nu \mathcal{D}_sB\}x_\nu }{\lambda_\eta-\lambda_\nu }\mathcal{D}_tx_\eta
@@ -224,6 +265,43 @@ For this to work we need to have both $\mathcal{D}\Lambda$ and $\mathcal{D}X$ av
 substitute the expressions of $\mathcal{D}\Lambda$ and $\mathcal{D}X$ into \eqref{eq-inter1}-\eqref{eq-inter4}
 but that would result in very long and opaque formulae. We will rely on our software to give us the
 numerical values for any specific value of $\theta$.
+
+## Multiple Eigenvalues
+
+We would be remiss if we did not say anything about multiple eigenvalues. The main problem is
+that there is no unique eigenvector corresponding with a multiple eigenvalue. If $X$ are is an $n\times r$ matrix of eigenvectors corresponding with eigenvalue $\lambda$, i.e. if $AX=\lambda BX$, then $XS$ are also eigenvectors corresponding with $\lambda$ for any $r\times p$ matrix $S$.
+
+Another problem
+has to do with the order of the eigenvalues. Let's illustrate both problems with a small example.
+$$
+A(\theta)=I+\theta\begin{bmatrix}+1&0\\0&-1\end{bmatrix}
+$$
+and $B(\theta)=I$. The eigenvalues are $1+\theta$, with eigenvector 
+$(1\ 0)$ and $1-\theta$
+with eigenvector $(0\ 1)$. If $\theta=0$ both eigenvalues are $+1$, and any two-element
+vector is an eigenvector. The largest eigenvalue is $1+\theta$ if $\theta>0$
+and $1-\theta$ if $\theta<0$. Thus the derivative of the largest eigenvalue is
+$+1$ if $\theta>0$ and $-1$ if $\theta<0$. If $\theta=0$ the left and the right
+derivatives of the largest eigenvalue are $-1$ and $+1$, so the derivative does 
+not exist.
+
+This shows one way to deal with the problem. If $A()$ and $B()$ are differentiable
+functions of $\theta$ then there are $n$ functions $\lambda_\nu()$ such that
+$\lambda_\nu(\theta)$ is a generalized eigenvalue of the pair $A(\theta),B(\theta)$
+for each $\theta$. In our example these are the function $1-\theta$ and $1+\theta$.
+It is just that $\lambda_\nu(\theta)$ may be the largest eignevalue for some $\theta$
+and an intermediate or smallest eigenvalue for other values of $\theta$.
+
+Another solution of part of the problem with multiple eigenvalues is to use
+more general derivatives, such as one-sided directional derivatives and subdifferentials.
+This is the approach taken in convex analysis (@hirriart-urruty_ye_95, @lewis_overton_96). It mainly applies to eigenvalues and singular values in EVD and SVD problems with $B=I$, and not so much to the 
+eigenvectors and singular vectors.
+
+There is, however, an invariant subspace with dimension equal to the multiplicity of the eigenvalue, and we can choose a basis $X$ for this subspace with $X'AX=\lambda I$ and $X'BX=I$.
+Suppose the GEVD for $A$ and $B$ has $m$ different eigenvalues, with $\lambda_\nu$
+having multiplicity $m_\nu$. Define $P_\nu=X_\nu X_\nu'$. Then $AP_\nu=\lambda_\nu BP_\nu$.
+Also $P_\nu BP_\nu=P_\nu$ and $\smash{\sum_{\nu=1}^m P_\nu=B^{-1}}$. In addition 
+$\text{tr}\ BP_\nu=m_\nu$.
 
 \sectionbreak
 
@@ -387,8 +465,27 @@ Substitute \eqref{eq-expgen} into \eqref{eq-gsvdder1}, and use the definitions \
 (u^s_{\nu\nu}+v^s_{\nu\nu})y_\nu
 \end{align}
 
-In the Simple Singular Value Decomposition (SSVD) we have both $G=I$ and $H=I$, and the corresponding derivatives are consequently zero, as are the matrices $U_s$ and $V_s$. This simplifies matters 
-considerably
+In a Singular Value Decomposition (SVD) we have both $G=I$ and $H=I$, and the corresponding derivatives are consequently zero, as are the matrices $U_s$ and $V_s$. This simplifies matters 
+considerably.
+
+It may be the case that the order $n+m$ of the partitioned matrices $A$ and $B$ is unpleasantly large. In that case there is another route for differentiating the GSVD. From ... 
+$$
+X=G^{-1}FY\Lambda^{-1}
+$$ 
+and thus from ...
+$$
+F'G^{-1}FY=HY\Lambda^2.
+$$ 
+Set $A=F'G^{-1}F$ and $B=H$. Then
+$$
+\mathcal{D}_sA=(\mathcal{D}_sF)'G^{-1}F-F'G^{-1}(\mathcal{D}_sG)G^{-1}F+F'G^{-1}(\mathcal{D}_sF)
+$$
+and $\mathcal{D}_sB=\mathcal{D}_sH$. We can use this to compute $\mathcal{D}_sY$ and $\mathcal{D}_s\Lambda^2$ in the usual way, with matrices that are now of order $m$. It follows 
+that $\mathcal{D}_s\Lambda=\tfrac12\Lambda^{-1}\mathcal{D}_s\Lambda^2$.
+Now use ... to get
+\begin{multline}
+\mathcal{D}_sX=-G^{-1}(\mathcal{D}_sG)G^{-1}FY\Lambda^{-1}+G^{-1}(\mathcal{D}_sF)T\Lambda^{-1}\\+G^{-1}F(\mathcal{D}_sY)\Lambda^{-1}-G^{-1}FY\Lambda^{-2}(\mathcal{D}_s\Lambda)
+\end{multline}
 
 \sectionbreak
 
@@ -405,7 +502,7 @@ use their numerical values in equations \eqref{eq-inter1}-\eqref{eq-inter4}.
 
 In order to attain the necessary level of generality gevNonlinear() needs to be run from or after a template which defines global variables, specifically the R functions theA(), theB(), dA(), dB(), ddA(), and ddB(), together with the parameters and additional values that these auxiliary functions need. The template also has values for 
 
-* $p$, the numnber of parameters;
+* $p$, the number of parameters;
 * $n$, the order of the matrices;
 * $hessianl$, do we compute second derivatives of eigenvalues;
 * $hessianx$, do we compute second derivatives of eigenvectors.
@@ -430,6 +527,8 @@ as $n$ symmetric matrices of order $p$, and $\mathcal{D}^2X$ as $\smash{n^2}$ sy
 large. If $hessianx# and $hessianl$ are set to FALSE then ddl and ddx are set to NULL.
 
 There is a corresponding numDeriv based check function gevdNonlinearNum(), which has the same single argument $\theta$ and gives the same output as gevdNonlinear(). 
+
+evdNonlinear(), gsvdNonlinear(), svdNonlinear()
 
 \sectionbreak
 
@@ -485,11 +584,20 @@ A&=\mathop{\sum\sum}_{1\leq i\leq j}a_{ij}E_{ij},\\
 B&=\mathop{\sum\sum}_{1\leq i\leq j}b_{ij}E_{ij}.
 \end{align}
 \end{subequations} 
-Here $E_{ij}:=(e_ie_j'+e_je_i')$ for $i\neq j$ and $E_{ii}=e_ie_i'$ with $e_i$ and $e_j$ unit vectors\footnote{A unit vector $e_i$ has zeroes everywhere, except for element $i$, which is one.}. Thus \begin{equation}
+Here $E_{ij}:=(e_ie_j'+e_je_i')$ for $i\neq j$ and $E_{ii}=e_ie_i'$ with $e_i$ and $e_j$ unit vectors\footnote{A unit vector $e_i$ has zeroes everywhere, except for element $i$, which is one.}. Thus 
+\begin{equation}
 \mathcal{D}_{(i,j)}A=\mathcal{D}_{(i,j)}B=E_{ij}.
 \end{equation} 
 
+## The Elements
+
+\sectionbreak
+
 # Applications
+
+## Sensitivity Analysis
+
+Again, the Delta Method literature is huge and diverse. Special cases have been around before there was a statistics discipline, ever since the beginning of error analysis in geodesy, physics, and astronomy (@gorroochurn_20). For the types of applications we have in mind all the relevant Delta Method details are given in @mann_wald_43 and @hsu_49.
 
 ## Correspondence Analysis
 
