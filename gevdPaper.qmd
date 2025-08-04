@@ -81,7 +81,7 @@ The matrix $X$ of eigenvectors and the diagonal matrix $\Lambda$ of eigenvalues 
 As an aside we mention that the generalized eigenvalues of \eqref{eq-gevdef1} and \eqref{eq-gevdef2} are
 also the eigenvalues of the asymmetric matrix $B^{-1}A$ and of the symmetric matrix $\smash{B^{-1/2}AB^{-1/2}}$.
 
-GEV is at the basis of a great many computations in multivariate statistics. In multinormal small sample theory the derivatives are needed for the Jacobians in change-of-variable calculations to find the distribution of many interesting statistics (olkin). The applications we have in mind, however, are in large-sample statistics, where the derivatives are used in Delta Method computations of bias estimates, standard errors, and confidence intervals.
+GEVD is at the basis of a great many computations in multivariate statistics. In multinormal small sample theory the derivatives are needed for the Jacobians in change-of-variable calculations to find the distribution of many interesting statistics (mathai). The applications we have in mind, however, are in large-sample statistics, where the derivatives are used in Delta Method computations of bias estimates, standard errors, and confidence intervals.
 
 The equations \eqref{eq-gevdef1} and \eqref{eq-gevdef2} implicitly define $(X(),\Lambda())$ as a function of $(A,B)$. It turns out that under suitable assumptions on the matrix arguments these implicit functions are actually differentiable, and this makes it interesting to compute their derivatives.
 
@@ -277,25 +277,27 @@ $$
 A(\theta)=I+\theta\begin{bmatrix}+1&0\\0&-1\end{bmatrix}
 $$
 and $B(\theta)=I$. The eigenvalues are $1+\theta$, with eigenvector 
-$(1\ 0)$ and $1-\theta$
-with eigenvector $(0\ 1)$. If $\theta=0$ both eigenvalues are $+1$, and any two-element
+$(1\ 0)'$ and $1-\theta$ with eigenvector $(0\ 1)'$. If $\theta=0$ both eigenvalues are $+1$, 
+and any two-element
 vector is an eigenvector. The largest eigenvalue is $1+\theta$ if $\theta>0$
 and $1-\theta$ if $\theta<0$. Thus the derivative of the largest eigenvalue is
 $+1$ if $\theta>0$ and $-1$ if $\theta<0$. If $\theta=0$ the left and the right
-derivatives of the largest eigenvalue are $-1$ and $+1$, so the derivative does 
-not exist.
+derivatives of the largest eigenvalue are $-1$ and $+1$, and the derivative does 
+not exist. The eigenvector corresponding with the largest eigenvalue is not
+even continuous at zero.
 
-This shows one way to deal with the problem. If $A()$ and $B()$ are differentiable
-functions of $\theta$ then there are $n$ functions $\lambda_\nu()$ such that
+This example illustrates two ways to deal with the multiple eigenvalue problem. 
+Rellich
+If $A()$ and $B()$ are differentiable functions of $\theta$ then there are $n$ functions $\lambda_\nu()$ such that
 $\lambda_\nu(\theta)$ is a generalized eigenvalue of the pair $A(\theta),B(\theta)$
 for each $\theta$. In our example these are the function $1-\theta$ and $1+\theta$.
-It is just that $\lambda_\nu(\theta)$ may be the largest eignevalue for some $\theta$
+It is just that $\lambda_\nu(\theta)$ may be the largest eigenvalue for some $\theta$
 and an intermediate or smallest eigenvalue for other values of $\theta$.
 
 Another solution of part of the problem with multiple eigenvalues is to use
-more general derivatives, such as one-sided directional derivatives and subdifferentials.
-This is the approach taken in convex analysis (@hirriart-urruty_ye_95, @lewis_overton_96). It mainly applies to eigenvalues and singular values in EVD and SVD problems with $B=I$, and not so much to the 
-eigenvectors and singular vectors.
+more general derivatives, such as one-sided directional derivatives, epi-derivatives, or subdifferentials.
+This is the approach taken in convex analysis (@hirriart-urruty_ye_95, @lewis_overton_96). It has been applied mainly to eigenvalues and singular values in EVD and SVD problems with $B=I$, and not so much to the 
+eigenvectors and singular vectors. This is because eigenvalues have a variational characterization
 
 There is, however, an invariant subspace with dimension equal to the multiplicity of the eigenvalue, and we can choose a basis $X$ for this subspace with $X'AX=\lambda I$ and $X'BX=I$.
 Suppose the GEVD for $A$ and $B$ has $m$ different eigenvalues, with $\lambda_\nu$
@@ -309,7 +311,8 @@ $\text{tr}\ BP_\nu=m_\nu$.
 
 ## Eigenvalue Decomposition
 
-An Eigenvalue Decomposition (EVD) problem is of the form 
+An Eigenvalue Decomposition (EVD) problem, without the 
+"generalized", is of the form 
 \begin{subequations}
 \begin{align}
 AX&=X\Lambda,\\
@@ -599,9 +602,9 @@ Here $E_{ij}:=(e_ie_j'+e_je_i')$ for $i\neq j$ and $E_{ii}=e_ie_i'$ with $e_i$ a
 
 Again, the Delta Method literature is huge and diverse. Special cases have been around before there was a statistics discipline, ever since the beginning of error analysis in geodesy, physics, and astronomy (@gorroochurn_20). For the types of applications we have in mind all the relevant Delta Method details are given in @mann_wald_43 and @hsu_49.
 
-## Correspondence Analysis
+### Correspondence Analysis
 
-## Multiple Correspondence Analysis
+### Multiple Correspondence Analysis
 
 In Multiple Correspondence Analysis (MCA) we have $N$ observations
 on $m$ categorical variables (also known as "factors"). Variable
@@ -728,7 +731,8 @@ intervals, and bias corrections for the eigen decomposition of covariances
 and correlations using the infinitesimal versions of the bootstrap or the 
 jackknife.
 
-## Covariance Factor Analysis (CFA)
+
+## Ready for Newton
 
 In Covariance Factor Analysis (CFA) we approximate a covariance or correlation
 matrix by the sum of a diagonal matrix and a matrix of small rank. There
@@ -737,7 +741,7 @@ measured, and for a given loss function there are many different proposed
 algorithms to minimize it. We will use our first and second derivatives
 to provide a basis for minimization by Newton's method of some of these loss functions.
 
-### Unweighted Least Squares \label{sec-uls}
+### Unweighted Least Squares
 
 In Least Squares Factor Analysis (LSFA) of a covariance matrix $C$ of order $n$ we minimize
 \begin{equation}
@@ -841,50 +845,54 @@ The github repository has a file swain.R  which has functions to compute the fir
 for the more common choices of $f\in\mathcal{F}$. There is also a numDeriv checker. The functions are programmed in such a way that they can easily be extended to other loss functions with $f$ satisfying 
 \eqref{eq-f1}-\eqref{eq-f4}.
 
-## Matrix Decomposition Factor Analysis
+### Matrix Decomposition Factor Analysis
 
-In Matrix Decomposition Factor Analysis (MDFA) we have to maximize the sum of the
-largest singular values of a matrix $XT$ over $T$, which is equivalent to
+In Matrix Decomposition Factor Analysis (MDFA) we have to maximize the trace or nuclear norm, i.e. the sum of the singular values, of a matrix $XT$ over $T$. This is equivalent to
 maximizing the sum of the square roots of the largest eigenvalues of 
-$T'X'XT$. The matrix $X$ is $n\times m$ and $T$ is $m\times p$, with $m<p$.
+$T'X'XT$. In MDFA the matrix $X$ is $n\times m$ and $T$ is $m\times p$, with $m<p$.
 Thus $A=T'X'XT$ is of order $p$ and of rank $r\leq m$. We suppose it is
 locally of constant rank $m$ and we maximize the sum of the square roots
-of its $m$ non-zero eigenvalues. The matrix $T$ is patterned, which means
-that some of its elements are restricted to be equal to zero. In factor analysis
-we typically have $T=\begin{bmatrix}U&D\end{bmatrix}$, with an $n\times(p-n)$
+of its $m$ non-zero eigenvalues (which is equal to the trace norm). The matrix $T$ will 
+be patterned, which means that some of its elements are fixed at known values, usually zero. I
+In exploratory MDFA we typically have $T=\begin{bmatrix}U&D\end{bmatrix}$, with an $n\times(p-n)$
 matrix $U$ and a diagonal matrix $D$. Thus the pattern is that the off-diagonal
-elements of $D$ are zero. 
+elements of $D$ are zero. In confirmatory MDFA some elements of $U$ are fixed to known values.
 
-Let us first consider the general case, in which $T$ is any twice differentiable function of a number of parameters.
-If $A=T'CT$, with $C=X'X$ a constant matrix, then $\mathcal{D}_sA=(\mathcal{D}_sT)'CT+T'C(\mathcal{D}_sT)$.
+If $A=T'CT$, with $C=X'X$ a constant matrix, and $T(\theta)=T_0+\sum_{s=1}^p\theta_s T_s$, we have
+\begin{equation}
+\mathcal{D}_sA=T_s'CT+T'CT_s.
+\end{equation}
 Thus
 \begin{equation}
-\mathcal{D}_s\lambda_\nu=2x_\nu'T'C(\mathcal{D}_sT)x_\nu,
+\mathcal{D}_s\lambda_\nu=2x_\nu'T'CT_sx_\nu,
 \end{equation}
 and
 \begin{equation}
-\mathcal{D}_s\sum_{\nu=1}^m\lambda_\nu^\frac12(A)=\sum_{\nu=1}^m\lambda_\nu^{-\frac12}x_\nu'T'C(\mathcal{D}_sT)x_\nu=\text{tr}\ (T'CT)^{-\frac12}T'C(\mathcal{D}_sT),
-\end{equation}
-where $(T'CT)^{-\frac12}$ is the square root of the Moore-Penrose inverse.
-
-
-Next
-\begin{equation}
-\mathcal{D}_{st}\sum_{\nu=1}^m\lambda_\nu^\frac12(A)=-\frac14\sum_{\nu=1}^m\lambda_\nu^{-\frac32}(\mathcal{D}_s\lambda_\nu)(\mathcal{D}_t\lambda_\nu)+\frac12\sum_{\nu=1}^m\lambda_\nu^{-\frac12}(\mathcal{D}_{st}\lambda_\nu),
-\end{equation}
-where
-\begin{equation}
-\mathcal{D}_{st}\lambda_\nu=4x_\nu'T'C(\mathcal{D}_sT)\mathcal{D}_tx_\nu+2x_\nu'(\mathcal{D}_tT)'C(\mathcal{D}_sT)x_\nu+2x_\nu'T'C(\mathcal{D}_{st}T)x_\nu,
-\end{equation}
-and
-\begin{equation}
-\mathcal{D}_sx_\nu=-(A-\lambda_\nu I)^+\{(\mathcal{D}_sT)'CT+T'C(\mathcal{D}_sT)\}x_\nu.
+\mathcal{D}_sx_\nu=-(A-\lambda_\nu I)^+\{T_s'CT+T'CT_s\}x_\nu.
 \end{equation}
 
-In the linear case, in which $T$ is a linear combination of indicators $e_je_\alpha'$, we find
+If
+$$
+\sigma(T):=\|XT\|_\tau=\sum_{\nu=1}^m\lambda_\nu^\frac12(T'CT)
+$$
+then
+
 \begin{equation}
-\mathcal{D}\sigma=CT(T'CT)^{-\frac12}.
+\mathcal{D}_s\sigma=\sum_{\nu=1}^m\lambda_\nu^{-\frac12}x_\nu'T'CT_sx_\nu=\text{tr}\ (T'CT)^{-\frac12}T'CT_s,
+\label{eq-dsigma}\end{equation}
+where $(T'CT)^{-\frac12}$ is the square root of the Moore-Penrose inverse. If the $T_s$ are indicators\footnote{Indicators have one element equal to one, with the other elements zero.}, we find
+\begin{equation}
+\mathcal{D}\sigma=CT(T'CT)^{-\frac12},
 \end{equation}
-In the linear indicator special case the second derivatives $\mathcal{D}_{st}T$ are zero.
+where the fixed elements correspond with zeroes in $\mathcal{D}\sigma$.
+
+Next differentiate \eqref{eq-dsigma} to find
+\begin{equation}
+\mathcal{D}_{st}\sigma=-\frac14\sum_{\nu=1}^m\lambda_\nu^{-\frac32}(\mathcal{D}_s\lambda_\nu)(\mathcal{D}_t\lambda_\nu)+\frac12\sum_{\nu=1}^m\lambda_\nu^{-\frac12}(\mathcal{D}_{st}\lambda_\nu),
+\end{equation}
+where, from \eqref{eq-hessvalsimple},
+\begin{equation}
+\mathcal{D}_{st}\lambda_\nu=-2x_\nu'(T_s'CT+T'CT_s)(A-\lambda_\nu I)^+(T_t'CT+T'CT_t)x_\nu
+\end{equation}
 
 # References
