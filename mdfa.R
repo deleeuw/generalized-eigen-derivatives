@@ -160,21 +160,3 @@ mdfaDerivativesNum <- function(theta) {
   return(list(ds = ds, dds = dds))
 }
 
-mdfaDerivativesAlt <- function(theta, eps = 1e-6) {
-  theFunc <- function(theta) {
-    amat <- theA(theta)
-    hval <- eigen(amat, symmetric = TRUE)$values
-    return(sum(sqrt(hval[1:m])))
-  }
-  f <- theFunc(theta)
-  dds <- matrix(0, p, p)
-  for (s in 1:p) {
-    f1 <- theFunc(theta + eps * ei(s, p))
-    for (t in 1:p) {
-      f2 <- theFunc(theta + eps * ei(t, p))
-      f12 <- theFunc(theta + eps * (ei(t, p) + ei(s, p)))
-      dds[s, t] <- (f12 - f1 - f2 + f) / (eps^2)
-    }
-  }
-  return(dds)
-}

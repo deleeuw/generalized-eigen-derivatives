@@ -867,9 +867,12 @@ known values as well.
 So $A=T'CT$, with $C=X'X$ a constant matrix, and $T(\theta)=T_0+\sum_{s=1}^p\theta_s T_s$.
 The fixed elements of the pattern are in $T_0$, which has zeroes for the free elements, while the $T_s$ with 
 $s>0$ all have zeroes for the fixed elements. In this linear/quadratic case we have
-\begin{equation}
-\mathcal{D}_sA=T_s'CT+T'CT_s,
-\end{equation}
+\begin{subequations}
+\begin{align}
+\mathcal{D}_sA&=T_s'CT+T'CT_s,\\
+\mathcal{D}_{st}A&=T_s'CT_t+T_t'CT_s,
+\end{align}
+\end{subequations}
 which are symmetric matrices if order $p$. Thus
 \begin{equation}
 \mathcal{D}_s\lambda_\nu=x_\nu'Q_sx_\nu,\label{eq-mdfadl}
