@@ -738,7 +738,7 @@ In Covariance Factor Analysis (CFA) we approximate a covariance or correlation
 matrix by the sum of a diagonal matrix and a matrix of small rank. There
 are many different ways in which the degree of approximation can be 
 measured, and for a given loss function there are many different proposed
-algorithms to minimize it. We will use our first and second derivatives
+algorithms to minimize it. We will compute the first and second derivatives
 to provide a basis for minimization by Newton's method of some of these loss functions.
 
 ### Unweighted Least Squares
@@ -847,52 +847,67 @@ for the more common choices of $f\in\mathcal{F}$. There is also a numDeriv check
 
 ### Matrix Decomposition Factor Analysis
 
-In Matrix Decomposition Factor Analysis (MDFA) we have to maximize the trace or nuclear norm, i.e. the sum of the singular values, of a matrix $XT$ over $T$. This is equivalent to
-maximizing the sum of the square roots of the largest eigenvalues of 
-$T'X'XT$. In MDFA the matrix $X$ is $n\times m$ and $T$ is $m\times p$, with $m<p$.
-Thus $A=T'X'XT$ is of order $p$ and of rank $r\leq m$. We suppose it is
-locally of constant rank $m$ and we maximize the sum of the square roots
-of its $m$ non-zero eigenvalues (which is equal to the trace norm). The matrix $T$ will 
-be patterned, which means that some of its elements are fixed at known values, usually zero. I
-In exploratory MDFA we typically have $T=\begin{bmatrix}U&D\end{bmatrix}$, with an $n\times(p-n)$
-matrix $U$ and a diagonal matrix $D$. Thus the pattern is that the off-diagonal
-elements of $D$ are zero. In confirmatory MDFA some elements of $U$ are fixed to known values.
+In Matrix Decomposition Factor Analysis (MDFA) we have to maximize the trace or nuclear norm $\|.\|_\tau$, i.e. the sum of the singular values, of a matrix $XT$ over $T$. Maximizing $\|XT\|_\tau$ is equivalent to
+maximizing the sum of the square roots of the eigenvalues of $T'X'XT$. 
 
-If $A=T'CT$, with $C=X'X$ a constant matrix, and $T(\theta)=T_0+\sum_{s=1}^p\theta_s T_s$, we have
-\begin{equation}
-\mathcal{D}_sA=T_s'CT+T'CT_s.
-\end{equation}
-Thus
-\begin{equation}
-\mathcal{D}_s\lambda_\nu=2x_\nu'T'CT_sx_\nu,
-\end{equation}
-and
-\begin{equation}
-\mathcal{D}_sx_\nu=-(A-\lambda_\nu I)^+\{T_s'CT+T'CT_s\}x_\nu.
-\end{equation}
+In MDFA the matrix $X$ is $n\times m$ and $T$ is $m\times p$, with $m<p$.
+Thus $A=T'X'XT$ is of order $p$ and of rank $m\leq p$. We suppose it is
+locally of constant rank $n$ and we maximize the sum of the square roots
+of its $m$ non-zero eigenvalues (which is equal to the trace norm). 
 
-If
-$$
-\sigma(T):=\|XT\|_\tau=\sum_{\nu=1}^m\lambda_\nu^\frac12(T'CT)
-$$
-then
+The matrix $T$ can 
+be patterned, which means that some of its elements are fixed at known values, usually zero. 
+In exploratory MDFA we typically have $T=\begin{bmatrix}U&D\end{bmatrix}$, with an $m\times r$
+with $r=p-m$,
+matrix $U$ of common factor loadings and a diagonal matrix $D$ of uniquenesses. 
+Thus the pattern in this case is that the off-diagonal
+elements of $D$ are zero. In confirmatory MDFA some elements of $U$ are fixed at 
+known values as well.
 
+So $A=T'CT$, with $C=X'X$ a constant matrix, and $T(\theta)=T_0+\sum_{s=1}^p\theta_s T_s$.
+The fixed elements of the pattern are in $T_0$, which has zeroes for the free elements, while the $T_s$ with 
+$s>0$ all have zeroes for the fixed elements. In this linear/quadratic case we have
+\begin{equation}
+\mathcal{D}_sA=T_s'CT+T'CT_s,
+\end{equation}
+which are symmetric matrices if order $p$. Thus
+\begin{equation}
+\mathcal{D}_s\lambda_\nu=x_\nu'Q_sx_\nu,\label{eq-mdfadl}
+\end{equation}
+where $Q_s:=\mathcal{D}_sA=T_s'CT+T'CT_s$. It follows that
+$\mathcal{D}_{st}\lambda_\nu=2x_\nu'Q_s(\mathcal{D}_sx_t)$.
+From \eqref{eq-singvec}
+\begin{equation}
+\mathcal{D}_tx_\nu=-(A-\lambda_\nu I)^+Q_tx_\nu,
+\end{equation}
+and thus
+\begin{equation}
+\mathcal{D}_{st}\lambda_\nu=-2x_\nu'Q_s(A-\lambda_\nu I)^+Q_tx_\nu+2x_\nu'T_s'CT_tx_\nu
+\end{equation}
+Formulae \eqref{eq-mdfadl} and \eqref{eq-mdfaddl} apply to all EVD problems where $A=T'CT$  and $T$ is a weighted linear combination of known matrices, with or without intercept.
+
+We now specialize to the problem of differentiating the trace norm
+\begin{equation}
+\sigma(T):=\|XT\|_\tau=\sum_{\nu=1}^m\lambda_\nu^\frac12(T'CT),
+\end{equation}
+for which we have
 \begin{equation}
 \mathcal{D}_s\sigma=\sum_{\nu=1}^m\lambda_\nu^{-\frac12}x_\nu'T'CT_sx_\nu=\text{tr}\ (T'CT)^{-\frac12}T'CT_s,
 \label{eq-dsigma}\end{equation}
-where $(T'CT)^{-\frac12}$ is the square root of the Moore-Penrose inverse. If the $T_s$ are indicators\footnote{Indicators have one element equal to one, with the other elements zero.}, we find
-\begin{equation}
-\mathcal{D}\sigma=CT(T'CT)^{-\frac12},
-\end{equation}
-where the fixed elements correspond with zeroes in $\mathcal{D}\sigma$.
-
+where $(T'CT)^{-\frac12}$ is the square root of the Moore-Penrose inverse of $T'CT$. 
 Next differentiate \eqref{eq-dsigma} to find
 \begin{equation}
 \mathcal{D}_{st}\sigma=-\frac14\sum_{\nu=1}^m\lambda_\nu^{-\frac32}(\mathcal{D}_s\lambda_\nu)(\mathcal{D}_t\lambda_\nu)+\frac12\sum_{\nu=1}^m\lambda_\nu^{-\frac12}(\mathcal{D}_{st}\lambda_\nu),
 \end{equation}
-where, from \eqref{eq-hessvalsimple},
+and we can substitute from formulae \eqref{eq-mdfadl} and \eqref{eq-mdfaddl} for a final result.
+
+If the $T_s$ are indicators\footnote{Indicators have one element equal to one, with the other elements zero.}, we find
 \begin{equation}
-\mathcal{D}_{st}\lambda_\nu=-2x_\nu'(T_s'CT+T'CT_s)(A-\lambda_\nu I)^+(T_t'CT+T'CT_t)x_\nu
+\mathcal{D}\sigma=CT(T'CT)^{-\frac12},
 \end{equation}
+where the fixed elements correspond with zeroes in $\mathcal{D}\sigma$. 
+
+
+\sectionbreak
 
 # References
