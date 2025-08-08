@@ -38,7 +38,7 @@ papersize: letter
 graphics: true
 link-citations: true
 mainfont: Times New Roman
-abstract: We give formulae for first and second derivatives of generalized eigenvalues/eigenvectors of symmetric matrices and generalized singular values/singular vectors of rectangular matrices when the matrices are linear or nonlinear functions of a vector of parameters. In addition, implementations in R (@r_core_team_25) are provided. Formulae are checked against Jacobians and Hessians computed by numerical differentiation. Some applications to multivariate data analysis are discussed.\sectionbreak
+abstract: We give formulae for first and second derivatives of generalized eigenvalues/eigenvectors of symmetric matrices and generalized singular values/singular vectors of rectangular matrices when the matrices are linear or nonlinear functions of a vector of parameters. In addition functions in R to compute these derivatives in the general case and in various special cases are provided. Formulae are checked against Jacobians and Hessians computed by numerical differentiation. Some applications to multivariate data analysis are discussed.
 ---
 
 ```{r loadpackages, echo = FALSE}
@@ -311,7 +311,7 @@ $\text{tr}\ BP_\nu=m_\nu$.
 
 ## Eigenvalue Decomposition
 
-An Eigenvalue Decomposition (EVD) problem, without the 
+An Eigenvalue Decomposition (EVD) problem, thus without the 
 "generalized", is of the form 
 \begin{subequations}
 \begin{align}
@@ -391,13 +391,15 @@ U\\V
 \end{equation}
 with normalization $U'GU+V'HV=I$. 
 
-System \eqref{eq-gsvdgevd} has $n+m$ solutions. There are $m$ solutions
+System \eqref{eq-gsvdgevd} has $n+m$ solutions that can be expressed using the GSVD solutions
+$(X,Y,\Lambda)$. There are $m$ solutions
 with $U=\tfrac12\sqrt{2}\ X, V=\tfrac12\sqrt{2}\ Y$ and $\Psi=\Lambda$. There
 are another $m$ solutions
 with $U=\tfrac12\sqrt{2}\ X, V=-\tfrac12\sqrt{2}\ Y$ and $\Psi=-\Lambda$.
 And finally there are $n-m$ solutions with $U=X_\perp, V=0$, and
 $\Lambda=0$. For the non-zero eigenvalues we have $u_\nu'Gu_\nu=v_\nu'Hv_\nu=\tfrac12$. 
-Clearly the $m$ solutions with non-negative eigenvalues are the interesting ones, and they give the $m$ solutions of the GSVD.
+The $m$ solutions with non-negative eigenvalues are the interesting ones, and they 
+provide us with the $m$ solutions of the GSVD.
 
 Thus, in stead of tackling the GSVD from \eqref{eq-gsvdef1a}-\eqref{eq-gsvdef4a}
 directly, we apply our results for the derivatives of the GEVD to the
@@ -594,6 +596,8 @@ Here $E_{ij}:=(e_ie_j'+e_je_i')$ for $i\neq j$ and $E_{ii}=e_ie_i'$ with $e_i$ a
 
 ## The Elements
 
+unit matrix
+
 \sectionbreak
 
 # Applications
@@ -602,7 +606,17 @@ Here $E_{ij}:=(e_ie_j'+e_je_i')$ for $i\neq j$ and $E_{ii}=e_ie_i'$ with $e_i$ a
 
 Again, the Delta Method literature is huge and diverse. Special cases have been around before there was a statistics discipline, ever since the beginning of error analysis in geodesy, physics, and astronomy (@gorroochurn_20). For the types of applications we have in mind all the relevant Delta Method details are given in @mann_wald_43 and @hsu_49.
 
+Suppose $A()$ and $B()$ are functions of proportions based on $N$ iid observations. The sample proportions are the parameters $\theta$ and their expected values are $\overline\theta$. It follows that $N^{\tfrac12}(\theta-\overline{\theta})$ is asymptotically normal with mean zero and variance $\overline{\Theta}-\overline{\theta}\overline{\theta}'$, where $\overline{\Theta}$ is a diagonal matrix with $\overline{\theta})$ on the diagonal.
+
+
 ### Correspondence Analysis
+
+Correspondence analysis is a GSVD, with $F$ the contingency table, $G$ a diagonal matrix wwith row sums,
+and $H$ a diagonal matrux with column sums. Thus $\mathcal{D}F$ is a unit matrix, and $\mathcal{D}G$
+and $\mathcal{D}H$ are diagonal matrices with row and columns sums of $\mathcal{D}F$. All second derivatives
+are zero.
+
+The file gevdTemplateCA.R uses the 
 
 ### Multiple Correspondence Analysis
 
@@ -666,37 +680,7 @@ There are only $p-m$ non-trivial dimensions, which for our example is seven. For
 dimension the derivatives are always zero, for the $m-1$ zero eigenvalues the derivatives are not
 even defined. We only give the results for the non-trivial dimensions.
 
-The eigenvalues are
-```{r evalhec, echo = FALSE}
-matrixPrint(h$l[2:8], digits = 3, width = 4)
-```
-and the eigenvectors are
-```{r evechec, echo = FALSE}
-matrixPrint(h$x[,2:8], digits = 3, width = 4)
-```
-The asymptotic covariance of the eigenvalues, multiplied by $N = 592$, is
-```{r acoveval}
-ac <- h$dl %*% diag(theta) %*% t(h$dl)
-matrixPrint(ac[2:8, 2:8], digits = 4)
-```
-and thus the standard errors of the eigenvalues are
-```{r}
-matrixPrint(sqrt(diag(ac)[2:8] / 592), digits = 4)
-```
-There are seven non-trivial eigenvectors, and thus 21 non-trivial asymptotic covariance
-matrices of order ten. We only print out the covariance matrix (times $N$) of the 
-first non-trivial eigenvector.
 
-```{r acovevec}
-hh <- h$dx[, , 2]
-ac <- hh %*% diag(theta) %*% t(hh)
-ac <- ac - outer(h$x[, 2], h$x[, 2]) / 4
-matrixPrint(ac, digits = 2, width = 3)
-```
-The standard errors of the elements of the dominant eigenvector are
-```{r}
-matrixPrint(sqrt(diag(ac) / 592), digits = 4)
-```
 
 In actual MCA applications the eigenvectors are usually scaled by multiplying them with the
 square root of the corresponding eigenvalue. This makes the computation of the
@@ -709,15 +693,6 @@ N\cdot\text{BIAS}(\lambda_\nu )=\frac12\text{tr}\ \mathcal{D}^2\lambda_\nu (\Pi-
 $$
 because $\pi'(\mathcal{D}^2\lambda_\nu )\pi=0$.
 
-```{r}
-bias <- rep(0, 7)
-for (r in 2:8) {
-  dd <- h$ddl[, , r]
-  bias[r - 1] <- sum(diag(dd) * theta) / (2 * 592)
-}
-matrixPrint(bias, digits = 4)
-```
-We see that the larger eigenvalues are overestimated and the smaller ones are underestimated, as expected.
 
 The results for MCA can also be applied directly
 to the situation in which the possible data a finite number of numerical
@@ -878,12 +853,14 @@ which are symmetric matrices if order $p$. Thus
 \mathcal{D}_s\lambda_\nu=x_\nu'Q_sx_\nu,\label{eq-mdfadl}
 \end{equation}
 where $Q_s:=\mathcal{D}_sA=T_s'CT+T'CT_s$. It follows that
-$\mathcal{D}_{st}\lambda_\nu=2x_\nu'Q_s(\mathcal{D}_sx_t)$.
+\begin{equation}
+\mathcal{D}_{st}\lambda_\nu=2x_\nu'Q_s(\mathcal{D}_sx_t)+x_\nu'(\mathcal{D}_tQ_s)x_\nu.
+\end{equation}
 From \eqref{eq-singvec}
 \begin{equation}
 \mathcal{D}_tx_\nu=-(A-\lambda_\nu I)^+Q_tx_\nu,
 \end{equation}
-and thus
+and thus, or directly from \eqref{eq-hessvalsimple},
 \begin{equation}
 \mathcal{D}_{st}\lambda_\nu=-2x_\nu'Q_s(A-\lambda_\nu I)^+Q_tx_\nu+2x_\nu'T_s'CT_tx_\nu
 \end{equation}
@@ -910,7 +887,7 @@ If the $T_s$ are indicators\footnote{Indicators have one element equal to one, w
 \end{equation}
 where the fixed elements correspond with zeroes in $\mathcal{D}\sigma$. 
 
-The repository has the file mdfa.R, which has functions to compute the first and second derivatives of the
+The repository has the file mdfa.R, which has functions (and numDeriv checkers) to compute the first and second derivatives of the
 eigenvalues of the general linear/quadratic problem and the first and second derivatives of the trace norm for the MDFA problem.
 
 
