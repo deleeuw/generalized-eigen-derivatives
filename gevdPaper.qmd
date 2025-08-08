@@ -910,6 +910,9 @@ If the $T_s$ are indicators\footnote{Indicators have one element equal to one, w
 \end{equation}
 where the fixed elements correspond with zeroes in $\mathcal{D}\sigma$. 
 
+The repository has the file mdfa.R, which has functions to compute the first and second derivatives of the
+eigenvalues of the general linear/quadratic problem and the first and second derivatives of the trace norm for the MDFA problem.
+
 
 \sectionbreak
 
