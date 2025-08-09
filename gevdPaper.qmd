@@ -38,7 +38,7 @@ papersize: letter
 graphics: true
 link-citations: true
 mainfont: Times New Roman
-abstract: We give formulae for first and second derivatives of generalized eigenvalues/eigenvectors of symmetric matrices and generalized singular values/singular vectors of rectangular matrices when the matrices are linear or nonlinear functions of a vector of parameters. In addition functions in R to compute these derivatives in the general case and in various special cases are provided. Formulae are checked against Jacobians and Hessians computed by numerical differentiation. Some applications to multivariate data analysis are discussed.
+abstract: We give formulae for first and second derivatives of generalized eigenvalues/eigenvectors of symmetric matrices and generalized singular values/singular vectors of rectangular matrices when the matrices are linear or nonlinear functions of a vector of parameters. In addition  we provide functions in R to compute these derivatives, both in the general case and in various special cases. Formulae are checked against Jacobians and Hessians computed by numerical differentiation. Some applications to multivariate data analysis are discussed.
 ---
 
 ```{r loadpackages, echo = FALSE}
@@ -286,214 +286,29 @@ derivatives of the largest eigenvalue are $-1$ and $+1$, and the derivative does
 not exist. The eigenvector corresponding with the largest eigenvalue is not
 even continuous at zero.
 
-This example illustrates two ways to deal with the multiple eigenvalue problem. 
-Rellich
-If $A()$ and $B()$ are differentiable functions of $\theta$ then there are $n$ functions $\lambda_\nu()$ such that
-$\lambda_\nu(\theta)$ is a generalized eigenvalue of the pair $A(\theta),B(\theta)$
-for each $\theta$. In our example these are the function $1-\theta$ and $1+\theta$.
-It is just that $\lambda_\nu(\theta)$ may be the largest eigenvalue for some $\theta$
-and an intermediate or smallest eigenvalue for other values of $\theta$.
+If $A()$ and $B()$ are analytic functions of a single parameter $\theta$ then there are $n$ analytic functions $\lambda_\nu()$ such that $\lambda_\nu(\theta)$ is a generalized eigenvalue of the pair $A(\theta),B(\theta)$
+for each $\theta$. Moreover there are corresponding analytic $B$-orthogonal eigenvectors $x_\nu()$. In our example these are the functions $1-\theta$ and $1+\theta$. The problem is that $\lambda_1(\theta)$, for example, may be the largest eigenvalue for some values of $\theta$ and an intermediate or smallest eigenvalue for other values of $\theta$. And, unfortunately, the result is no longer true if there is more than one parameter.
 
-Another solution of part of the problem with multiple eigenvalues is to use
+Consider
+$$
+A(\theta)=\begin{bmatrix}
+1+\theta_1&\theta_2\\
+\theta_2&1-\theta_1
+\end{bmatrix}
+$$
+and $B(\theta)=I$. The generalized eigenvalues are $1\pm\sqrt{\theta_1^2+\theta_2^2}$. The functions
+$\lambda_1(\theta):=1+\|\theta\|_2$ and $\lambda_2(\theta):=1-\|\theta\|_2$ are two parabolic shells, the first one  convex, the second one concave. The first one is larger than the second one for all $\theta$, except at the
+origin where the two shells touch. Neither of the two functions is differentiable at the origin, although by
+convexity/concavity they both are directionally differentiable there.
+
+This points to another solution of part of the problem with multiple eigenvalues. We can use
 more general derivatives, such as one-sided directional derivatives, epi-derivatives, or subdifferentials.
-This is the approach taken in convex analysis (@hirriart-urruty_ye_95, @lewis_overton_96). It has been applied mainly to eigenvalues and singular values in EVD and SVD problems with $B=I$, and not so much to the 
-eigenvectors and singular vectors. This is because eigenvalues have a variational characterization
+This is the approach taken in convex and nonsmooth analysis (@hiriart-urruty_ye_95, @lewis_overton_96, @torki_99, @torki_01). It has been applied mainly to eigenvalues in EVD problems with $B=I$, and not to the 
+eigenvectors. Eigenvalues have a variational characterization and eigenvectors do not.
 
-There is, however, an invariant subspace with dimension equal to the multiplicity of the eigenvalue, and we can choose a basis $X$ for this subspace with $X'AX=\lambda I$ and $X'BX=I$.
-Suppose the GEVD for $A$ and $B$ has $m$ different eigenvalues, with $\lambda_\nu$
-having multiplicity $m_\nu$. Define $P_\nu=X_\nu X_\nu'$. Then $AP_\nu=\lambda_\nu BP_\nu$.
-Also $P_\nu BP_\nu=P_\nu$ and $\smash{\sum_{\nu=1}^m P_\nu=B^{-1}}$. In addition 
-$\text{tr}\ BP_\nu=m_\nu$.
+Engineering
 
 \sectionbreak
-
-# Special Cases
-
-## Eigenvalue Decomposition
-
-An Eigenvalue Decomposition (EVD) problem, thus without the 
-"generalized", is of the form 
-\begin{subequations}
-\begin{align}
-AX&=X\Lambda,\\
-X'X&=I.
-\end{align} 
-\end{subequations}
-This is the special case of GEVD with $B=I$ and $\mathcal{D}B=0$. In EVD the matrices $(A-\lambda_\nu B)^-$ from \eqref{eq-geninv} are actually the Moore-Penrose inverses of $A-\lambda_\nu I$. There are substantial, and rather obvious, simplifications of the first and second derivatives. 
-
-From \eqref{eq-singval} 
-\begin{equation}
-\mathcal{D}_s\lambda_\nu=x_\nu'(\mathcal{D}_sA)x_\nu,\label{eq-sevalsim}
-\end{equation} 
-and from 
-\eqref{eq-singvec} 
-\begin{equation}
-\mathcal{D}_sx_\nu=-(A-\lambda_\nu I)^+(\mathcal{D}_sA)x_\nu.\label{eq-vecpersimmp}
-\end{equation}
-
-From \eqref{eq-seclbdmat}
-\begin{equation}
-\mathcal{D}_{st}\lambda_\nu=-2x_\nu'(\mathcal{D}_sA)(A-\lambda_\nu I)^+(\mathcal{D}_tA)x_\nu+
-x_\nu '(D_{st}A)x_\nu ,\label{eq-hessvalsimple}
-\end{equation}
-and from \eqref{eq-inter1}
-\begin{equation}
-\mathcal{D}_{st}x_\nu =-\sum_{\substack{\eta=1\\\eta\neq\nu}}^n\mathcal{D}_t\left\{\frac{x_\eta'\{\mathcal{D}_sA\}x_\nu }{\lambda_\eta-\lambda_\nu }\right\}x_\eta
--\sum_{\substack{\eta=1\\\eta\neq\nu}}^n\frac{x_\eta'\{\mathcal{D}_sA\}x_\nu }{\lambda_\eta-\lambda_\nu }\mathcal{D}_tx_\eta.\label{eq-jnter1}
-\end{equation}
-The terms in the first summation in \eqref{eq-jnter1} are
-\begin{equation}
-\mathcal{D}_t\left\{\frac{x_\eta'\{\mathcal{D}_sA\}x_\nu }{\lambda_\eta-\lambda_\nu }\right\}=
-\frac{\mathcal{D}_t\{x_\eta'(\mathcal{D}_sA)x_\nu \}}{\lambda_\nu -\lambda_\eta}
--\frac{(\mathcal{D}_t\lambda_\eta-\mathcal{D}_t\lambda_\nu )x_\eta'(\mathcal{D}_sA)x_\nu }{(\lambda_\eta-\lambda_\nu )^2},\label{eq-jnter2}
-\end{equation}
-and the numerator in the first term of \eqref{eq-jnter2} is
-\begin{equation}
-\mathcal{D}_t\{x_\eta'(\mathcal{D}_sA)x_\nu \}=(\mathcal{D}_tx_\eta)'(\mathcal{D}_sA)x_\nu +x_\eta'(\mathcal{D}_sA)\mathcal{D}_tx_\nu
-+x_\eta'(\mathcal{D}_{st}A)x_\nu.\label{eq-jnter3}
-\end{equation}
-As before, we substitute \eqref{eq-jnter3} into \eqref{eq-jnter2} and then substitute the
-result in \eqref{eq-jnter1}.
-
-## Generalized Singular Value Decomposition
-
-Suppose $F$ is a rectangular $n\times m$ matrix, and $G$ and $H$ are two positive definite matrices
-of orders $n$ and $m$. Without loss if generality we assume $m\leq n$.
-The Generalized Singular Value Decomposition (GSVD) is finding a solution to the system
-\begin{subequations}
-\begin{align}
-FY&=GX\Lambda,\label{eq-gsvdef1a}\\
-F'X&=HY\Lambda,\label{eq-gsvdef2a}\\
-X'GX&=I,\label{eq-gsvdef3a}\\
-Y'HY&=I,\label{eq-gsvdef4a}
-\end{align}
-\end{subequations}
-Here $Y$ and $\Lambda$ are square of order $m$, with $\Lambda$ diagonal and non-negative. The left singular vectors are $n\times m$, and there is an $n\times(n-m)$ matrix $X_\perp$ that satisfies $F'X_\perp=0$,
-with $X_\perp'GX=0$ and $X_\perp'GX_\perp=I$.
-
-The GSVD system \eqref{eq-gsvdef1a}-\eqref{eq-gsvdef4a} is (very) closely related to the GEVD system
-\begin{equation}
-\begin{bmatrix}
-0&F\\F'&0
-\end{bmatrix}
-\begin{bmatrix}
-U\\V
-\end{bmatrix}
-=
-\begin{bmatrix}
-G&0\\
-0&H
-\end{bmatrix}
-\begin{bmatrix}
-U\\V
-\end{bmatrix}
-\Psi,\label{eq-gsvdgevd}
-\end{equation}
-with normalization $U'GU+V'HV=I$. 
-
-System \eqref{eq-gsvdgevd} has $n+m$ solutions that can be expressed using the GSVD solutions
-$(X,Y,\Lambda)$. There are $m$ solutions
-with $U=\tfrac12\sqrt{2}\ X, V=\tfrac12\sqrt{2}\ Y$ and $\Psi=\Lambda$. There
-are another $m$ solutions
-with $U=\tfrac12\sqrt{2}\ X, V=-\tfrac12\sqrt{2}\ Y$ and $\Psi=-\Lambda$.
-And finally there are $n-m$ solutions with $U=X_\perp, V=0$, and
-$\Lambda=0$. For the non-zero eigenvalues we have $u_\nu'Gu_\nu=v_\nu'Hv_\nu=\tfrac12$. 
-The $m$ solutions with non-negative eigenvalues are the interesting ones, and they 
-provide us with the $m$ solutions of the GSVD.
-
-Thus, in stead of tackling the GSVD from \eqref{eq-gsvdef1a}-\eqref{eq-gsvdef4a}
-directly, we apply our results for the derivatives of the GEVD to the
-system \eqref{eq-gsvdgevd}. All three matrices $F,G,$ and $H$ are assumed
-to be functions of the parameters $\theta$ and we will only consider the
-first $m$ generalized eigenvalues (assuming that $F$ has rank $r=m$, otherwise 
-only the first $r$).
-
-To bring the notation in line with our previous results we rewrite the
-equations in the GEVD system \eqref{eq-gsvdgevd} as 
-\begin{equation}
-A\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix}=\lambda_\nu B\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix},
-\end{equation}
-with
-\begin{equation}
-A=\begin{bmatrix}
-0&F\\F'&0
-\end{bmatrix}
-\end{equation}
-and
-\begin{equation}
-B=\begin{bmatrix}
-G&0\\
-0&H
-\end{bmatrix}
-\label{eq-gsvdgevd2}
-\end{equation}
-
-The first derivatives are
-\begin{equation}
-\mathcal{D}_s\lambda_\nu=x_\nu'(\mathcal{D}_sF)y_\nu-\lambda_\nu (x_\nu'(\mathcal{D}_sG)x_\nu+y_\nu'(\mathcal{D}_sH)y_\nu),\label{eq-gsvdderlab}
-\end{equation}
-and
-\begin{multline}
-\mathcal{D}_s\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix}=-(A-\lambda_\nu B)
-^-
-\begin{bmatrix}
-(\mathcal{D}_sF)y_\nu-\lambda_\nu(\mathcal{D}_sG)x_\nu\\
-(\mathcal{D}_sF')x_\nu-\lambda_\nu(\mathcal{D}_sH)y_\nu\end{bmatrix}\\
--\tfrac12 
-(x_\nu'(\mathcal{D}_sG)x_\nu+y_\nu'(\mathcal{D}_sH)y_\nu)\cdot\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix}.
-\label{eq-gsvdder1}
-\end{multline}
-Note that
-\begin{equation}
-(A-\lambda_\nu B)^-=\sum_{\substack{\eta=1\\\eta\neq\nu}}^{n+m}\frac{1}{\lambda_\eta-\lambda_\nu}\begin{bmatrix}x_\eta x_\eta'&x_\eta y_\eta'\\y_\eta x_\eta'&y_\eta y_\eta'\end{bmatrix}\label{eq-expgen}
-\end{equation}
-with the summation over all $n+m$ eigenvalues, including the $n-m$ that are equal to zero (for which
-$y_\eta$ is also zero).
-
-It is clearly helpful to define
-\begin{subequations}
-\begin{align}
-T_s&:=X'(\mathcal{D}_sF)Y,\label{eq-helpa}\\
-U_s&:=X'(\mathcal{D}_sG)X,\label{eq-helpb}\\
-V_s&:=Y'(\mathcal{D}_sH)Y.\label{eq-helpc}
-\end{align}
-\end{subequations}
-With definitions \eqref{eq-helpa}-\eqref{eq-helpc} the eigenvalue derivatives \eqref{eq-gsvdderlab} become
-\begin{equation}
-\mathcal{D}_s\lambda_\nu=t^s_{\nu\nu}-\lambda_\nu (u^s_{\nu\nu}+v^s_{\nu\nu}).
-\end{equation}
-Substitute \eqref{eq-expgen} into \eqref{eq-gsvdder1}, and use the definitions \eqref{eq-helpa}-\eqref{eq-helpc} for the eigenvector derivatives.
-\begin{align}
-\mathcal{D}_sx_\nu&=-\sum_{\substack{\eta=1\\\eta\neq\nu}}^{n+m}\frac{1}{\lambda_\eta-\lambda_\nu}(t^s_{\eta\nu}+t^s_{\nu\eta}-\lambda_\nu(u^s_{\eta\nu}+v^s_{\nu\eta}))x_\eta-\tfrac12 
-(u^s_{\nu\nu}+v^s_{\nu\nu})x_\nu\\
-\mathcal{D}_sy_\nu&=-\sum_{\substack{\eta=1\\\eta\neq\nu}}^{n+m}\frac{1}{\lambda_\eta-\lambda_\nu}(t^s_{\eta\nu}+t^s_{\nu\eta}-\lambda_\nu(u^s_{\eta\nu}+v^s_{\nu\eta}))y_\eta-\tfrac12 
-(u^s_{\nu\nu}+v^s_{\nu\nu})y_\nu
-\end{align}
-
-In a Singular Value Decomposition (SVD) we have both $G=I$ and $H=I$, and the corresponding derivatives are consequently zero, as are the matrices $U_s$ and $V_s$. This simplifies matters 
-considerably.
-
-It may be the case that the order $n+m$ of the partitioned matrices $A$ and $B$ is unpleasantly large. In that case there is another route for differentiating the GSVD. From ... 
-$$
-X=G^{-1}FY\Lambda^{-1}
-$$ 
-and thus from ...
-$$
-F'G^{-1}FY=HY\Lambda^2.
-$$ 
-Set $A=F'G^{-1}F$ and $B=H$. Then
-$$
-\mathcal{D}_sA=(\mathcal{D}_sF)'G^{-1}F-F'G^{-1}(\mathcal{D}_sG)G^{-1}F+F'G^{-1}(\mathcal{D}_sF)
-$$
-and $\mathcal{D}_sB=\mathcal{D}_sH$. We can use this to compute $\mathcal{D}_sY$ and $\mathcal{D}_s\Lambda^2$ in the usual way, with matrices that are now of order $m$. It follows 
-that $\mathcal{D}_s\Lambda=\tfrac12\Lambda^{-1}\mathcal{D}_s\Lambda^2$.
-Now use ... to get
-\begin{multline}
-\mathcal{D}_sX=-G^{-1}(\mathcal{D}_sG)G^{-1}FY\Lambda^{-1}+G^{-1}(\mathcal{D}_sF)T\Lambda^{-1}\\+G^{-1}F(\mathcal{D}_sY)\Lambda^{-1}-G^{-1}FY\Lambda^{-2}(\mathcal{D}_s\Lambda)
-\end{multline}
-
-\sectionbreak
-
 
 # Software
 
@@ -535,7 +350,7 @@ There is a corresponding numDeriv based check function gevdNonlinearNum(), which
 
 evdNonlinear(), gsvdNonlinear(), svdNonlinear()
 
-\sectionbreak
+\sectionbreak 
 
 # Template Examples
 
@@ -600,16 +415,204 @@ unit matrix
 
 \sectionbreak
 
-# Applications
+## Eigenvalue Decomposition
 
-## Sensitivity Analysis
+An Eigenvalue Decomposition (EVD) problem, without the 
+"generalized", is of the form 
+\begin{subequations}
+\begin{align}
+AX&=X\Lambda,\\
+X'X&=I.
+\end{align} 
+\end{subequations}
+This is the special case of GEVD with $B=I$ and $\mathcal{D}B=0$. In EVD the matrices $(A-\lambda_\nu B)^-$ from \eqref{eq-geninv} are actually the Moore-Penrose inverses of $A-\lambda_\nu I$. There are substantial, and rather obvious, simplifications of the first and second derivatives. 
+
+From \eqref{eq-singval} 
+\begin{equation}
+\mathcal{D}_s\lambda_\nu=x_\nu'(\mathcal{D}_sA)x_\nu,\label{eq-sevalsim}
+\end{equation} 
+and from 
+\eqref{eq-singvec} 
+\begin{equation}
+\mathcal{D}_sx_\nu=-(A-\lambda_\nu I)^+(\mathcal{D}_sA)x_\nu.\label{eq-vecpersimmp}
+\end{equation}
+
+From \eqref{eq-seclbdmat}
+\begin{equation}
+\mathcal{D}_{st}\lambda_\nu=-2x_\nu'(\mathcal{D}_sA)(A-\lambda_\nu I)^+(\mathcal{D}_tA)x_\nu+
+x_\nu '(D_{st}A)x_\nu .\label{eq-hessvalsimple}
+\end{equation}
+An alternative, which may be more efficient computationally, is
+$$
+\mathcal{D}_{st}\lambda_\nu=-2\sum_{\substack{\eta=1\\\eta\neq\nu}}^n\frac{1}{\lambda_\eta-\lambda_\nu}x_\nu'(\mathcal{D}_sA)x_\eta\cdot x_\nu'(\mathcal{D}_tA)x_\eta+x_\nu'(\mathcal{D}_{st}A)x_\nu.
+$$
+This is also the formula given in @overton_womersley_95.
+
+For the second derivatives of the eigenvectors we again use the stepwise computation of \eqref{eq-inter1}. We do not give a single formula, but a recipe instead.
+\begin{equation}
+\mathcal{D}_{st}x_\nu =-\sum_{\substack{\eta=1\\\eta\neq\nu}}^n\mathcal{D}_t\left\{\frac{x_\eta'\{\mathcal{D}_sA\}x_\nu }{\lambda_\eta-\lambda_\nu }\right\}x_\eta
+-\sum_{\substack{\eta=1\\\eta\neq\nu}}^n\frac{x_\eta'\{\mathcal{D}_sA\}x_\nu }{\lambda_\eta-\lambda_\nu }\mathcal{D}_tx_\eta.\label{eq-jnter1}
+\end{equation}
+The terms in the first summation in \eqref{eq-jnter1} are
+\begin{equation}
+\mathcal{D}_t\left\{\frac{x_\eta'\{\mathcal{D}_sA\}x_\nu }{\lambda_\eta-\lambda_\nu }\right\}=
+\frac{\mathcal{D}_t\{x_\eta'(\mathcal{D}_sA)x_\nu \}}{\lambda_\nu -\lambda_\eta}
+-\frac{(\mathcal{D}_t\lambda_\eta-\mathcal{D}_t\lambda_\nu )x_\eta'(\mathcal{D}_sA)x_\nu }{(\lambda_\eta-\lambda_\nu )^2},\label{eq-jnter2}
+\end{equation}
+and the numerator in the first term of \eqref{eq-jnter2} is
+\begin{equation}
+\mathcal{D}_t\{x_\eta'(\mathcal{D}_sA)x_\nu \}=(\mathcal{D}_tx_\eta)'(\mathcal{D}_sA)x_\nu +x_\eta'(\mathcal{D}_sA)\mathcal{D}_tx_\nu
++x_\eta'(\mathcal{D}_{st}A)x_\nu.\label{eq-jnter3}
+\end{equation}
+As before, we substitute \eqref{eq-jnter3} into \eqref{eq-jnter2} and then substitute the
+result in \eqref{eq-jnter1}.
+
+## Generalized Singular Value Decomposition
+
+Suppose $F$ is a rectangular $n\times m$ matrix, and $G$ and $H$ are two positive definite matrices
+of orders $n$ and $m$. Without loss of generality we assume $m\leq n$.
+The Generalized Singular Value Decomposition (GSVD) is finding a solution to the system
+\begin{subequations}
+\begin{align}
+FY&=GX\Lambda,\label{eq-gsvdef1a}\\
+F'X&=HY\Lambda,\label{eq-gsvdef2a}\\
+X'GX&=I,\label{eq-gsvdef3a}\\
+Y'HY&=I,\label{eq-gsvdef4a}
+\end{align}
+\end{subequations}
+Here $Y$ and $\Lambda$ are square of order $m$, with $\Lambda$ diagonal and non-negative. The left singular vectors are $n\times m$, and there is an $n\times(n-m)$ matrix $X_\perp$ that satisfies $F'X_\perp=0$,
+with $X_\perp'GX=0$ and $X_\perp'GX_\perp=I$.
+
+The GSVD system \eqref{eq-gsvdef1a}-\eqref{eq-gsvdef4a} is (very) closely related to the GEVD system
+\begin{equation}
+\begin{bmatrix}
+0&F\\F'&0
+\end{bmatrix}
+\begin{bmatrix}
+U\\V
+\end{bmatrix}
+=
+\begin{bmatrix}
+G&0\\
+0&H
+\end{bmatrix}
+\begin{bmatrix}
+U\\V
+\end{bmatrix}
+\Psi,\label{eq-gsvdgevd}
+\end{equation}
+with normalization $U'GU+V'HV=I$. 
+
+System \eqref{eq-gsvdgevd} has $n+m$ solutions that can be described using the GSVD solutions
+$(X,Y,\Lambda)$. There are $m$ solutions
+with $U=\tfrac12\sqrt{2}\ X, V=\tfrac12\sqrt{2}\ Y$ and $\Psi=\Lambda$. There
+are another $m$ solutions
+with $U=\tfrac12\sqrt{2}\ X, V=-\tfrac12\sqrt{2}\ Y$ and $\Psi=-\Lambda$.
+And finally there are $n-m$ solutions with $U=X_\perp, V=0$, and
+$\Lambda=0$. For the non-zero eigenvalues we have $u_\nu'Gu_\nu=v_\nu'Hv_\nu=\tfrac12$,
+which shows that the GSVD solutions are normalized slightly different from the GEVD ones.
+The $m$ solutions with non-negative eigenvalues are the interesting ones, and they 
+provide us with the $m$ solutions of the GSVD.
+
+Thus, in stead of tackling the GSVD from \eqref{eq-gsvdef1a}-\eqref{eq-gsvdef4a}
+directly, we apply our results for the derivatives of the GEVD to the
+system \eqref{eq-gsvdgevd}. All three matrices $F,G,$ and $H$ are assumed
+to be functions of the parameters $\theta$ and we will only consider the
+first $m$ generalized eigenvalues (assuming that $F$ has rank $r=m$, otherwise 
+only the first $r$).
+
+To bring the notation in line with our previous results we rewrite the
+equations in the GEVD system \eqref{eq-gsvdgevd} as 
+\begin{equation}
+A\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix}=\lambda_\nu B\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix},
+\end{equation}
+with
+\begin{equation}
+A=\begin{bmatrix}
+0&F\\F'&0
+\end{bmatrix}
+\end{equation}
+and
+\begin{equation}
+B=\begin{bmatrix}
+G&0\\
+0&H
+\end{bmatrix}
+\label{eq-gsvdgevd2}
+\end{equation}
+
+The first derivatives are
+\begin{equation}
+\mathcal{D}_s\lambda_\nu=x_\nu'(\mathcal{D}_sF)y_\nu-\lambda_\nu (x_\nu'(\mathcal{D}_sG)x_\nu+y_\nu'(\mathcal{D}_sH)y_\nu),\label{eq-gsvdderlab}
+\end{equation}
+and
+\begin{multline}
+\mathcal{D}_s\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix}=-(A-\lambda_\nu B)
+^-
+\begin{bmatrix}
+(\mathcal{D}_sF)y_\nu-\lambda_\nu(\mathcal{D}_sG)x_\nu\\
+(\mathcal{D}_sF')x_\nu-\lambda_\nu(\mathcal{D}_sH)y_\nu\end{bmatrix}\\
+-\tfrac12 
+(x_\nu'(\mathcal{D}_sG)x_\nu+y_\nu'(\mathcal{D}_sH)y_\nu)\cdot\begin{bmatrix}x_\nu\\y_\nu\end{bmatrix}.
+\label{eq-gsvdder1}
+\end{multline}
+Note that
+\begin{equation}
+(A-\lambda_\nu B)^-=\sum_{\substack{\eta=1\\\eta\neq\nu}}^{n+m}\frac{1}{\lambda_\eta-\lambda_\nu}\begin{bmatrix}x_\eta x_\eta'&x_\eta y_\eta'\\y_\eta x_\eta'&y_\eta y_\eta'\end{bmatrix}\label{eq-expgen}
+\end{equation}
+with the summation over all $n+m$ eigenvalues, including $m$ negative ones and the $n-m$ that are equal to zero.
+
+It is clearly helpful to define
+\begin{subequations}
+\begin{align}
+T_s&:=X'(\mathcal{D}_sF)Y,\label{eq-helpa}\\
+U_s&:=X'(\mathcal{D}_sG)X,\label{eq-helpb}\\
+V_s&:=Y'(\mathcal{D}_sH)Y.\label{eq-helpc}
+\end{align}
+\end{subequations}
+With definitions \eqref{eq-helpa}-\eqref{eq-helpc} the eigenvalue derivatives \eqref{eq-gsvdderlab} become
+\begin{equation}
+\mathcal{D}_s\lambda_\nu=t^s_{\nu\nu}-\lambda_\nu (u^s_{\nu\nu}+v^s_{\nu\nu}).
+\end{equation}
+Substitute \eqref{eq-expgen} into \eqref{eq-gsvdder1}, and use the definitions \eqref{eq-helpa}-\eqref{eq-helpc} for the eigenvector derivatives.
+\begin{align}
+\mathcal{D}_sx_\nu&=-\sum_{\substack{\eta=1\\\eta\neq\nu}}^{n+m}\frac{1}{\lambda_\eta-\lambda_\nu}(t^s_{\eta\nu}+t^s_{\nu\eta}-\lambda_\nu(u^s_{\eta\nu}+v^s_{\nu\eta}))x_\eta-\tfrac12 
+(u^s_{\nu\nu}+v^s_{\nu\nu})x_\nu\\
+\mathcal{D}_sy_\nu&=-\sum_{\substack{\eta=1\\\eta\neq\nu}}^{n+m}\frac{1}{\lambda_\eta-\lambda_\nu}(t^s_{\eta\nu}+t^s_{\nu\eta}-\lambda_\nu(u^s_{\eta\nu}+v^s_{\nu\eta}))y_\eta-\tfrac12 
+(u^s_{\nu\nu}+v^s_{\nu\nu})y_\nu
+\end{align}
+
+In a Singular Value Decomposition (SVD) we have both $G=I$ and $H=I$, and the corresponding derivatives are consequently zero, as are the matrices $U_s$ and $V_s$. This simplifies matters 
+considerably.
+
+It may be the case that the order $n+m$ of the partitioned matrices $A$ and $B$ is unpleasantly large. In that case there is another route for differentiating the GSVD. From ... 
+$$
+X=G^{-1}FY\Lambda^{-1}
+$$ 
+and thus from ...
+$$
+F'G^{-1}FY=HY\Lambda^2.
+$$ 
+Set $A=F'G^{-1}F$ and $B=H$. Then
+$$
+\mathcal{D}_sA=(\mathcal{D}_sF)'G^{-1}F-F'G^{-1}(\mathcal{D}_sG)G^{-1}F+F'G^{-1}(\mathcal{D}_sF)
+$$
+and $\mathcal{D}_sB=\mathcal{D}_sH$. We can use this to compute $\mathcal{D}_sY$ and $\mathcal{D}_s\Lambda^2$ in the usual way, with matrices that are now of order $m$. It follows 
+that $\mathcal{D}_s\Lambda=\tfrac12\Lambda^{-1}\mathcal{D}_s\Lambda^2$.
+Now use ... to get
+\begin{multline}
+\mathcal{D}_sX=-G^{-1}(\mathcal{D}_sG)G^{-1}FY\Lambda^{-1}+G^{-1}(\mathcal{D}_sF)T\Lambda^{-1}\\+G^{-1}F(\mathcal{D}_sY)\Lambda^{-1}-G^{-1}FY\Lambda^{-2}(\mathcal{D}_s\Lambda)
+\end{multline}
+
+\sectionbreak
+
 
 Again, the Delta Method literature is huge and diverse. Special cases have been around before there was a statistics discipline, ever since the beginning of error analysis in geodesy, physics, and astronomy (@gorroochurn_20). For the types of applications we have in mind all the relevant Delta Method details are given in @mann_wald_43 and @hsu_49.
 
 Suppose $A()$ and $B()$ are functions of proportions based on $N$ iid observations. The sample proportions are the parameters $\theta$ and their expected values are $\overline\theta$. It follows that $N^{\tfrac12}(\theta-\overline{\theta})$ is asymptotically normal with mean zero and variance $\overline{\Theta}-\overline{\theta}\overline{\theta}'$, where $\overline{\Theta}$ is a diagonal matrix with $\overline{\theta})$ on the diagonal.
 
 
-### Correspondence Analysis
+## Correspondence Analysis
 
 Correspondence analysis is a GSVD, with $F$ the contingency table, $G$ a diagonal matrix wwith row sums,
 and $H$ a diagonal matrux with column sums. Thus $\mathcal{D}F$ is a unit matrix, and $\mathcal{D}G$
@@ -618,7 +621,7 @@ are zero.
 
 The file gevdTemplateCA.R uses the 
 
-### Multiple Correspondence Analysis
+## Multiple Correspondence Analysis
 
 In Multiple Correspondence Analysis (MCA) we have $N$ observations
 on $m$ categorical variables (also known as "factors"). Variable
@@ -707,16 +710,14 @@ and correlations using the infinitesimal versions of the bootstrap or the
 jackknife.
 
 
-## Ready for Newton
-
-In Covariance Factor Analysis (CFA) we approximate a covariance or correlation
+In Covariance Common Factor Analysis (CCFA) we approximate a covariance or correlation
 matrix by the sum of a diagonal matrix and a matrix of small rank. There
 are many different ways in which the degree of approximation can be 
 measured, and for a given loss function there are many different proposed
 algorithms to minimize it. We will compute the first and second derivatives
 to provide a basis for minimization by Newton's method of some of these loss functions.
 
-### Unweighted Least Squares
+## Unweighted Least Squares CCFA
 
 In Least Squares Factor Analysis (LSFA) of a covariance matrix $C$ of order $n$ we minimize
 \begin{equation}
@@ -738,7 +739,7 @@ From \eqref{eq-seclbdmat}, taking into account that $B=I$, and thus $D_iB=D_{ij}
 The file lsfa.R in the github repository has functions to compute the first and second derivatives,
 with the usual numDeriv checker.
 
-### The Swain Family
+## The Swain CCFA Family
 
 In an important paper @swain_75 derived a class of factor analytic procedures which produce estimates 
 that are asymptotically equivalent to the classical Lawley-Joreskog maximum likelihood estimates. Swain also
@@ -820,7 +821,7 @@ The github repository has a file swain.R  which has functions to compute the fir
 for the more common choices of $f\in\mathcal{F}$. There is also a numDeriv checker. The functions are programmed in such a way that they can easily be extended to other loss functions with $f$ satisfying 
 \eqref{eq-f1}-\eqref{eq-f4}.
 
-### Matrix Decomposition Factor Analysis
+## Matrix Decomposition Factor Analysis
 
 In Matrix Decomposition Factor Analysis (MDFA) we have to maximize the trace or nuclear norm $\|.\|_\tau$, i.e. the sum of the singular values, of a matrix $XT$ over $T$. Maximizing $\|XT\|_\tau$ is equivalent to
 maximizing the sum of the square roots of the eigenvalues of $T'X'XT$. 
