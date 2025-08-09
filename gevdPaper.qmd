@@ -324,12 +324,12 @@ In order to attain the necessary level of generality gevNonlinear() needs to be 
 
 * $p$, the number of parameters;
 * $n$, the order of the matrices;
-* $hessianl$, do we compute second derivatives of eigenvalues;
-* $hessianx$, do we compute second derivatives of eigenvectors.
+* hessianl, do we compute second derivatives of eigenvalues;
+* hessianx, do we compute second derivatives of eigenvectors.
 
-If only first order information is needed we can set $hessianl$ and $hessianx$ to FALSE. 
+If only first order information is needed we can set hessianl and hessianx to FALSE. 
 
-The result is a list with
+The result of gevdNonlinear() is a list with
 
 * $A(\theta)$, an $n\times n$ matrix, typical element $a_{ij}(\theta)$,
 * $B(\theta)$, an $n\times n$ matrix, typical element $b_{ij}(\theta)$,
@@ -342,9 +342,9 @@ is $\mathcal{D}_{st}\lambda_\nu(\theta)$,
 * $\mathcal{D}^2X(\theta)$, a $p\times p\times n\times n$ array, element 
 $(s, t, i, \nu)$ is $\mathcal{D}_{st}x_{i\nu}(\theta)$.
 
-The names in the code and in the results for the eight matrices in this list are a, b, l, x, dl, dx, ddl, and ddx. The print function prints $\mathcal{D}\Lambda$ as an $n\times p$ matrix and $\mathcal{D}X$ as a sequence of $n$ matrices of dimensions $n\times p$, one for each eigenvalue. $\mathcal{D}^2\Lambda$ is printed
+The names in the code and in the results for the eight matrices in this list are a, b, l, x, dl, dx, ddl, and ddx. The R print function prints $\mathcal{D}\Lambda$ as an $n\times p$ matrix and $\mathcal{D}X$ as a sequence of $n$ matrices of dimensions $n\times p$, one for each eigenvalue. $\mathcal{D}^2\Lambda$ is printed
 as $n$ symmetric matrices of order $p$, and $\mathcal{D}^2X$ as $\smash{n^2}$ symmetric matrices of order $p$, one for each element of $X$. Printing $\mathcal{D}^2X$ produces a lot of output if $n$ and $p$ are at all
-large. If $hessianx# and $hessianl$ are set to FALSE then ddl and ddx are set to NULL.
+large. If hessianx and hessianl are set to FALSE then ddl and ddx are set to NULL.
 
 There is a corresponding numDeriv based check function gevdNonlinearNum(), which has the same single argument $\theta$ and gives the same output as gevdNonlinear(). 
 
