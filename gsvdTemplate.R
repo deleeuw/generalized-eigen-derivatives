@@ -1,4 +1,3 @@
-source("gevdNonlinear.R")
 
 set.seed(12345)
 theta <- c(.1, .2, .3, .4, .5, .5)
@@ -6,8 +5,8 @@ nr <- 4
 nc <- 3
 n <- 7
 p <- 6
-hessianl <- TRUE
-hessianx <- TRUE
+hessianl <- FALSE
+hessianx <- FALSE
 
 
 theF <- function(theta) {
@@ -15,12 +14,12 @@ theF <- function(theta) {
 }
 
 theG <- function(theta) {
-  g <- theta[5] * diag(nr) + theta[5]
+  g <- diag(nr) + theta[5] * (1- diag(nr))
   return(g)
 }
 
 theH <- function(theta) {
-  h <- theta[6] * diag(nc) + theta[6]
+  h <- diag(nc) + theta[6] * (1 -diag(nc))
   return(h)
 }
 
@@ -39,7 +38,7 @@ dG <- function(theta, s) {
   if (s != 5) {
     return(dg)
   } else {
-    return(1 - diag(nr))
+    return(1- diag(nr))
   }
 }
 

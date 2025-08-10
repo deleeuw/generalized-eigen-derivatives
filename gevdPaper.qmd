@@ -306,7 +306,8 @@ more general derivatives, such as one-sided directional derivatives, epi-derivat
 This is the approach taken in convex and nonsmooth analysis (@hiriart-urruty_ye_95, @lewis_overton_96, @torki_99, @torki_01). It has been applied mainly to eigenvalues in EVD problems with $B=I$, and not to the 
 eigenvectors. Eigenvalues have a variational characterization and eigenvectors do not.
 
-Engineering
+It may come as somewhat of a surprise that there is a massive literature in engineering, mostly in the
+AIAA Journal, on derivatives of eigenvalues and eigenvectors in the case of multiple eigenvalues.
 
 \sectionbreak
 
@@ -346,9 +347,9 @@ The names in the code and in the results for the eight matrices in this list are
 as $n$ symmetric matrices of order $p$, and $\mathcal{D}^2X$ as $\smash{n^2}$ symmetric matrices of order $p$, one for each element of $X$. Printing $\mathcal{D}^2X$ produces a lot of output if $n$ and $p$ are at all
 large. If hessianx and hessianl are set to FALSE then ddl and ddx are set to NULL.
 
-There is a corresponding numDeriv based check function gevdNonlinearNum(), which has the same single argument $\theta$ and gives the same output as gevdNonlinear(). 
+There is a corresponding numDeriv based check function gevdNonlinearNum(), which has the same single argument $\theta$ and gives the same output as gevdNonlinear(). The same procedure is followed for evdNonlinear() and gsvdNonlinear(), which are the functions for the (non-generalized) eigenvalue decomposition and for the
+generalized singular value decomposition we shall discuss in later sections.
 
-evdNonlinear(), gsvdNonlinear(), svdNonlinear()
 
 \sectionbreak 
 
@@ -374,7 +375,7 @@ for the cells of $A()$ and $B()$ with convergent power series expansions
 (possibly different functions for different cells).
 
 The template for a case with $n=4$ and $p=3$ is gevdTemplatePowerSeries.R in 
-the [github repository](https://www.github.com/deleeuw/generalized-eigen-derivatives).
+the github repository. U=It uses random symmetric matrices for $A_s$ and $B_s$.
 
 ## Linear Combinations {#sec-linear}
 
@@ -392,12 +393,17 @@ we can decide to make the last $q$ matrices $A_s$ and the first $p-q$ matrices $
 The template for a special case with $n=4$ and $p=6$ is gevdTemplateLinear.R in 
 the [github repository](https://www.github.com/deleeuw/generalized-eigen-derivatives).
 In this example the last three $A_s$ and the first three $B_s$ are indeed zero.
+The basic simplication is of course that $\mathcal{D}_sA=A_s$ and $\mathcal{D}_sB=B_s$, and that consequently the second partials $\mathcal{D}_{st}A$ and $\mathcal{D}_{st}B$ are all zero.
 
-The example in which $A()$ and $B()$ are linear combinations of known matrices is important enough
-to have its own batch of formulae for the derivatives. The basic simplication is of course that $\mathcal{D}_sA=A_s$ and $\mathcal{D}_sB=B_s$, and that consequently the second partials $\mathcal{D}_{st}A$ and $\mathcal{D}_{st}B$ are all zero.
+## The Elements
 
+As a special case of thus linear combinations special case we have the partial derivatives with respect to the elements  of $A$ and $B$. Differentiation
+with respect to the matrix elements can be useful in combination with the chain rule, which
+computes, for example, the derivative of the eigenvalue with respect to a parameter 
+as the derivative of the eigenvalue with respect to the matrix evaluated at the derivative of
+the matrix with respect to the parameter.
 
-As a special case of thus linear combinations special case we have the partial derivatives with respect to the elements  of $A$ and $B$. 
+The linear combinations we use in this case are
 \begin{subequations}
 \begin{align}
 A&=\mathop{\sum\sum}_{1\leq i\leq j}a_{ij}E_{ij},\\
@@ -409,11 +415,9 @@ Here $E_{ij}:=(e_ie_j'+e_je_i')$ for $i\neq j$ and $E_{ii}=e_ie_i'$ with $e_i$ a
 \mathcal{D}_{(i,j)}A=\mathcal{D}_{(i,j)}B=E_{ij}.
 \end{equation} 
 
-## The Elements
-
-unit matrix
-
-\sectionbreak
+In gevdTemplateLinear.R from the previous secton the matrices $A_s$ and $B_s$ were arbitrary and were explicitly
+given as input. In gevdTemplateElement.R there are auxiliary functions that generate the matrices $E_{ij}$ when needed. This requires some manipulationof indices to go from the vector of parameters $\theta_s$ to the matrices of parameters
+$a_{ij}$ or $b_{ij}$. The included numerical example is of order four, and consequently has 20 parameters. 
 
 ## Eigenvalue Decomposition
 
@@ -466,6 +470,12 @@ and the numerator in the first term of \eqref{eq-jnter2} is
 \end{equation}
 As before, we substitute \eqref{eq-jnter3} into \eqref{eq-jnter2} and then substitute the
 result in \eqref{eq-jnter1}.
+
+It is easy and not very wasteful to plug in $B=I$ and $\mathcal{D}_sB=\mathcal{D}_{st}B=0$
+in the formulas and the template of the generalized nonlinear case. Nevertheless, because
+of the importance of EVD, we do include both evdTemplate.R and evdNonlinear.R in the
+repository. The template has a one-parameter example $A(\theta)=A_0+\theta A_1$ of
+order four.
 
 ## Generalized Singular Value Decomposition
 
@@ -543,7 +553,7 @@ G&0\\
 
 The first derivatives are
 \begin{equation}
-\mathcal{D}_s\lambda_\nu=x_\nu'(\mathcal{D}_sF)y_\nu-\lambda_\nu (x_\nu'(\mathcal{D}_sG)x_\nu+y_\nu'(\mathcal{D}_sH)y_\nu),\label{eq-gsvdderlab}
+\mathcal{D}_s\lambda_\nu=2\ x_\nu'(\mathcal{D}_sF)y_\nu-\lambda_\nu (x_\nu'(\mathcal{D}_sG)x_\nu+y_\nu'(\mathcal{D}_sH)y_\nu),\label{eq-gsvdderlab}
 \end{equation}
 and
 \begin{multline}
@@ -572,7 +582,7 @@ V_s&:=Y'(\mathcal{D}_sH)Y.\label{eq-helpc}
 \end{subequations}
 With definitions \eqref{eq-helpa}-\eqref{eq-helpc} the eigenvalue derivatives \eqref{eq-gsvdderlab} become
 \begin{equation}
-\mathcal{D}_s\lambda_\nu=t^s_{\nu\nu}-\lambda_\nu (u^s_{\nu\nu}+v^s_{\nu\nu}).
+\mathcal{D}_s\lambda_\nu=2\ t^s_{\nu\nu}-\lambda_\nu (u^s_{\nu\nu}+v^s_{\nu\nu}).
 \end{equation}
 Substitute \eqref{eq-expgen} into \eqref{eq-gsvdder1}, and use the definitions \eqref{eq-helpa}-\eqref{eq-helpc} for the eigenvector derivatives.
 \begin{align}
@@ -585,139 +595,94 @@ Substitute \eqref{eq-expgen} into \eqref{eq-gsvdder1}, and use the definitions \
 In a Singular Value Decomposition (SVD) we have both $G=I$ and $H=I$, and the corresponding derivatives are consequently zero, as are the matrices $U_s$ and $V_s$. This simplifies matters 
 considerably.
 
-It may be the case that the order $n+m$ of the partitioned matrices $A$ and $B$ is unpleasantly large. In that case there is another route for differentiating the GSVD. From ... 
-$$
-X=G^{-1}FY\Lambda^{-1}
-$$ 
-and thus from ...
-$$
-F'G^{-1}FY=HY\Lambda^2.
-$$ 
-Set $A=F'G^{-1}F$ and $B=H$. Then
-$$
-\mathcal{D}_sA=(\mathcal{D}_sF)'G^{-1}F-F'G^{-1}(\mathcal{D}_sG)G^{-1}F+F'G^{-1}(\mathcal{D}_sF)
-$$
-and $\mathcal{D}_sB=\mathcal{D}_sH$. We can use this to compute $\mathcal{D}_sY$ and $\mathcal{D}_s\Lambda^2$ in the usual way, with matrices that are now of order $m$. It follows 
-that $\mathcal{D}_s\Lambda=\tfrac12\Lambda^{-1}\mathcal{D}_s\Lambda^2$.
-Now use ... to get
-\begin{multline}
-\mathcal{D}_sX=-G^{-1}(\mathcal{D}_sG)G^{-1}FY\Lambda^{-1}+G^{-1}(\mathcal{D}_sF)T\Lambda^{-1}\\+G^{-1}F(\mathcal{D}_sY)\Lambda^{-1}-G^{-1}FY\Lambda^{-2}(\mathcal{D}_s\Lambda)
-\end{multline}
-
-\sectionbreak
-
-
-Again, the Delta Method literature is huge and diverse. Special cases have been around before there was a statistics discipline, ever since the beginning of error analysis in geodesy, physics, and astronomy (@gorroochurn_20). For the types of applications we have in mind all the relevant Delta Method details are given in @mann_wald_43 and @hsu_49.
-
-Suppose $A()$ and $B()$ are functions of proportions based on $N$ iid observations. The sample proportions are the parameters $\theta$ and their expected values are $\overline\theta$. It follows that $N^{\tfrac12}(\theta-\overline{\theta})$ is asymptotically normal with mean zero and variance $\overline{\Theta}-\overline{\theta}\overline{\theta}'$, where $\overline{\Theta}$ is a diagonal matrix with $\overline{\theta})$ on the diagonal.
-
+The repository has the template gsvdTemplate.R, which can be used together with gevdNonlinear() to compute
+first and second derivatives of singular values and vectors. The example in the template 
+is a simple one with six parameters. $F(\theta)$ is $4\times 3$, with the columns $(\theta, \theta^2, \theta^3)$.
+That requires four parameters.
+The remaining two parameters are used for $G$ and $H$, which are both of the form $I+\theta(I-ee')$. Thus they have one on the diagonal and $\theta$ on the off-diagonal. The additional file gsvdNonlinear.R has the function
+gsvdNonlinear(), with its numDeriv checker, which computes first derivatives of singular values and vectors.
+It uses the formulas in this section and is less computationally wasteful as gevdNonlinear(). For now, it does
+not compute second derivatives,
 
 ## Correspondence Analysis
 
-Correspondence analysis is a GSVD, with $F$ the contingency table, $G$ a diagonal matrix wwith row sums,
-and $H$ a diagonal matrux with column sums. Thus $\mathcal{D}F$ is a unit matrix, and $\mathcal{D}G$
-and $\mathcal{D}H$ are diagonal matrices with row and columns sums of $\mathcal{D}F$. All second derivatives
+The next two examples (correspondence analysis and multiple correpondence analysis) can be used in combination with the Delta Method. Again, the Delta Method literature is huge and diverse. Special cases have been around before there was a statistics discipline, ever since the beginning of error analysis in geodesy, physics, and astronomy (@gorroochurn_20). For the types of applications we have in mind all the relevant Delta Method details are given in @hsu_49 and @hurt_76.
+
+Suppose $A()$ and $B()$ are functions of proportions based on $n$ iid observations. We use the Dutch Convention of underlining (sequences of) random variables (@hemelrijk_66). The sample proportions are $\smash{{\underline{p}}_n}$, and their expected values are $\pi$. We have asymptotic normality
+\begin{equation}
+n^{\tfrac12}(\underline{p}_n-\pi)\ \mathop{\rightarrow}^L\ \mathcal{N}(0,\ \Pi-\pi\pi'),
+\end{equation}
+where $\Pi$ is a diagonal matrix with $\pi$ on the diagonal. If $f$ is a three times continuously differentiable function with values in $\mathbb{R}^m$ then 
+\begin{equation}
+n^{\tfrac12}(\underline{p}_n-\pi)\ \mathop{\rightarrow}^L\ \mathcal{N}(0,\ \mathcal{D}f(\pi)'(\Pi-\pi\pi')\mathcal{D}f(\pi)).\label{eq-deltavar}
+\end{equation}
+Moreover for the expected value we have the convergence in probability
+\begin{equation}
+n\mathbf{E}(f_\nu(\underline{p}_n)-f_\nu(\pi))\ \mathop{\rightarrow}^P
+\tfrac12\text{tr}\ \mathcal{D}_\nu^2f(\pi)(\Pi-\pi\pi').\label{eq-deltabias}
+\end{equation}
+Plugin versions of formulae \eqref{eq-deltavar} and \eqref{eq-deltabias}, with the $\pi$ on the right hand side replace by $\smash{\underline{p}_n}$,  allow us to use the first and second derivatives of the eigenvalues and eigenvectors to compute asymptotic estimates of biases, standard errors, and confidence intervals.
+
+Correspondence analysis is a GSVD, with $F$ the contingency table, $G$ a diagonal matrix with row sums,
+and $H$ a diagonal matrix with column sums. All three matrices are linear functions of the proportions. Thus $\mathcal{D}F$ is a unit matrix\footnote{A unit matrix has one element equal to one, the others are zero.}, and $\mathcal{D}G$
+and $\mathcal{D}H$ are diagonal unit matrices with row and columns sums of $\mathcal{D}F$. All second derivatives
 are zero.
 
-The file gevdTemplateCA.R uses the 
+The file gevdTemplateCA.R uses the GEVD results for the linear case and applies them to a social mobility contingency table from @glass_54, also used in @deleeuw_mair_A_09b. In this 7 × 7 table the occupational status of fathers (rows) and sons (columns) of 3497 British families were cross-classiﬁed. The categories are professional and high administrative, managerial and executive, higher supervisory, lower supervisory, skilled manual and routine non-manual, semi-skilled manual, and unskilled manual. Running the template followed by either gevdNonlinear() or gsvdNonlinear() will give the 
+derivatives needed for Delta Method standard errors and confidence intervals.
 
 ## Multiple Correspondence Analysis
 
 In Multiple Correspondence Analysis (MCA) we have $N$ observations
 on $m$ categorical variables (also known as "factors"). Variable
 $j$ has $k_j$ possible values (also known as "levels"), and our observations are coded
-as unit vector of length $k_j$, concatenated to binary vectors (also known as "profiles")
-of length $K:=\sum k_j$. There are $p:=\prod k_j$ possible observations,
-and each of them occurs in the data with relative frequency $\pi_s$ (in most MCA applications
+as unit vectors of length $k_j$, concatenated to binary vectors (also known as "profiles")
+of length $K:=\sum k_j$. There are $M:=\prod k_j$ possible observations,
+and each of them occurs in the data with relative frequency $p_s$ (in most MCA applications
 $N<<M$ and thus many $\pi_s$ will be zero). Note that (ordinary) Correspondence
 Analysis (CA) is the special case with $m=2$.
 
-The Burt matrix $A$ is of the form
-$$
-A(\pi)=\sum_{s=1}^p \pi_s g_s g_s'
-$$
-while $B$ is
-$$
-B(\pi)=m\sum_{s=1}^p \pi_s\ \text{diag}(g_s g_s').
-$$
-The first derivatives with respect to $\pi_s$ are given by \eqref{eq-singvalcon} and \eqref{eq-singveccon}, using $G_s:=m\text{diag}(g_sg_s')$. 
+The matrices $A$ and $B$ are of the form
+\begin{subequations}
 \begin{align}
-\mathcal{D}_s\lambda_\nu &=(x_\nu 'g_s)^2-\lambda_\nu x_\nu 'G_sx_\nu ,\label{eq-singvalconmca}\\
-\mathcal{D}_sx_\nu &=-(A-\lambda_\nu  B)^-(g_sg_s'-\lambda_\nu G_s)x_\nu -\tfrac12 x_\nu 'G_sx_\nu \cdot x_\nu .\label{eq-singvecconmca}
+A(p)&=\sum_{s=1}^M p_s g_s g_s',\\
+B(p)&=m\sum_{s=1}^M p_s\ \text{diag}(g_s g_s').
 \end{align}
-It follows that
-\begin{align}
-\sum_{s=1}^m\pi_s\mathcal{D}_s\lambda_\nu &=0,\\
-\sum_{s=1}^m\pi_s\mathcal{D}_sx_\nu &=-\frac12 x_\nu .
-\end{align}
-Also, from the Delta Method, the asymptotic covariance matrix under multinomial sampling is given by
-$$
-N\cdot \text{ACOV}(\lambda_\nu ,\lambda_\eta)=\sum_{s=1}^p\pi_s(\mathcal{D}_s\lambda_\nu )(\mathcal{D}_s\lambda_\eta)
-$$
-$$
-N\cdot \text{ACOV}(x_i,x_j)=\sum_{s=1}^p\pi_s(\mathcal{D}_sx_\nu )(\mathcal{D}_sx_j)'-\frac14 x_\nu x_j'
-$$
-MCA is a popular technique, and thus it deserves a "real" example. We use the three-dimensional 
+\end{subequations}
+The template gevdTemplateMCA.R use the three-dimensional 
 contingency table HairEyeColor from the R datasets package, which is a part of base R (@r_core_team_25). 
-```{r readdata, echo = FALSE}
-library(datasets)
-data("HairEyeColor")
-HairEyeColor
-```
 The first variable is hair color (4 levels), the second is 2 is eye color (4 levels), and the third variable is sex (2 levels).
 There are 592 cross-classified individuals, students in an introductory statistics course at the University
-of Delaware. Thus $N=592$, $p=4\times 4\times 2=32$, $n=4+4+2=10$.
+of Delaware. Thus $N=592$, $M=4\times 4\times 2=32$, $K=4+4+2=10$.
 
-It is abundantly clear that this example shoulds be analyzed with some special purpose software
+It is abundantly clear that this example should really be analyzed with some special purpose software
 which does not require computing and storing the $M$ arrays $A_s$ and the $M$ arrays $B_s$, which are
-symmetric, integer, and very sparse. In this paper we want to show, however, that gevNonlinear() can do 
-it all. Thus we make a template gevdExampleMCA.R, which can actually handle any three-dimensional table.
+symmetric, integer, and very sparse. In this case we want to show, however, that gevNonlinear() can do 
+it all. The template gevdExampleMCA.R can actually handle any three-dimensional table.
 After running the template, we apply gevNonlinear().
 
-```{r do comp, echo = FALSE, cache = TRUE}
-source("gevdExampleMCA.R")
-h <- gevNonlinear(theta)
-```
-In MCA the dominant eigenvalue is always equal to one, and there are always $m-1$ eigenvalues equal to zero. These "trivial" dimensions are not a property of the data, but jusrt a consequence of the indicator coding.
-There are only $p-m$ non-trivial dimensions, which for our example is seven. For the dominant trivial
-dimension the derivatives are always zero, for the $m-1$ zero eigenvalues the derivatives are not
-even defined. We only give the results for the non-trivial dimensions.
-
-
-
-In actual MCA applications the eigenvectors are usually scaled by multiplying them with the
-square root of the corresponding eigenvalue. This makes the computation of the
-asymptotic distribution of the scaled eigenvectors slightly more complicated.
-
-The Delta Method
-tells us second derivatives  can be used to give estimates of the bias, using
-$$
-N\cdot\text{BIAS}(\lambda_\nu )=\frac12\text{tr}\ \mathcal{D}^2\lambda_\nu (\Pi-\pi\pi')=\frac12\sum_{s=1}^p\pi_s\mathcal{D}_{ss}\lambda_\nu ,
-$$
-because $\pi'(\mathcal{D}^2\lambda_\nu )\pi=0$.
-
-
 The results for MCA can also be applied directly
-to the situation in which the possible data a finite number of numerical
+to the situation in which the possible data are a finite number of numerical
 vectors which occurs with different relative frequencies. Because of the limits of measurement precision one could argue that all multivariate data are actually of this type. But of course for so-called
 "continuous" data the number of possible values, although finite, can be
 enormously large. One solution for the discrete-continuous dilemma is to 
-move from expectations that are weighted sums to expectations that are
+move from expectations that are weighted by relative frequencies to expectations that are
 weighted by the empirical distribution function. Our formulae for the
 derivatives can also be applied to get standard errors, confidence
-intervals, and bias corrections for the eigen decomposition of covariances 
+intervals, and bias corrections for the EVD of covariances 
 and correlations using the infinitesimal versions of the bootstrap or the 
 jackknife.
 
+## Unweighted Least Squares CCFA
 
-In Covariance Common Factor Analysis (CCFA) we approximate a covariance or correlation
+The final three examples are more complicated. They are all versions of 
+exploratory common factor analysis (ECFA).
+In Covariance Exploratory Common Factor Analysis (CECFA) we approximate a covariance or correlation
 matrix by the sum of a diagonal matrix and a matrix of small rank. There
 are many different ways in which the degree of approximation can be 
 measured, and for a given loss function there are many different proposed
-algorithms to minimize it. We will compute the first and second derivatives
+algorithms to minimize it. In the next two examples we will compute the first and second derivatives
 to provide a basis for minimization by Newton's method of some of these loss functions.
-
-## Unweighted Least Squares CCFA
 
 In Least Squares Factor Analysis (LSFA) of a covariance matrix $C$ of order $n$ we minimize
 \begin{equation}
@@ -760,7 +725,7 @@ Note that this implies that each $f\in\mathcal{F}$ is unimodal and has a single 
 \begin{equation}
 \lim_{x\rightarrow 1}\frac{f(x)}{\frac12(x-1)^2}=1.
 \end{equation}
-The signature of a real-valued function $f$ at $x$ is -1 if $f(x)<0$, $+1$ if $f(x)>0$,
+Define the signature of a real-valued function $f$ at $x$ to be -1 if $f(x)<0$, $+1$ if $f(x)>0$,
 and $0$ if $f(x)=0$. It follows from \eqref{eq-f1}-\eqref{eq-f4} that if $f,g\in\mathcal{F}$
 then the signatures of $\mathcal{D}f$ and $\mathcal{D}g$ are the same. 
 
@@ -786,7 +751,7 @@ and for the "geodetic distance"
 f_3(\theta):=\frac12(\log\theta)^2.
 \end{equation}
 But \eqref{eq-f1}-\eqref{eq-f4} also covers other cases
-such as the  GLS variant with loss $\frac12\text{tr}\ \Sigma^{-1}(\Sigma-S)\Sigma^{-1}(\Sigma-S)$ 
+such as the  GLS variant with loss $\frac12\text{tr}\ \Sigma^{-1}(\Sigma-S)\Sigma^{-1}(\Sigma-S)$ which has
 \begin{equation}
 f_4(\theta):=\frac12\frac{(\theta-1)^2}{\theta^2}.
 \end{equation}
@@ -794,10 +759,10 @@ f_4(\theta):=\frac12\frac{(\theta-1)^2}{\theta^2}.
 In addition if $f(\theta)$ satisfies \eqref{eq-f1}-\eqref{eq-f4} for all $\theta$ then so does 
 $f(\theta^{-1})$. In fact $f_4(\theta)=f_2(\theta^{-1})$. Also $f_3(theta)=f_3(\theta^{-1})$.
 Note that the unweighted 
-least squares method from the previous section \ref{sec-uls} is not in the Swain family, but the GLS methods are, and they have the advantage of being scale-free.
+least squares method from the previous section is not in the Swain family, but the GLS methods are, and they have the advantage of being scale-free.
 
 
-From $A=S^{-\frac12}DS^{-\frac12}$ we have $\mathcal{D}_iA=S^{-\frac12}e_ie_i'S^{-\frac12}$. To apply the formulas from section \ref{sec-sev} it is convenient
+From $A=S^{-\frac12}DS^{-\frac12}$ we have $\mathcal{D}_iA=S^{-\frac12}e_ie_i'S^{-\frac12}$. To apply the EVD derivative formulas it is convenient
 to define the matrix $Y:=S^{-\frac12}X$ with elements $y_{i\nu}$. It follows that
 \begin{subequations}
 \begin{equation}
@@ -823,7 +788,7 @@ for the more common choices of $f\in\mathcal{F}$. There is also a numDeriv check
 
 ## Matrix Decomposition Factor Analysis
 
-In Matrix Decomposition Factor Analysis (MDFA) we have to maximize the trace or nuclear norm $\|.\|_\tau$, i.e. the sum of the singular values, of a matrix $XT$ over $T$. Maximizing $\|XT\|_\tau$ is equivalent to
+In Matrix Decomposition Factor Analysis (MDFA) we have to maximize the trace or nuclear norm $\|.\|_\tau$, i.e. the sum of the singular values, of a matrix $XT$ over $T$. This is equivalent to
 maximizing the sum of the square roots of the eigenvalues of $T'X'XT$. 
 
 In MDFA the matrix $X$ is $n\times m$ and $T$ is $m\times p$, with $m<p$.
@@ -863,7 +828,7 @@ From \eqref{eq-singvec}
 \end{equation}
 and thus, or directly from \eqref{eq-hessvalsimple},
 \begin{equation}
-\mathcal{D}_{st}\lambda_\nu=-2x_\nu'Q_s(A-\lambda_\nu I)^+Q_tx_\nu+2x_\nu'T_s'CT_tx_\nu
+\mathcal{D}_{st}\lambda_\nu=-2x_\nu'Q_s(A-\lambda_\nu I)^+Q_tx_\nu+2x_\nu'T_s'CT_tx_\nu.\label{eq-mdfaddl}
 \end{equation}
 Formulae \eqref{eq-mdfadl} and \eqref{eq-mdfaddl} apply to all EVD problems where $A=T'CT$  and $T$ is a weighted linear combination of known matrices, with or without intercept.
 
@@ -882,7 +847,7 @@ Next differentiate \eqref{eq-dsigma} to find
 \end{equation}
 and we can substitute from formulae \eqref{eq-mdfadl} and \eqref{eq-mdfaddl} for a final result.
 
-If the $T_s$ are indicators\footnote{Indicators have one element equal to one, with the other elements zero.}, we find
+If the $T_s$ are unit matrices we find
 \begin{equation}
 \mathcal{D}\sigma=CT(T'CT)^{-\frac12},
 \end{equation}
