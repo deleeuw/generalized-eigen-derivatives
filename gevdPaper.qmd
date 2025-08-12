@@ -85,7 +85,7 @@ GEVD is at the basis of a great many computations in multivariate statistics. In
 
 The equations \eqref{eq-gevdef1} and \eqref{eq-gevdef2} implicitly define $(X(),\Lambda())$ as a function of $(A,B)$. It turns out that under suitable assumptions on the matrix arguments these implicit functions are actually differentiable, and this makes it interesting to compute their derivatives.
 
-There is a humongous and scattered literature on formulae for and computations of derivatives of eigenvalues and eigenvectors in linear algebra, numerical mathematics, engineering, multivariate statistics, and even in physics. Reviewing and collecting all relevant literature is an impossible task. We only give the basic mathematical references, which provide the foundations upon which our results will be built (@kato_84, @baumgartel_85).
+There is a humongous and scattered literature on formulae for and computations of derivatives of eigenvalues and eigenvectors in linear algebra, numerical mathematics, engineering, multivariate statistics, and even in physics. Reviewing and collecting all relevant literature is an impossible task. We only give the basic mathematical references, which provide the foundations upon which our results will be built (@kato_84, @baumgartel_85, @brustad_19).
 
 
 
@@ -272,22 +272,61 @@ We would be remiss if we did not say anything about multiple eigenvalues. The ma
 that there is no unique eigenvector corresponding with a multiple eigenvalue. If $X$ are is an $n\times r$ matrix of eigenvectors corresponding with eigenvalue $\lambda$, i.e. if $AX=\lambda BX$, then $XS$ are also eigenvectors corresponding with $\lambda$ for any $r\times p$ matrix $S$.
 
 Another problem
-has to do with the order of the eigenvalues. Let's illustrate both problems with a small example.
+has to do with the order of the eigenvalues. Let's illustrate both problems with a embarrassing simple example. Suppose $B(\theta)=I$ and
 $$
-A(\theta)=I+\theta\begin{bmatrix}+1&0\\0&-1\end{bmatrix}
+A(\theta)=\begin{bmatrix}
+4&0&0&0\\
+0&4&0&0\\
+0&0&2&0\\
+0&0&0&2
+\end{bmatrix}
++\theta
+\begin{bmatrix}
+4&0&0&0\\
+0&3&0&0\\
+0&0&2&0\\
+0&0&0&1
+\end{bmatrix}.
 $$
-and $B(\theta)=I$. The eigenvalues are $1+\theta$, with eigenvector 
-$(1\ 0)'$ and $1-\theta$ with eigenvector $(0\ 1)'$. If $\theta=0$ both eigenvalues are $+1$, 
-and any two-element
-vector is an eigenvector. The largest eigenvalue is $1+\theta$ if $\theta>0$
-and $1-\theta$ if $\theta<0$. Thus the derivative of the largest eigenvalue is
-$+1$ if $\theta>0$ and $-1$ if $\theta<0$. If $\theta=0$ the left and the right
-derivatives of the largest eigenvalue are $-1$ and $+1$, and the derivative does 
-not exist. The eigenvector corresponding with the largest eigenvalue is not
-even continuous at zero.
+The eigenvectors are the four unit vectors $e_1-e_4$\footnote{A unit vector $e_i$ has zeroes everywhere, except for element $i$, which is one.} The corresponding eigenvalues
+are $\lambda_1=4+4\theta$, $\lambda_2=4+3\theta$, $\lambda_3=2+2\theta$, and $\lambda_4=2+\theta$. In the figure below they are drawn, respectively, in RED, BLUE, GREEN, and PURPLE.
+```{r figeval, echo = FALSE, fig.align = "center", fig.width = 5, fig.height = 5, fig.cap = "Eigenvalues"}
+#par(pty="s")
+plot(0, xlim = c(-7,7), ylim = c(-9, 9), xlab = "theta", ylab = "lambda", type = "n")
+abline(4,4, col = "RED", lwd = 2)
+abline(4, 3, col = "BLUE", lwd = 2)
+abline(2, 2, col = "GREEN", lwd = 2)
+abline(2, 1, col = "PURPLE", lwd = 2)
+abline(v = 0)
+abline(v = -1)
+abline(v = -2)
+abline(v = -2/3)
+```
+With this numbering identifying the eigenvalues they are clearly differentiable
+and the corresponding eigenvectors are constant, which also makes them differentiable.
+
+But if we look at the ordered eigenvalues $\lambda_{(1)}\geq...\geq\lambda_{(4)}$ the figure
+shows us something different. The largest eigenvalue $\lambda_{(1)}$ is RED for
+$\theta>0$, BLUE for $-1<\theta<0$, and PURPLE for $\theta<-1$. It is convex, but
+not differentiable at $0$ and $-1$, although it has left and right derivatives
+(i.e. directional derivatives) at all $\theta$. The smallest eigenvalue 
+$\lambda_{(4)}$ is concave, PURPLE for $\theta>0$, GREEN for $-1<\theta<0$, and RED
+for $\theta<-1$. The intermediate eigenvalues $\lambda_{(2)}$ and $\lambda_{(3)}$
+change color, and thus slope, even more frequently. At zero none of the four ordered eigenvalues is differentiable. The situation with eigenvectors is even worse. At the points where the ordered eigenvalues change color the eigenvector $\lambda_{(i)}$ changes discontinuously from one unit vector to another.
+
+```{r figevala, echo = FALSE, fig.align = "center", fig.width = 5, fig.height = 5, fig.cap = "Eigenvalue Averages"}
+par(pty = "s")
+plot(0, xlim = c(-4,4), ylim = c(-4, 4), xlab = "theta", ylab = "lambda", type = "n")
+abline(4,3.5, col = "RED", lwd = 2)
+abline(2, 1.5, col = "GREEN", lwd = 2)
+abline(v=0)
+abline(v=-1)
+```
 
 If $A()$ and $B()$ are analytic functions of a single parameter $\theta$ then there are $n$ analytic functions $\lambda_\nu()$ such that $\lambda_\nu(\theta)$ is a generalized eigenvalue of the pair $A(\theta),B(\theta)$
-for each $\theta$. Moreover there are corresponding analytic $B$-orthogonal eigenvectors $x_\nu()$. In our example these are the functions $1-\theta$ and $1+\theta$. The problem is that $\lambda_1(\theta)$, for example, may be the largest eigenvalue for some values of $\theta$ and an intermediate or smallest eigenvalue for other values of $\theta$. And, unfortunately, the result is no longer true if there is more than one parameter.
+for each $\theta$. Moreover there are corresponding analytic $B$-orthogonal eigenvectors $x_\nu()$. 
+
+Unfortunately the result is no longer true if there is more than one parameter.
 
 Consider
 $$
@@ -301,13 +340,22 @@ $\lambda_1(\theta):=1+\|\theta\|_2$ and $\lambda_2(\theta):=1-\|\theta\|_2$ are 
 origin where the two shells touch. Neither of the two functions is differentiable at the origin, although by
 convexity/concavity they both are directionally differentiable there.
 
-This points to another solution of part of the problem with multiple eigenvalues. We can use
-more general derivatives, such as one-sided directional derivatives, epi-derivatives, or subdifferentials.
-This is the approach taken in convex and nonsmooth analysis (@hiriart-urruty_ye_95, @lewis_overton_96, @torki_99, @torki_01). It has been applied mainly to eigenvalues in EVD problems with $B=I$, and not to the 
-eigenvectors. Eigenvalues have a variational characterization and eigenvectors do not.
+This points to another solution of part of the problem with multiple eigenvalues. We can use more general derivatives, such as one-sided directional derivatives, epi-derivatives, or subdifferentials.
+This is the approach taken in convex and nonsmooth analysis (@hiriart-urruty_ye_95, @lewis_overton_96, @torki_99, @torki_01). It has been applied mainly to eigenvalues in EVD problems with $B=I$, and not to the corresponding eigenvectors. Eigenvalues have a variational characterization and eigenvectors do not.
 
-It may come as somewhat of a surprise that there is a massive literature in engineering, mostly in the
-AIAA Journal, on derivatives of eigenvalues and eigenvectors in the case of multiple eigenvalues.
+It may come as somewhat of a surprise that there is a massive literature in engineering on derivatives of eigenvalues and eigenvectors in the case of multiple eigenvalues. The GEVD is important in structural mechanics, in which complex structures have to be designed to satisfy dynamic response restrictions. In this context $A$ is the "stiffness matrix" and $B$ is the "mass matrix". For the background, we refer to 
+@haug_choi_komkov_86. The AIAA Journal, which deals with aeronautic and astronautic design, has a long sequence of papers dealing with these derivatives. It turns out
+there is some slight of hand going on here. The derivative of a multiple
+eigenvalue is actually a vector of directional derivatives, the same directional
+derivatives 
+The derivatives of the eigenvectors are the derivatives of the eigenvectors
+of the
+
+@long_jiang_han_15
+@yoon_donoso_bellido_ruiz_20
+@friswell_96
+@chu_90
+@sun_90
 
 \sectionbreak
 
@@ -410,7 +458,7 @@ A&=\mathop{\sum\sum}_{1\leq i\leq j}a_{ij}E_{ij},\\
 B&=\mathop{\sum\sum}_{1\leq i\leq j}b_{ij}E_{ij}.
 \end{align}
 \end{subequations} 
-Here $E_{ij}:=(e_ie_j'+e_je_i')$ for $i\neq j$ and $E_{ii}=e_ie_i'$ with $e_i$ and $e_j$ unit vectors\footnote{A unit vector $e_i$ has zeroes everywhere, except for element $i$, which is one.}. Thus 
+Here $E_{ij}:=(e_ie_j'+e_je_i')$ for $i\neq j$ and $E_{ii}=e_ie_i'$ with $e_i$ and $e_j$ unit vectors. Thus 
 \begin{equation}
 \mathcal{D}_{(i,j)}A=\mathcal{D}_{(i,j)}B=E_{ij}.
 \end{equation} 
